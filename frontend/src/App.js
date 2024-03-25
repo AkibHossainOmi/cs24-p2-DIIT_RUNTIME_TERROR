@@ -10,6 +10,14 @@ import Home from './Components/Home';
 import StationList from './Components/StationList';
 import Navbar from './Components/Navbar';
 import Profile from './Components/Profile';
+import CreateUserForm from './Components/CreateUserForm';
+import CreateStationForm from './Components/CreateStationForm';
+import AddVehiclePage from './Components/AddVehicleForm';
+import AddVehicleEntryPage from './Components/AddVehicleEntryPage';
+import AddDumpingEntryPage from './Components/AddDumpingEntryPage';
+import UserProfile from './Components/UserProfilePage';
+
+
 
 function App() {
   const isAuthenticated = getLoggedInStatus();
@@ -18,15 +26,25 @@ function App() {
     <div className="font-roboto">
       <BrowserRouter>
         <Routes>
+          
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/trains" element={<TrainList />} />
           <Route path="/stations" element={<StationList />} />
+          <Route path="/create_user" element={<CreateUserForm />} />
+          <Route path="/create_sts" element={<CreateStationForm />} />
+          <Route path="/add_vehicle" element={<AddVehiclePage />} />
+          <Route path="/sts/vehicle_entries" element={<AddVehicleEntryPage />} />
+          <Route path="/landfill/AddDumpingEntryPage" element={<AddDumpingEntryPage />} />
+          <Route path="/user/profile" element={<UserProfile />} />
+          
+
 
           {isAuthenticated ? (
             <>
-              <Route path="/dashboard" element={<Dashboard />} />
+              
               <Route path="/profile" element={<Profile />} />
+              
             </>
           ) : (
             <>

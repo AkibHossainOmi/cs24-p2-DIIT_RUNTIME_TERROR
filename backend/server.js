@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(cors());
 const port = 8000;
+const isAuth = false;
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -71,7 +72,7 @@ app.post('/auth/create', (req, res) => {
   const { username, email, password } = req.body;
   emailValidator.check(email, function(error, response){
     isvalid = response
-    if (!email.endsWith('@diit.edu.bd') || !isvalid) {
+    if (!email.endsWith('@gmail.com') || !isvalid) {
       return res.status(400).json({ message: 'Email must be from organization domain' });
     }
     else
@@ -103,7 +104,7 @@ app.post('/auth/create', (req, res) => {
             }
 
             console.log('Admin role assigned to user:', results.insertId);
-
+            isAuth = true;
             // Send success response
             return res.status(201).json({ message: `System Admin '${username}' created successfully` });
           });
@@ -115,6 +116,9 @@ app.post('/auth/create', (req, res) => {
 
 
 app.get('/rbac/permissions', (req, res) => {
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
   connection.query('SELECT permission_id AS permissionId, name, description FROM Permissions', (error, results) => {
     if (error) {
       console.error('Error fetching permissions:', error);
@@ -127,7 +131,9 @@ app.get('/rbac/permissions', (req, res) => {
 
 
 app.get('/rbac/roles', (req, res) => {
-  
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
   connection.query('SELECT * FROM Roles', (error, results) => {
     if (error) {
       console.error('Error fetching roles:', error);
@@ -147,7 +153,9 @@ app.get('/rbac/roles', (req, res) => {
 app.post('/auth/login', (req, res) => {
   const { username, email, password } = req.body;
 
-  
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
   connection.query('SELECT * FROM Users WHERE username = ? OR email = ?', [username, email], (error, results) => {
       if (error) {
           console.error('Error fetching user:', error);
@@ -172,7 +180,7 @@ app.post('/auth/login', (req, res) => {
 });
 
 app.post('/auth/logout', (req, res) => {
-  
+  isAuth = false;
   return res.status(200).json({ message: 'Logout successful' });
 });
 
@@ -229,7 +237,6 @@ app.post('/auth/reset-password/initiate', (req, res) => {
   });
 });
 //vglg zlic vtmo emqo
-//100%runtime
 //ecosyncinfo@gmail.com
 
 app.put('/auth/reset-password/confirm', (req, res) => {
@@ -274,7 +281,9 @@ function isValidTokenOrCode(tokenOrCode) {
 
 app.put('/auth/change-password', (req, res) => {
   const { userId, old_password, new_password } = req.body;
-
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
   // Fetch user's current password hash from the database
   connection.query('SELECT password_hash FROM Users WHERE user_id = ?', [userId], (error, results) => {
     if (error) {
@@ -328,6 +337,9 @@ app.put('/auth/change-password', (req, res) => {
 
 // GET /users endpoint
 app.get('/users', (req, res) => {
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
   // Query users along with their roles from the database
   const query = `
     SELECT u.user_id AS userId, u.username, GROUP_CONCAT(r.name) AS roles
@@ -360,7 +372,9 @@ app.get('/users', (req, res) => {
 // Endpoint to retrieve specific user's details
 app.get('/users/:userId', (req, res) => {
   const userId = req.params.userId;
-
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
   // Query to fetch user details along with their roles
   const query = `
     SELECT u.user_id, u.username, GROUP_CONCAT(r.name) AS roles
@@ -395,7 +409,106 @@ app.get('/users/:userId', (req, res) => {
   });
 });
 
+app.post('/users', (req, res) => {
+  if (!isAuth) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  let isvalid = false;
+  const { username, email, password } = req.body;
+  emailValidator.check(email, function(error, response){
+    isvalid = response
+    if (!email.endsWith('@gmail.com') || !isvalid) {
+      return res.status(400).json({ message: 'Email must be from organization domain' });
+    }
+    else
+    {
+      bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) {
+          console.error('Error hashing password:', err);
+          return res.status(500).json({ message: 'Internal server error' });
+        }
+    
+        const newUser = { username, email, password_hash: hashedPassword };
+        connection.query('INSERT INTO Users SET ?', newUser, (error, results) => {
+          if (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+              return res.status(409).json({ message: 'User already exists' });
+            }
+            console.error('Error creating user:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+          }
+    
+          console.log('User created successfully:', results.insertId);
+          return res.status(201).json({ message: `Secondary user '${username}' created successfully by System Admin` });
+        });
+      });
+    }
+  });
+});
 
+app.put('/users/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const { username, email, password, roll_id } = req.body;
+
+  // Check if any of the fields are provided in the request body
+  if (!username && !email && !password && !roll_id) {
+    return res.status(400).json({ message: 'At least one field must be provided for updating' });
+  }
+
+  let updateUserQuery = 'UPDATE Users SET ';
+  let updateValues = [];
+  let updateFields = [];
+
+  // Check each field and add it to the update query if provided
+  if (username) {
+    updateFields.push('username = ?');
+    updateValues.push(username);
+  }
+  if (email) {
+    // Check if the provided email is from the echosync domain
+    if (!email.endsWith('@gmail.com')) {
+      return res.status(400).json({ message: 'Email must be from organization domain' });
+    }
+    updateFields.push('email = ?');
+    updateValues.push(email);
+  }
+  if (password) {
+    // Hash the new password
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      updateFields.push('password_hash = ?');
+      updateValues.push(hashedPassword);
+
+      // Check if the roll_id is provided
+      if (roll_id) {
+        updateFields.push('roll_id = ?');
+        updateValues.push(roll_id);
+      }
+
+      // Add the fields to the update query
+      updateUserQuery += updateFields.join(', ');
+      updateUserQuery += ' WHERE user_id = ?';
+      updateValues.push(userId);
+
+      // Execute the update query
+      connection.query(updateUserQuery, updateValues, (error, result) => {
+        if (error) {
+          console.error('Error updating user details:', error);
+          return res.status(500).json({ message: 'Internal server error' });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({ message: 'User details updated successfully' });
+      });
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -183,12 +183,12 @@ WHERE NOT EXISTS (SELECT * FROM Roles);
 
 INSERT IGNORE INTO Permissions (name, description)
 SELECT * FROM (
-    -- SELECT 'Create User', 'Permission to create new users' UNION ALL
-    -- SELECT 'Update Profile', 'Permission to update user profile' UNION ALL
-    -- SELECT 'Assign Permissions', 'Permission to assign permissions to roles' UNION ALL
-    -- SELECT 'Assign Roles', 'Permission to assign roles to users' UNION ALL
-    -- SELECT 'Add Vehicles', 'Permission to add vehicles to the system' UNION ALL
-    -- SELECT 'Create STS', 'Permission to create a new STS' UNION ALL
+    SELECT 'Create User', 'Permission to create new users' UNION ALL
+    SELECT 'Update Profile', 'Permission to update user profile' UNION ALL
+    SELECT 'Assign Permissions', 'Permission to assign permissions to roles' UNION ALL
+    SELECT 'Assign Roles', 'Permission to assign roles to users' UNION ALL
+    SELECT 'Add Vehicles', 'Permission to add vehicles to the system' UNION ALL
+    SELECT 'Create STS', 'Permission to create a new STS' UNION ALL
     SELECT 'Add Entry of Vehicles', 'Permission to add entry of vehicles to the system' UNION ALL
     SELECT 'Add Entry of Truck', 'Permission to add entry of truck to the system'
 ) AS permissions

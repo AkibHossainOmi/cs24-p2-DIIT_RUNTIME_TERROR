@@ -16,6 +16,8 @@ import AddVehiclePage from './Components/AddVehicleForm';
 import AddVehicleEntryPage from './Components/AddVehicleEntryPage';
 import AddDumpingEntryPage from './Components/AddDumpingEntryPage';
 import UserProfile from './Components/UserProfilePage';
+import ChangePassword from './Components/ChangePassword';
+import EditProfile from './Components/EditProfile';
 
 
 
@@ -37,6 +39,9 @@ function App() {
           <Route path="/sts/vehicle_entries" element={<AddVehicleEntryPage />} />
           <Route path="/landfill/AddDumpingEntryPage" element={<AddDumpingEntryPage />} />
           <Route path="/user/profile" element={<UserProfile />} />
+          <Route path="/user/change_password" element={<ChangePassword />} />
+          <Route path="/user/edit_profile" element={<EditProfile />} />
+          
           
 
 

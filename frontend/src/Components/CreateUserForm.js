@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
-import Navbar from "./Navbar";
+import Navbar from './Navbar';
 
 export default function CreateUserForm() {
   const [userData, setUserData] = useState({
-    user_id: '',
     username: '',
     email: '',
     password: '',
-    first_name: '',
-    last_name: '',
-    phone: '',
-    address: '',
   });
 
   const [errors, setErrors] = useState({
-    user_id: '',
     username: '',
     email: '',
     password: '',
-    first_name: '',
-    last_name: '',
-    phone: '',
-    address: '',
   });
 
   const handleInputChange = (e) => {
@@ -39,17 +29,31 @@ export default function CreateUserForm() {
   const validateForm = () => {
     let isValid = true;
 
-    const { user_id, username, email, password, first_name, last_name, phone, address } = userData;
+    const { username, email, password } = userData;
 
-    if (!user_id.trim()) {
+    if (!username.trim()) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        user_id: "User ID can't be empty",
+        username: "Username can't be empty",
       }));
       isValid = false;
     }
 
-    // Similarly, add validation for other fields
+    if (!email.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Email can't be empty",
+      }));
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Password can't be empty",
+      }));
+      isValid = false;
+    }
 
     return isValid;
   };
@@ -66,14 +70,9 @@ export default function CreateUserForm() {
       console.log('User created successfully:', response);
       // Reset form after successful user creation
       setUserData({
-        user_id: '',
         username: '',
         email: '',
         password: '',
-        first_name: '',
-        last_name: '',
-        phone: '',
-        address: '',
       });
     } catch (error) {
       console.error('Error creating user:', error);
@@ -84,7 +83,7 @@ export default function CreateUserForm() {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
+      body: JSON.stringify(userData),
     };
     // Replace 'url' with the actual API endpoint
     const response = await fetch('url', requestOptions);
@@ -96,32 +95,13 @@ export default function CreateUserForm() {
   };
 
   return (
-    
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
-      <Navbar/>
+      <Navbar />
       <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
         <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
           Create User
         </h1>
         <form className="mt-6" onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user_id">
-              User ID
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.user_id ? "border-red-500" : ""}`}
-              id="user_id"
-              type="text"
-              name="user_id"
-              value={userData.user_id}
-              onChange={handleInputChange}
-              placeholder="User ID"
-            />
-            {errors.user_id && (
-              <p className="text-red-500 text-xs italic">{errors.user_id}</p>
-            )}
-          </div>
-          {/* Add similar input fields for other user data (email, password, etc.) */}
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
               Username
@@ -171,74 +151,6 @@ export default function CreateUserForm() {
             />
             {errors.password && (
               <p className="text-red-500 text-xs italic">{errors.password}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="first_name">
-              First Name
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.first_name ? "border-red-500" : ""}`}
-              id="first_name"
-              type="text"
-              name="first_name"
-              value={userData.first_name}
-              onChange={handleInputChange}
-              placeholder="First Name"
-            />
-            {errors.first_name && (
-              <p className="text-red-500 text-xs italic">{errors.first_name}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="last_name">
-              Last Name
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.last_name ? "border-red-500" : ""}`}
-              id="last_name"
-              type="text"
-              name="last_name"
-              value={userData.last_name}
-              onChange={handleInputChange}
-              placeholder="Last Name"
-            />
-            {errors.last_name && (
-              <p className="text-red-500 text-xs italic">{errors.last_name}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
-              Phone
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.phone ? "border-red-500" : ""}`}
-              id="phone"
-              type="text"
-              name="phone"
-              value={userData.phone}
-              onChange={handleInputChange}
-              placeholder="Phone"
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-xs italic">{errors.phone}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
-              Address
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.address ? "border-red-500" : ""}`}
-              id="address"
-              type="text"
-              name="address"
-              value={userData.address}
-              onChange={handleInputChange}
-              placeholder="Address"
-            />
-            {errors.address && (
-              <p className="text-red-500 text-xs italic">{errors.address}</p>
             )}
           </div>
 

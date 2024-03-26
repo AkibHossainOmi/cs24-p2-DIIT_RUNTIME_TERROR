@@ -81,21 +81,22 @@ export default function Login() {
             if (response.ok) {
                 // console.log("Successful Login");
                 const responseData = await response.json();
-                const userId = parseInt(formData.username.match(/\d+/)[0]);
-                setUserId(userId);
-                const roleResponse = await fetch(`http://localhost:8000/users`, { method: 'GET' });
-                if (roleResponse.ok) {
-                    const userRoles = await roleResponse.json();
-                    const data = userRoles.data;
-                    const userRole = data.find(user => user.user_id === userId);
-                    let roleId = userRole ? userRole.role_id : 4;
-                    console.log("Role ID:", roleId);
-                    setLoggedIn(roleId);
-                    history('/dashboard');
-                    window.location.reload();
-                } else {
-                    console.error("Failed to fetch user roles");
-                }
+                const idResponse = await fetch(`http://localhost:8000/users`, { method: 'GET' });
+              if (idResponse.ok) {
+                  const userRoles = await idResponse.json();
+                  const data = userRoles.data;
+                  const userData = data.find(user => user.email === formData.email);
+                  let id = userData.userId;
+                  let role = userData.role;
+                  console.log("User ID:", id);
+                  console.log("User Role:", role);
+                  setUserId(id);
+                  setLoggedIn(role);
+                  history('/dashboard');
+                  window.location.reload();
+              } else {
+                  console.error("Failed to fetch user roles");
+              }
                 
             } else {
                 const responseData = await response.json();

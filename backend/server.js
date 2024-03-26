@@ -1,6 +1,6 @@
 const fs = require('fs');
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const emailValidator = require('email-existence');
 const cors = require('cors');
@@ -41,8 +41,7 @@ app.post('/auth/create', (req, res) => {
           console.error('Error hashing password:', err);
           return res.status(500).json({ message: 'Internal server error' });
         }
-        const user_id = parseInt(username.match(/\d+/)[0]);
-        const newUser = { user_id, username, email, password_hash: hashedPassword };
+        const newUser = { username, email, password_hash: hashedPassword };
         pool.query('INSERT INTO Users SET ?', newUser, (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {
@@ -340,8 +339,7 @@ app.post('/users', (req, res) => {
           console.error('Error hashing password:', err);
           return res.status(500).json({ message: 'Internal server error' });
         }
-        const user_id = parseInt(username.match(/\d+/)[0]);
-        const newUser = { user_id, username, email, password_hash: hashedPassword };
+        const newUser = { username, email, password_hash: hashedPassword };
         pool.query('INSERT INTO Users SET ?', newUser, (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {

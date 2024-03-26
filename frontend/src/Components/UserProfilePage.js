@@ -10,7 +10,10 @@ const UserProfile = () => {
     password: 'password123',
     first_name: '',
     last_name: '',
-    phone: ' '
+    phone: '',
+    address: '',
+    role: 'STS Maneger', // Default role
+    permissions: ['Can change password', 'Can add vehicle'], // Default permissions
   });
 
   const handleChange = (e) => {
@@ -100,9 +103,32 @@ const UserProfile = () => {
             ></textarea>
           </div>
           <div className="mb-4">
-                <Link to="/user/edit_profile" className="text-blue-500 hover:underline">Edit Profile</Link>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
+            <input
+              type="text"
+              name="role"
+              value={userData.role}
+              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+              readOnly
+            />
           </div>
-         
+          <div className="mb-4">
+            <label className="block text-sm font-bold text-gray-700 mb-2">Permissions:</label>
+            {userData.permissions.map((permission, index) => (
+              <div key={index} className="mb-2">
+                <input
+                  type="text"
+                  value={permission}
+                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                  readOnly
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between items-center mb-4">
+            <Link to="/user/edit_profile" className="text-blue-500 hover:underline">Edit Profile</Link>
+            <Link to="/user/delete_user" className="text-red-500 hover:underline">Delete User</Link>
+          </div>
         </form>
       </div>
     </div>

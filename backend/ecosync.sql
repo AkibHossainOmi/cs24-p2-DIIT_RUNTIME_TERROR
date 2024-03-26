@@ -3,7 +3,7 @@ USE ecosync;
 
 -- Users Table
 CREATE TABLE IF NOT EXISTS Users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT PRIMARY KEY,
     username VARCHAR(255) UNIQUE,
     email VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255),

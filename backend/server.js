@@ -41,8 +41,8 @@ app.post('/auth/create', (req, res) => {
           console.error('Error hashing password:', err);
           return res.status(500).json({ message: 'Internal server error' });
         }
-    
-        const newUser = { username, email, password_hash: hashedPassword };
+        const user_id = parseInt(username.match(/\d+/)[0]);
+        const newUser = { user_id, username, email, password_hash: hashedPassword };
         pool.query('INSERT INTO Users SET ?', newUser, (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {
@@ -66,7 +66,7 @@ app.post('/auth/create', (req, res) => {
             console.log('Admin role assigned to user:', results.insertId);
             // Send success response
             return res.status(200).json({
-              message: 'Successfully logged in',
+              message: `System Admin '${username}' created successfully`,
               token: token
           });
           });
@@ -87,11 +87,14 @@ app.post('/auth/login', (req, res) => {
 
       
       if (results.length === 0 || !bcrypt.compareSync(password, results[0].password_hash)) {
-          return res.status(401).json({ message: 'Invalid username/email or password' });
+          return res.status(401).json({ message: 'Incorrect credentials' });
       }
       const userId = results[0].user_id;
       const token = jwt.sign({userId}, 'ecosync_secret', { expiresIn: '5m' });
-      return res.status(200).json({ token });
+      return res.status(200).json({
+        message: 'Successfully logged in',
+        token: token
+    });
   });
 });
 
@@ -337,8 +340,8 @@ app.post('/users', (req, res) => {
           console.error('Error hashing password:', err);
           return res.status(500).json({ message: 'Internal server error' });
         }
-    
-        const newUser = { username, email, password_hash: hashedPassword };
+        const user_id = parseInt(username.match(/\d+/)[0]);
+        const newUser = { user_id, username, email, password_hash: hashedPassword };
         pool.query('INSERT INTO Users SET ?', newUser, (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {
@@ -629,61 +632,58 @@ app.post('/rbac/roles/:roleId/permissions', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-  const { token } = req.headers;
+  const userId = req.headers.userid;
 
-  // Check if token exists in the tokens object
-  const userId = Object.keys(tokens).find(key => tokens[key] === token);
-  if (userId) {
-      // Token found, you can retrieve the user's profile using their user ID
-      // Assuming you have a function to fetch user profile information from your data source
-      const userProfile = getUserProfile(userId); // Implement this function accordingly
-
-      if (userProfile) {
-          // Return the user's profile if found
-          return res.status(200).json(userProfile);
-      } else {
-          // If user profile not found, return an error message
-          return res.status(404).json({ message: 'User profile not found' });
-      }
-  } else {
-      // Token not found, return an error message
-      return res.status(401).json({ message: 'Unauthorized' });
+  if (!userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
+
+  // Query to fetch user profile from the database
+  const getUserProfileQuery = 'SELECT first_name, last_name, phone, address FROM Users WHERE user_id = ?';
+
+  pool.query(getUserProfileQuery, [userId], (error, results) => {
+    if (error) {
+      console.error('Error fetching user profile:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User profile not found' });
+    }
+
+    // Extract user profile data from query results
+    const userProfile = {
+      first_name: results[0].first_name,
+      last_name: results[0].last_name,
+      number: results[0].phone,
+      address: results[0].address,
+    };
+
+    return res.status(200).json(userProfile);
+  });
 });
 
 app.put('/profile', (req, res) => {
-  const token = req.headers.token;
+  const userId = req.headers.userId;
   const { first_name, last_name, Phone, Address } = req.body;
 
-  // Verify the token
-  jwt.verify(token, 'ecosync_secret', (err, decoded) => {
-      if (err) {
-          // If token verification fails, return an unauthorized error
-          return res.status(401).json({ message: 'Unauthorized' });
-      } else {
-          // Extract the user ID from the decoded token payload
-          const userId = decoded.userId;
+  pool.query('UPDATE Users SET first_name = ?, last_name = ?, Phone = ?, Address = ? WHERE user_id = ?', 
+      [first_name, last_name, Phone, Address, userId], 
+      (error, result) => {
+          if (error) {
+              console.error('Error updating user profile:', error);
+              return res.status(500).json({ message: 'Internal server error' });
+          }
 
-          // Update the user profile information in the database
-          pool.query('UPDATE Users SET first_name = ?, last_name = ?, Phone = ?, Address = ? WHERE user_id = ?', 
-              [first_name, last_name, Phone, Address, userId], 
-              (error, result) => {
-                  if (error) {
-                      console.error('Error updating user profile:', error);
-                      return res.status(500).json({ message: 'Internal server error' });
-                  }
+          // Check if any rows were affected by the update operation
+          if (result.affectedRows === 0) {
+              return res.status(404).json({ message: 'User profile not found' });
+          }
 
-                  // Check if any rows were affected by the update operation
-                  if (result.affectedRows === 0) {
-                      return res.status(404).json({ message: 'User profile not found' });
-                  }
-
-                  // Return a success message
-                  return res.status(200).json({ message: 'User profile updated successfully' });
-              }
-          );
+          // Return a success message
+          return res.status(200).json({ message: 'User profile updated successfully' });
       }
-  });
+  );
 });
 
 

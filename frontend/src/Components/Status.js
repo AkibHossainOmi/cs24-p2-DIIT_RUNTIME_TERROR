@@ -1,27 +1,27 @@
-let isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn')) || false;
-let userEmail = localStorage.getItem('userEmail') || '';
+let roleId = localStorage.getItem('roleId') || 0;
+let userId = localStorage.getItem('userId') || 0;
 
-export const setLoggedIn = () => {
-  isLoggedIn = !isLoggedIn;
-  localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn));
+export const setLoggedIn = (Id) => {
+  roleId = Id;
+  localStorage.setItem('roleId', JSON.stringify(roleId));
 };
 
-export const setUserEmail = (email) => {
-  userEmail = email;
-  localStorage.setItem('userEmail', email);
+export const setUserId = (Id) => {
+  userId = Id;
+  localStorage.setItem('userId', userId);
 };
 
 export const clearUserStatus = () => {
-  isLoggedIn = false;
-  userEmail = '';
-  localStorage.removeItem('isLoggedIn');
-  localStorage.removeItem('userEmail');
+  roleId = 0;
+  userId = 0;
+  localStorage.removeItem('roleId');
+  localStorage.removeItem('userId');
 };
 
 export const getLoggedInStatus = () => {
-  return isLoggedIn;
+  return roleId;
 };
 
-export const getCurrentUserEmail = () => {
-  return userEmail;
+export const getCurrentUserId = () => {
+  return userId;
 };

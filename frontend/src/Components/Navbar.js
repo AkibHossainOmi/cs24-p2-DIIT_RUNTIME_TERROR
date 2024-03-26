@@ -11,7 +11,6 @@ export default function Navbar() {
 
   const handleLogout = (event) => {
     event.preventDefault();
-    setLoggedIn(false);
     clearUserStatus();
     history('/login');
     window.location.reload();

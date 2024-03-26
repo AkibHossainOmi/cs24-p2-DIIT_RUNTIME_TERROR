@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { getCurrentUserEmail, getLoggedInStatus } from "./Status";
+import {getLoggedInStatus } from "./Status";
 import Navbar from "./Navbar";
 import UserInfo from "./UserInfo";
 
 const Profile = () => {
   const isAuthenticated = getLoggedInStatus();
-  const userEmail = getCurrentUserEmail();
+  const userEmail = "";
+  // const userEmail = getCurrentUserEmail();
   const { userInfo, error } = UserInfo(userEmail);
 
   useEffect(() => {

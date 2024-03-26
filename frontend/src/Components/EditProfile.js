@@ -25,7 +25,7 @@ const EditProfile = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
-      <div className="container mx-auto py-8 mt-10">
+      {/* <div className="container mx-auto py-8 mt-10">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
             <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">Edit Profile</h2>
@@ -86,7 +86,7 @@ const EditProfile = () => {
             </form>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

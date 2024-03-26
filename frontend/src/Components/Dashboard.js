@@ -1,9 +1,10 @@
 import React from "react";
 import Navbar from "./Navbar";
+import { getLoggedInStatus } from "./Status";
 
 export default function Dashboard() {
 
-  
+  console.log(getLoggedInStatus());
   return (
     <div>
     <Navbar/>

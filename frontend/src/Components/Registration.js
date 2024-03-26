@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { setLoggedIn, setUserEmail } from "./Status";
+import { setLoggedIn } from "./Status";
 import Navbar from "./Navbar";
 
 export default function Registration() {
@@ -159,8 +159,8 @@ export default function Registration() {
   
         if (userResponse.ok) {
           console.log("User registered successfully!");
-          setLoggedIn();
-          setUserEmail(formData.email);
+          // setLoggedIn();
+          // setUserEmail(formData.email);
           history('/dashboard');
           window.location.reload();
         } else {

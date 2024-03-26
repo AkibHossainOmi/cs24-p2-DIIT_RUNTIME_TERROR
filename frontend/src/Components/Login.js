@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setLoggedIn, setUserEmail } from './Status';
+import { getLoggedInStatus, setLoggedIn, setUserId } from './Status';
 import Navbar from './Navbar';
 
 export default function Login() {
+    console.log(getLoggedInStatus());
     
     const history = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
+        username: "", // Add username field to formData
     });
 
     const [errors, setErrors] = useState({
         email: "",
         password: "",
+        username: "", // Add username field to errors
     });
 
     const handleInputChange = (e) => {
@@ -30,7 +33,7 @@ export default function Login() {
 
     const validateForm = () => {
         let isValid = true;
-        const { email, password } = formData;
+        const { email, password, username } = formData;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -49,33 +52,61 @@ export default function Login() {
             isValid = false;
         }
 
+        if (!username.trim()) { // Validate username field
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                username: "Username can't be empty",
+            }));
+            isValid = false;
+        }
         return isValid;
     };
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
+    
         if (!validateForm()) {
             return;
         }
-
+    
         try {
-            const response = await fetch(`http://localhost:8000/api/login?email=${formData.email}&password=${formData.password}`);
+            const response = await fetch("http://localhost:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
+            console.log(formData);
             if (response.ok) {
-                setLoggedIn();
-                setUserEmail(formData.email);
-                console.log("Successful Login");    
-                history('/dashboard');
-                window.location.reload();
+                console.log("Successful Login");
+                const responseData = await response.json();
+                const userId = parseInt(formData.username.match(/\d+/)[0]);
+                setUserId(userId);
+                const roleResponse = await fetch(`http://localhost:8000/users`, { method: 'GET' });
+                if (roleResponse.ok) {
+                    const userRoles = await roleResponse.json();
+                    const data = userRoles.data;
+                    const userRole = data.find(user => user.user_id === userId);
+                    let roleId = userRole ? userRole.role_id : 4;
+                    console.log("Role ID:", roleId);
+                    setLoggedIn(roleId);
+                    history('/dashboard');
+                    window.location.reload();
+                    // Proceed with further actions based on the role ID
+                } else {
+                    console.error("Failed to fetch user roles");
+                }
+                
             } else {
-                if(response.status===404) {
-                            setErrors((prevErrors) => ({
+                if (response.status === 404) {
+                    setErrors((prevErrors) => ({
                         ...prevErrors,
                         email: "User not found",
                     }));
                 }
-                if(response.status===403) {
+                if (response.status === 403) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         password: "Invalid password",
@@ -86,6 +117,7 @@ export default function Login() {
             console.error("An error occurred during login:", error);
         }
     };
+    
 
     return (
         <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
@@ -95,6 +127,26 @@ export default function Login() {
                    Sign in
                 </h1>
                 <form className="mt-6" onSubmit={handleLogin}>
+                <div className="mb-2">
+                        <label
+                        htmlFor="username"
+                        className="block text-sm font-semibold text-gray-800"
+                        >
+                        Username
+                        </label>
+                        <input
+                            type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleInputChange}
+                            className={`block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
+                                errors.username ? "border-red-500" : ""
+                            }`}
+                        />
+                        {errors.username && (
+                            <p className="mt-1 text-xs text-red-500">{errors.username}</p>
+                        )}
+                    </div>
                     <div className="mb-2">
                         <label
                         htmlFor="email"

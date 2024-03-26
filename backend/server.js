@@ -12,59 +12,18 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(cors());
 const port = 8000;
-const isAuth = false;
 
 app.use(express.json());
 app.use(bodyParser.json());
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: 'localhost',
-  user: 'root'
-});
-
-connection.connect(err => {
-  if (err) {
-    console.error('Error connecting to MySQL database:', err);
-    return;
-  }
-  
-  console.log('Connected to MySQL database');
-
-  connection.query('CREATE DATABASE IF NOT EXISTS ecosync', (err, result) => {
-    if (err) {
-      console.error('Error creating database:', err);
-      connection.end();
-      return;
-    }
-
-    console.log('Database "ecosync" created or already exists');
-
-    connection.changeUser({ database: 'ecosync' }, err => {
-      if (err) {
-        console.error('Error changing to database ecosync:', err);
-        connection.end();
-        return;
-      }
-
-      console.log('Switched to database "ecosync"');
-
-      const sqlQueries = fs.readFileSync('ecosync.sql', 'utf8');
-
-      const queries = sqlQueries.split(';').filter(query => query.trim() !== '');
-
-      queries.forEach(query => {
-        connection.query(query, (err, results) => {
-          if (err) {
-            console.error('Error executing query:', err);
-            return;
-          }
-          // console.log('Query executed successfully:', results);
-        });
-      });
-
-      console.log('Database setup completed');
-    });
-  });
+  user: 'root',
+  // password: 'your_password',
+  database: 'ecosync',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 app.post('/auth/create', (req, res) => {
@@ -84,7 +43,7 @@ app.post('/auth/create', (req, res) => {
         }
     
         const newUser = { username, email, password_hash: hashedPassword };
-        connection.query('INSERT INTO Users SET ?', newUser, (error, results) => {
+        pool.query('INSERT INTO Users SET ?', newUser, (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {
               return res.status(409).json({ message: 'User already exists' });
@@ -97,16 +56,19 @@ app.post('/auth/create', (req, res) => {
 
           // Assign the admin role to the System Admin user
           const adminRoleQuery = 'INSERT INTO User_Roles (user_id, role_id) VALUES (?, (SELECT role_id FROM Roles WHERE name = "System Admin"))';
-          connection.query(adminRoleQuery, [results.insertId], (roleError, roleResult) => {
+          pool.query(adminRoleQuery, [results.insertId], (roleError, roleResult) => {
             if (roleError) {
               console.error('Error assigning admin role:', roleError);
               return res.status(500).json({ message: 'Internal server error' });
             }
-
+            const userId = results.insertId;
+            const token = jwt.sign({userId}, 'ecosync_secret', { expiresIn: '5m' });
             console.log('Admin role assigned to user:', results.insertId);
-            isAuth = true;
             // Send success response
-            return res.status(201).json({ message: `System Admin '${username}' created successfully` });
+            return res.status(200).json({
+              message: 'Successfully logged in',
+              token: token
+          });
           });
         });
       });
@@ -114,49 +76,10 @@ app.post('/auth/create', (req, res) => {
   });
 });
 
-
-app.get('/rbac/permissions', (req, res) => {
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  connection.query('SELECT permission_id AS permissionId, name, description FROM Permissions', (error, results) => {
-    if (error) {
-      console.error('Error fetching permissions:', error);
-      return res.status(500).json({ status: 'error', message: 'Internal server error' });
-    }
-
-    return res.status(200).json({ status: 'success', data: results });
-  });
-});
-
-
-app.get('/rbac/roles', (req, res) => {
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  connection.query('SELECT * FROM Roles', (error, results) => {
-    if (error) {
-      console.error('Error fetching roles:', error);
-      return res.status(500).json({ status: 'error', message: 'Internal server error' });
-    }
-
-    
-    if (results.length === 0) {
-      return res.status(200).json({ status: 'success', data: [] });
-    }
-
-    
-    return res.status(200).json({ status: 'success', data: results });
-  });
-});
-
 app.post('/auth/login', (req, res) => {
   const { username, email, password } = req.body;
 
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  connection.query('SELECT * FROM Users WHERE username = ? OR email = ?', [username, email], (error, results) => {
+  pool.query('SELECT * FROM Users WHERE username = ? AND email = ?', [username, email], (error, results) => {
       if (error) {
           console.error('Error fetching user:', error);
           return res.status(500).json({ message: 'Internal server error' });
@@ -166,21 +89,13 @@ app.post('/auth/login', (req, res) => {
       if (results.length === 0 || !bcrypt.compareSync(password, results[0].password_hash)) {
           return res.status(401).json({ message: 'Invalid username/email or password' });
       }
-
-      
-      const tokenPayload = {
-          user_id: results[0].user_id,
-          role: 'STS Manager' 
-      };
-      const token = jwt.sign(tokenPayload, 'ecosync_secret', { expiresIn: '1h' });
-
-      
+      const userId = results[0].user_id;
+      const token = jwt.sign({userId}, 'ecosync_secret', { expiresIn: '5m' });
       return res.status(200).json({ token });
   });
 });
 
 app.post('/auth/logout', (req, res) => {
-  isAuth = false;
   return res.status(200).json({ message: 'Logout successful' });
 });
 
@@ -200,7 +115,7 @@ app.post('/auth/reset-password/initiate', (req, res) => {
   const { username_or_email } = req.body;
 
   
-  connection.query('SELECT * FROM Users WHERE username = ? OR email = ?', [username_or_email, username_or_email], (error, results) => {
+  pool.query('SELECT * FROM Users WHERE username = ? OR email = ?', [username_or_email, username_or_email], (error, results) => {
     if (error) {
       console.error('Error querying database:', error);
       return res.status(500).json({ message: 'Internal server error' });
@@ -259,7 +174,7 @@ app.put('/auth/reset-password/confirm', (req, res) => {
     }
 
     
-    connection.query('UPDATE Users SET password_hash = ? WHERE user_id = ?', [hashedPassword, userId], (error, updateResult) => {
+    pool.query('UPDATE Users SET password_hash = ? WHERE user_id = ?', [hashedPassword, userId], (error, updateResult) => {
       if (error) {
         console.error('Error updating database:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -281,11 +196,8 @@ function isValidTokenOrCode(tokenOrCode) {
 
 app.put('/auth/change-password', (req, res) => {
   const { userId, old_password, new_password } = req.body;
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
   // Fetch user's current password hash from the database
-  connection.query('SELECT password_hash FROM Users WHERE user_id = ?', [userId], (error, results) => {
+  pool.query('SELECT password_hash FROM Users WHERE user_id = ?', [userId], (error, results) => {
     if (error) {
       console.error('Error querying database:', error);
       return res.status(500).json({ message: 'Internal server error' });
@@ -321,7 +233,7 @@ app.put('/auth/change-password', (req, res) => {
           return res.status(400).json({ message: 'New password can not be old password' });
         }
         // Update the user's password in the database
-        connection.query('UPDATE Users SET password_hash = ? WHERE user_id = ?', [hashedPassword, userId], (updateErr, updateResult) => {
+        pool.query('UPDATE Users SET password_hash = ? WHERE user_id = ?', [hashedPassword, userId], (updateErr, updateResult) => {
           if (updateErr) {
             console.error('Error updating password:', updateErr);
             return res.status(500).json({ message: 'Internal server error' });
@@ -337,19 +249,18 @@ app.put('/auth/change-password', (req, res) => {
 
 // GET /users endpoint
 app.get('/users', (req, res) => {
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  // Query users along with their roles from the database
+
+  // Query to select all information from Users and corresponding roles from Roles
   const query = `
-    SELECT u.user_id AS userId, u.username, GROUP_CONCAT(r.name) AS roles
+    SELECT u.*, GROUP_CONCAT(r.name) AS role
     FROM Users u
     LEFT JOIN User_Roles ur ON u.user_id = ur.user_id
     LEFT JOIN Roles r ON ur.role_id = r.role_id
     GROUP BY u.user_id;
   `;
 
-  connection.query(query, (error, results) => {
+  // Execute the query
+  pool.query(query, (error, results) => {
     if (error) {
       console.error('Error querying database:', error);
       return res.status(500).json({ status: 'error', message: 'Internal server error' });
@@ -358,9 +269,10 @@ app.get('/users', (req, res) => {
     // Prepare the response data
     const users = results.map(user => {
       return {
-        userId: user.userId,
+        userId: user.user_id,
         username: user.username,
-        roles: user.roles ? user.roles.split(',') : [] // Convert roles string to array
+        email: user.email,
+        role: user.role // Roles represented as a string
       };
     });
 
@@ -369,24 +281,23 @@ app.get('/users', (req, res) => {
   });
 });
 
+
+
 // Endpoint to retrieve specific user's details
 app.get('/users/:userId', (req, res) => {
   const userId = req.params.userId;
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  // Query to fetch user details along with their roles
+
+  // Query to fetch user details along with their role
   const query = `
-    SELECT u.user_id, u.username, GROUP_CONCAT(r.name) AS roles
+    SELECT u.user_id, u.username, u.email, r.name AS role
     FROM Users u
     LEFT JOIN User_Roles ur ON u.user_id = ur.user_id
     LEFT JOIN Roles r ON ur.role_id = r.role_id
     WHERE u.user_id = ?
-    GROUP BY u.user_id;
   `;
 
   // Execute the query
-  connection.query(query, [userId], (error, results) => {
+  pool.query(query, [userId], (error, results) => {
     if (error) {
       console.error('Error fetching user details:', error);
       return res.status(500).json({ message: 'Internal server error' });
@@ -401,7 +312,8 @@ app.get('/users/:userId', (req, res) => {
     const userData = {
       userId: results[0].user_id,
       username: results[0].username,
-      roles: results[0].roles.split(',') // Convert roles string to array
+      email : results[0].email,
+      role: results[0].role
     };
 
     // Send the response
@@ -409,10 +321,8 @@ app.get('/users/:userId', (req, res) => {
   });
 });
 
+
 app.post('/users', (req, res) => {
-  if (!isAuth) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
   let isvalid = false;
   const { username, email, password } = req.body;
   emailValidator.check(email, function(error, response){
@@ -429,7 +339,7 @@ app.post('/users', (req, res) => {
         }
     
         const newUser = { username, email, password_hash: hashedPassword };
-        connection.query('INSERT INTO Users SET ?', newUser, (error, results) => {
+        pool.query('INSERT INTO Users SET ?', newUser, (error, results) => {
           if (error) {
             if (error.code === 'ER_DUP_ENTRY') {
               return res.status(409).json({ message: 'User already exists' });
@@ -437,9 +347,16 @@ app.post('/users', (req, res) => {
             console.error('Error creating user:', error);
             return res.status(500).json({ message: 'Internal server error' });
           }
-    
-          console.log('User created successfully:', results.insertId);
-          return res.status(201).json({ message: `Secondary user '${username}' created successfully by System Admin` });
+
+          const adminRoleQuery = 'INSERT INTO User_Roles (user_id, role_id) VALUES (?, (SELECT role_id FROM Roles WHERE name = "Unassigned"))';
+          pool.query(adminRoleQuery, [results.insertId], (roleError, roleResult) => {
+            if (roleError) {
+              console.error('Error assigning admin role:', roleError);
+              return res.status(500).json({ message: 'Internal server error' });
+            }
+            console.log('User created successfully:', results.insertId);
+            return res.status(201).json({ message: `Secondary user '${username}' created successfully by System Admin` });
+          });
         });
       });
     }
@@ -494,7 +411,7 @@ app.put('/users/:userId', (req, res) => {
       updateValues.push(userId);
 
       // Execute the update query
-      connection.query(updateUserQuery, updateValues, (error, result) => {
+      pool.query(updateUserQuery, updateValues, (error, result) => {
         if (error) {
           console.error('Error updating user details:', error);
           return res.status(500).json({ message: 'Internal server error' });
@@ -509,6 +426,267 @@ app.put('/users/:userId', (req, res) => {
     });
   }
 });
+
+app.delete('/users/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  // Check if the requesting user is authorized to perform this action (System Admin access)
+  // You may need to implement authentication and authorization logic here
+  
+  // Delete associated records from user_roles table first
+  pool.query('DELETE FROM User_Roles WHERE user_id = ?', [userId], (roleError, roleResult) => {
+    if (roleError) {
+      console.error('Error deleting user roles:', roleError);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    // Once user roles are deleted, delete the user from the Users table
+    pool.query('DELETE FROM Users WHERE user_id = ?', [userId], (error, result) => {
+      if (error) {
+        console.error('Error deleting user:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      return res.status(200).json({ message: 'User deleted successfully' });
+    });
+  });
+});
+
+// Change user roles endpoint
+app.put('/users/:userId/roles', (req, res) => {
+  const userId = req.params.userId;
+  
+  // Check if the 'role' field exists in the request body
+  if (!req.body.role) {
+    return res.status(400).json({ error: 'Role field must be provided' });
+  }
+  
+  // Extract the role from the request body
+  const roleName = req.body.role;
+
+  // Fetch role_id from Roles table based on role name
+  const selectRoleQuery = 'SELECT role_id FROM Roles WHERE name = ?';
+  pool.query(selectRoleQuery, [roleName], (selectErr, selectResult) => {
+    if (selectErr) {
+      console.error('Error fetching role ID:', selectErr);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+    if (selectResult.length === 0) {
+      console.error('Role not found:', roleName);
+      return res.status(404).json({ error: `Role '${roleName}' not found` });
+    }
+    
+    const roleId = selectResult[0].role_id;
+
+    // Check if the user exists
+    const selectUserQuery = 'SELECT * FROM Users WHERE user_id = ?';
+    pool.query(selectUserQuery, [userId], (userErr, userResult) => {
+      if (userErr) {
+        console.error('Error checking user existence:', userErr);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+      if (userResult.length === 0) {
+        console.error('User not found:', userId);
+        return res.status(404).json({ error: `User with ID '${userId}' not found` });
+      }
+
+      // Delete existing user role
+      const deleteQuery = 'DELETE FROM User_Roles WHERE user_id = ?';
+      pool.query(deleteQuery, [userId], (deleteErr, deleteResult) => {
+        if (deleteErr) {
+          console.error('Error deleting user role:', deleteErr);
+          return res.status(500).json({ error: 'Internal server error' });
+        }
+        
+        // Insert new user role
+        const insertQuery = 'INSERT INTO User_Roles (user_id, role_id) VALUES (?, ?)';
+        pool.query(insertQuery, [userId, roleId], (insertErr, insertResult) => {
+          if (insertErr) {
+            console.error('Error inserting user role:', insertErr);
+            return res.status(500).json({ error: 'Internal server error' });
+          }
+          console.log('User role updated successfully');
+          return res.status(200).json({ message: 'User role updated successfully' });
+        });
+      });
+    });
+  });
+});
+
+app.get('/rbac/permissions', (req, res) => {
+  pool.query('SELECT permission_id AS permissionId, name, description FROM Permissions', (error, results) => {
+    if (error) {
+      console.error('Error fetching permissions:', error);
+      return res.status(500).json({ status: 'error', message: 'Internal server error' });
+    }
+
+    return res.status(200).json({ status: 'success', data: results });
+  });
+});
+
+
+app.get('/rbac/roles', (req, res) => {
+  pool.query('SELECT * FROM Roles', (error, results) => {
+    if (error) {
+      console.error('Error fetching roles:', error);
+      return res.status(500).json({ status: 'error', message: 'Internal server error' });
+    }
+
+    
+    if (results.length === 0) {
+      return res.status(200).json({ status: 'success', data: [] });
+    }
+
+    
+    return res.status(200).json({ status: 'success', data: results });
+  });
+});
+
+// Endpoint for adding new roles
+app.post('/rbac/roles', (req, res) => {
+  const { role, description } = req.body;
+
+  // Check if role and description are provided
+  if (!role || !description) {
+    return res.status(400).json({ message: 'Role and description must be provided' });
+  }
+
+  // Perform insertion into the Roles table
+  pool.query('INSERT INTO Roles (name, description) VALUES (?, ?)', [role, description], (error, results) => {
+    if (error) {
+      console.error('Error adding new role:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    return res.status(201).json({ message: 'New Role added.' });
+  });
+});
+
+// Endpoint for adding new permissions
+app.post('/rbac/permissions', (req, res) => {
+  const { permission, description } = req.body;
+
+  // Check if permission and description are provided
+  if (!permission || !description) {
+    return res.status(400).json({ message: 'Permission and description must be provided' });
+  }
+
+  // Perform insertion into the Permissions table
+  pool.query('INSERT INTO Permissions (name, description) VALUES (?, ?)', [permission, description], (error, results) => {
+    if (error) {
+      console.error('Error adding new permission:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    return res.status(201).json({ message: 'New Permission added.' });
+  });
+});
+
+// Endpoint for assigning permission to a role
+app.post('/rbac/roles/:roleId/permissions', (req, res) => {
+  const roleId = req.params.roleId;
+  const { permission } = req.body;
+
+  // Check if roleId and permission are provided
+  if (!roleId || !permission) {
+    return res.status(400).json({ message: 'Role ID and permission must be provided' });
+  }
+
+  // Perform insertion into the Role_Permissions table
+  pool.query('INSERT INTO Role_Permissions (role_id, permission_id) VALUES (?, (SELECT permission_id FROM Permissions WHERE name = ?))', [roleId, permission], (error, results) => {
+    if (error) {
+      console.error('Error assigning permission to role:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    return res.status(200).json({ message: 'Permission assigned to role was successful.' });
+  });
+});
+
+// Endpoint for assigning permission to a role
+app.post('/rbac/roles/:roleId/permissions', (req, res) => {
+  const roleId = req.params.roleId;
+  const { permission } = req.body;
+
+  // Check if roleId and permission are provided
+  if (!roleId || !permission) {
+    return res.status(400).json({ message: 'Role ID and permission must be provided' });
+  }
+
+  // Perform insertion into the Role_Permissions table
+  pool.query('INSERT INTO Role_Permissions (role_id, permission_id) VALUES (?, (SELECT permission_id FROM Permissions WHERE name = ?))', [roleId, permission], (error, results) => {
+    if (error) {
+      console.error('Error assigning permission to role:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    return res.status(200).json({ message: 'Permission assigned to role was successful.' });
+  });
+});
+
+app.get('/profile', (req, res) => {
+  const { token } = req.headers;
+
+  // Check if token exists in the tokens object
+  const userId = Object.keys(tokens).find(key => tokens[key] === token);
+  if (userId) {
+      // Token found, you can retrieve the user's profile using their user ID
+      // Assuming you have a function to fetch user profile information from your data source
+      const userProfile = getUserProfile(userId); // Implement this function accordingly
+
+      if (userProfile) {
+          // Return the user's profile if found
+          return res.status(200).json(userProfile);
+      } else {
+          // If user profile not found, return an error message
+          return res.status(404).json({ message: 'User profile not found' });
+      }
+  } else {
+      // Token not found, return an error message
+      return res.status(401).json({ message: 'Unauthorized' });
+  }
+});
+
+app.put('/profile', (req, res) => {
+  const token = req.headers.token;
+  const { first_name, last_name, Phone, Address } = req.body;
+
+  // Verify the token
+  jwt.verify(token, 'ecosync_secret', (err, decoded) => {
+      if (err) {
+          // If token verification fails, return an unauthorized error
+          return res.status(401).json({ message: 'Unauthorized' });
+      } else {
+          // Extract the user ID from the decoded token payload
+          const userId = decoded.userId;
+
+          // Update the user profile information in the database
+          pool.query('UPDATE Users SET first_name = ?, last_name = ?, Phone = ?, Address = ? WHERE user_id = ?', 
+              [first_name, last_name, Phone, Address, userId], 
+              (error, result) => {
+                  if (error) {
+                      console.error('Error updating user profile:', error);
+                      return res.status(500).json({ message: 'Internal server error' });
+                  }
+
+                  // Check if any rows were affected by the update operation
+                  if (result.affectedRows === 0) {
+                      return res.status(404).json({ message: 'User profile not found' });
+                  }
+
+                  // Return a success message
+                  return res.status(200).json({ message: 'User profile updated successfully' });
+              }
+          );
+      }
+  });
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

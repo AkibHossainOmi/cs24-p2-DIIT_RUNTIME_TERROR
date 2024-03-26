@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.4.4",
     "mysql": "^2.18.1",
+    "mysql2": "^3.9.2",
     "node-email-validation": "^1.0.4",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"

@@ -28,16 +28,21 @@ function App() {
     <div className="font-roboto">
       <BrowserRouter>
         <Routes>
+
           {isAuthenticated === 0 && (
           <>
             <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
           </>
         )}
           {isAuthenticated > 0 && (
           <>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
           </>
         )}
+        
         <Route path="*" element={<Navbar />} />
         </Routes>
       </BrowserRouter>

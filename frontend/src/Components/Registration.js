@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { setLoggedIn } from "./Status";
+import { setLoggedIn, setUserId } from "./Status";
 import Navbar from "./Navbar";
 
 export default function Registration() {
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     password_confirmation: "",
   });
-
   const [errors, setErrors] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     password_confirmation: "",
@@ -32,29 +31,14 @@ export default function Registration() {
     });
   };
 
-  const getUserByEmail = async (email) => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/credentials`);
-      const result = await response.json();
-      const userCredentials = result.userCredentials;
-
-      const user = userCredentials.find((user) => user.email === email);
-
-      return user;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
   const validateForm = () => {
     let isValid = true;
-    const { name, email, password, password_confirmation } = formData;
+    const { username, email, password, password_confirmation } = formData;
 
-    if (!name.trim()) {
+    if (!username.trim()) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        name: "Name can't be empty",
+        username: "Name can't be empty",
       }));
       isValid = false;
     }
@@ -117,64 +101,49 @@ export default function Registration() {
       return;
     }
 
-    const { email } = formData;
+    const { username, email, password } = formData;
 
-    const existingUser = await getUserByEmail(email);
-
-    if (existingUser) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "Email is already registered",
-      }));
-      return;
-    }
-
-    try {
-      // POST request to /api/credentials
-      const response = await fetch("http://localhost:8000/api/credentials", {
+    const response = await fetch("http://localhost:8000/auth/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-  
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        
-        const userDataForUsers = {
-          email: formData.email,
-          user_name: formData.name,
-          balance: 0,
-        };
-  
-        const userResponse = await fetch("http://localhost:8000/api/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userDataForUsers),
-        });
-  
-        if (userResponse.ok) {
-          console.log("User registered successfully!");
-          // setLoggedIn();
-          // setUserEmail(formData.email);
-          history('/dashboard');
-          window.location.reload();
-        } else {
-          const userResult = await userResponse.json();
-          console.error("Failed to create user:", userResult);
-        }
-      } else {
-        const result = await response.json();
-        console.error(result);
+      if (response.ok)
+      {
+        const responseData = await response.json();
+                const userId = parseInt(formData.username.match(/\d+/)[0]);
+                setUserId(userId);
+                const roleResponse = await fetch(`http://localhost:8000/users`, { method: 'GET' });
+                if (roleResponse.ok) {
+                    const userRoles = await roleResponse.json();
+                    const data = userRoles.data;
+                    const userRole = data.find(user => user.user_id === userId);
+                    let roleId = userRole ? userRole.role_id : 1;
+                    console.log("Role ID:", roleId);
+                    setLoggedIn(roleId);
+                    history('/dashboard');
+                    window.location.reload();
+                } else {
+                    console.error("Failed to fetch user roles");
+                }
+                
+            } else {
+                const responseData = await response.json();
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        password: responseData.message,
+                    }));
+            }
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    // if (existingUser) {
+    //   setErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     email: "Email is already registered",
+    //   }));
+    //   return;
+    // }
 
   return (
     <div>
@@ -187,23 +156,23 @@ export default function Registration() {
           <form onSubmit={handleRegistration}>
             <div>
               <label
-                htmlFor="name"
+                htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
               >
-                Name
+                Username
               </label>
               <div className="flex flex-col items-start">
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="username"
+                  value={formData.username}
                   onChange={handleInputChange}
                   className={`block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
-                    errors.name ? "border-red-500" : ""
+                    errors.username ? "border-red-500" : ""
                   }`}
                 />
-                {errors.name && (
-                  <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+                {errors.username && (
+                  <p className="mt-1 text-xs text-red-500">{errors.username}</p>
                 )}
               </div>
             </div>

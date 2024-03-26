@@ -78,9 +78,8 @@ export default function Login() {
         body: JSON.stringify(formData),
       });
 
-            console.log(formData);
             if (response.ok) {
-                console.log("Successful Login");
+                // console.log("Successful Login");
                 const responseData = await response.json();
                 const userId = parseInt(formData.username.match(/\d+/)[0]);
                 setUserId(userId);
@@ -94,24 +93,16 @@ export default function Login() {
                     setLoggedIn(roleId);
                     history('/dashboard');
                     window.location.reload();
-                    // Proceed with further actions based on the role ID
                 } else {
                     console.error("Failed to fetch user roles");
                 }
                 
             } else {
-                if (response.status === 404) {
+                const responseData = await response.json();
                     setErrors((prevErrors) => ({
                         ...prevErrors,
-                        email: "User not found",
+                        password: responseData.message,
                     }));
-                }
-                if (response.status === 403) {
-                    setErrors((prevErrors) => ({
-                        ...prevErrors,
-                        password: "Invalid password",
-                    }));
-                }
             }
         } catch (error) {
             console.error("An error occurred during login:", error);

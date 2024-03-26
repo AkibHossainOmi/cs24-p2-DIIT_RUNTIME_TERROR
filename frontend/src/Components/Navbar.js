@@ -11,6 +11,7 @@ export default function Navbar() {
 
   const handleLogout = (event) => {
     event.preventDefault();
+    setLoggedIn(0);
     clearUserStatus();
     history('/login');
     window.location.reload();
@@ -86,7 +87,7 @@ export default function Navbar() {
           <Link to="/stations" className="text-white text-lg hover:underline">
             Stations
           </Link>
-          {isAuthenticated && <Link to="/dashboard" className="text-white text-lg hover:underline">
+          {isAuthenticated>0 && <Link to="/dashboard" className="text-white text-lg hover:underline">
             Dashboard
           </Link>}
           {/* Add more links as needed */}

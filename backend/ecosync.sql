@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS ecosync;
-USE ecosync;
-
 -- Users Table
 CREATE TABLE IF NOT EXISTS Users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,

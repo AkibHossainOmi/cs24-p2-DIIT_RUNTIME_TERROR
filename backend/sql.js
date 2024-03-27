@@ -1,24 +1,40 @@
+const mysql = require('mysql');
 const fs = require('fs');
-const mysql = require('mysql2');
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
+const pool = mysql.createPool({
+  host: 'db',
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-const sqlFilePath = 'ecosync.sql';
-const sqlStatements = fs.readFileSync(sqlFilePath, 'utf-8');
+const sql = fs.readFileSync('ecosync.sql').toString();
 
-const sqlQueries = sqlStatements.split(';').filter(query => query.trim() !== '');
+// Acquire a connection from the pool
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error('Error acquiring connection from pool:', err);
+    return;
+  }
 
-sqlQueries.forEach((sqlQuery, index) => {
-  connection.query(sqlQuery, (error, results, fields) => {
+  connection.query(sql, (error, results, fields) => {
+    connection.release();
+
     if (error) {
-      console.error(`Error executing SQL statement ${index + 1}:`, error);
-    } else {
-      console.log(`SQL statement ${index + 1} executed successfully`);
+      console.error('Error executing SQL statements:', error);
+      return;
     }
+    console.log('SQL statements executed successfully:', results);
   });
 });
 
-connection.end();
+pool.end((err) => {
+  if (err) {
+    console.error('Error closing connection pool:', err);
+    return;
+  }
+  console.log('Connection pool closed');
+});

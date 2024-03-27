@@ -40,7 +40,7 @@ export default function Navbar() {
     <>
       <nav className="fixed flex w-full p-8 bg-purple-500 top-0 h-16 sm:h-16 md:h-16 lg:h-16 xl:h-16">
         <div className="hidden sm:block absolute top-0 right-6 m-4 space-x-4">
-          {isAuthenticated ? (
+          {isAuthenticated >  0? (
             <div className="relative">
               <button className="invert" onClick={toggleDropdown} >
                   <img src="user.svg" alt="user" className="w-7 h-7" />       
@@ -115,7 +115,7 @@ export default function Navbar() {
                     Stations
                   </Link>
                 </li>
-                {isAuthenticated? (
+                {isAuthenticated > 0? (
                   <>
                   <li>
                     <Link to="/dashboard" className="ml-8 text-white text-lg hover:underline">

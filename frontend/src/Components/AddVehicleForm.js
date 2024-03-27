@@ -6,12 +6,16 @@ export default function AddVehiclePage() {
     vehicle_number: '',
     type: '',
     capacity: '',
+    fuel_cost_loaded: '',
+    fuel_cost_unloaded: '',
   });
 
   const [errors, setErrors] = useState({
     vehicle_number: '',
     type: '',
     capacity: '',
+    fuel_cost_loaded: '',
+    fuel_cost_unloaded: '',
   });
 
   const handleInputChange = (e) => {
@@ -29,7 +33,7 @@ export default function AddVehiclePage() {
   const validateForm = () => {
     let isValid = true;
 
-    const { vehicle_number, type, capacity } = vehicleData;
+    const { vehicle_number, type, capacity, fuel_cost_loaded, fuel_cost_unloaded } = vehicleData;
 
     if (!vehicle_number.trim()) {
       setErrors((prevErrors) => ({
@@ -39,7 +43,7 @@ export default function AddVehiclePage() {
       isValid = false;
     }
 
-    // Similarly, add validation for other fields
+    // Add validation for other fields
 
     return isValid;
   };
@@ -59,20 +63,22 @@ export default function AddVehiclePage() {
       vehicle_number: '',
       type: '',
       capacity: '',
+      fuel_cost_loaded: '',
+      fuel_cost_unloaded: '',
     });
   };
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
-      <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl">
-        <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
+      <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
+      <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">
           Add Vehicle
-        </h1>
+        </h2>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="vehicle_number">
-              Vehicle Number
+              Vehicle Registration Number
             </label>
             <input
               className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.vehicle_number ? "border-red-500" : ""}`}
@@ -81,7 +87,7 @@ export default function AddVehiclePage() {
               name="vehicle_number"
               value={vehicleData.vehicle_number}
               onChange={handleInputChange}
-              placeholder="Vehicle Number"
+              placeholder="Vehicle Registration Number"
             />
             {errors.vehicle_number && (
               <p className="text-red-500 text-xs italic">{errors.vehicle_number}</p>
@@ -128,6 +134,42 @@ export default function AddVehiclePage() {
               <p className="text-red-500 text-xs italic">{errors.capacity}</p>
             )}
           </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fuel_cost_loaded">
+              Fuel Cost per Kilometer - Fully Loaded
+            </label>
+            <input
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fuel_cost_loaded ? "border-red-500" : ""}`}
+              id="fuel_cost_loaded"
+              type="text"
+              name="fuel_cost_loaded"
+              value={vehicleData.fuel_cost_loaded}
+              onChange={handleInputChange}
+              placeholder="Fuel Cost per Kilometer - Fully Loaded"
+            />
+            {errors.fuel_cost_loaded && (
+              <p className="text-red-500 text-xs italic">{errors.fuel_cost_loaded}</p>
+            )}
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fuel_cost_unloaded">
+              Fuel Cost per Kilometer - Unloaded
+            </label>
+            <input
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fuel_cost_unloaded ? "border-red-500" : ""}`}
+              id="fuel_cost_unloaded"
+              type="text"
+              name="fuel_cost_unloaded"
+              value={vehicleData.fuel_cost_unloaded}
+              onChange={handleInputChange}
+              placeholder="Fuel Cost per Kilometer - Unloaded"
+            />
+            {errors.fuel_cost_unloaded && (
+              <p className="text-red-500 text-xs italic">{errors.fuel_cost_unloaded}</p>
+            )}
+          </div>
+
           <div className="flex items-center justify-between">
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

@@ -30,11 +30,18 @@ const AdminControlPanel = () => {
                 Create STS
               </Link>
               <Link
+                to="/admin/create_landfill"
+                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
+              >
+                Create Landfill
+              </Link>
+              <Link
                 to="/admin/create_roles"
                 className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
               >
                 Create Roles
               </Link>
+              
             </div>
           </div>
         </div>

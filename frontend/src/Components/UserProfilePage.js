@@ -26,6 +26,13 @@ const UserProfile = () => {
     alert('Password reset requested!');
   };
 
+  const confirmDeleteUser = () => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      // Logic for deleting the user
+      alert('User deleted successfully!');
+    }
+  };
+
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
       <Navbar />
@@ -33,15 +40,53 @@ const UserProfile = () => {
         <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">User Profile</h2>
         <hr className="mb-4" />
         <form className="px-6 py-4">
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">User ID:</label>
-            <input
-              type="text"
-              name="user_id"
-              value={userData.user_id}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
+          <div className="mb-4 flex justify-between">
+            {/* User ID field */}
+            <div className="w-1/2 mr-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2">User ID:</label>
+              <input
+                type="text"
+                name="user_id"
+                value={userData.user_id}
+                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                readOnly
+              />
+            </div>
+            {/* Role field */}
+            <div className="w-1/2 ml-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
+              <input
+                type="text"
+                name="role"
+                value={userData.role}
+                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                readOnly
+              />
+            </div>
+          </div>
+          <div className="mb-4 flex justify-between">
+            {/* First Name field */}
+            <div className="w-1/2 mr-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2">First Name:</label>
+              <input
+                type="text"
+                name="first_name"
+                value={userData.first_name}
+                onChange={handleChange}
+                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+              />
+            </div>
+            {/* Last Name field */}
+            <div className="w-1/2 ml-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Last Name:</label>
+              <input
+                type="text"
+                name="last_name"
+                value={userData.last_name}
+                onChange={handleChange}
+                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+              />
+            </div>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-gray-700 mb-2">Username:</label>
@@ -59,26 +104,6 @@ const UserProfile = () => {
               type="email"
               name="email"
               value={userData.email}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">First Name:</label>
-            <input
-              type="text"
-              name="first_name"
-              value={userData.first_name}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Last Name:</label>
-            <input
-              type="text"
-              name="last_name"
-              value={userData.last_name}
               className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
               readOnly
             />
@@ -103,16 +128,6 @@ const UserProfile = () => {
             ></textarea>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
-            <input
-              type="text"
-              name="role"
-              value={userData.role}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
             <label className="block text-sm font-bold text-gray-700 mb-2">Permissions:</label>
             {userData.permissions.map((permission, index) => (
               <div key={index} className="mb-2">
@@ -127,7 +142,7 @@ const UserProfile = () => {
           </div>
           <div className="flex justify-between items-center mb-4">
             <Link to="/user/edit_profile" className="text-blue-500 hover:underline">Edit Profile</Link>
-            <Link to="/user/delete_user" className="text-red-500 hover:underline">Delete User</Link>
+            <button onClick={confirmDeleteUser} className="text-red-500 hover:underline">Delete User</button>
           </div>
         </form>
       </div>

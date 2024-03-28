@@ -6,13 +6,13 @@ services:
     restart: unless-stopped
     environment:
       - MYSQL_PASSWORD=123456
-      - MYSQL_DATABASE=ecosync
+      - MYSQL_ROOT_PASSWORD=123456
     ports:
       - 3307:3306
     volumes:
       - db:/var/lib/mysql
       - ./backend/ecosync.sql:/docker-entrypoint-initdb.d/ecosync.sql
-    command: --init-file /docker-entrypoint-initdb.d/ecosync.sql 
+    command: --bind-address=0.0.0.0 --init-file /docker-entrypoint-initdb.d/ecosync.sql
   node-server:
     depends_on:
       - ecosyncdb

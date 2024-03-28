@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS ecosync;
 use ecosync;
 -- Users Table
 CREATE TABLE IF NOT EXISTS Users (

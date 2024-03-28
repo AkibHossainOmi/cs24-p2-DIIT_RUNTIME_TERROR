@@ -2,10 +2,10 @@ const mysql = require('mysql');
 const fs = require('fs');
 
 const pool = mysql.createPool({
-  host: 'db',
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
+  host: 'ecosyncdb',
+  user: ecosync,
+  password: 123456,
+  database: ecosync,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

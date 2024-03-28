@@ -1,14 +1,29 @@
 version: '3.8'
 
 services:
+  ecosyncdb:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_PASSWORD=123456
+      - MYSQL_DATABASE=ecosync
+    ports:
+      - 3307:3306
+    volumes:
+      - db:/var/lib/mysql
+      - ./backend/ecosync.sql:/docker-entrypoint-initdb.d/ecosync.sql
+    command: --init-file /docker-entrypoint-initdb.d/ecosync.sql 
   node-server:
+    depends_on:
+      - ecosyncdb
     build: ./backend
     ports:
       - "8000:8000"
-    # Add any other configurations as needed
-
   react-app:
+    depends_on:
+        - node-server
     build: ./frontend
     ports:
       - "3000:3000"
-    # Add any other configurations as needed
+volumes: 
+  db:

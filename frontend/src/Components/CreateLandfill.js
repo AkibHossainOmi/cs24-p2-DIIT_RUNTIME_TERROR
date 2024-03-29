@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from "./Navbar";
+import axios from 'axios';
 
 export default function CreateLandfillForm() {
   const [landfillData, setLandfillData] = useState({
@@ -8,6 +9,7 @@ export default function CreateLandfillForm() {
     operational_timespan: '',
     longitude: '',
     latitude: '',
+    address: '', // Add address state
   });
 
   const [errors, setErrors] = useState({
@@ -65,17 +67,39 @@ export default function CreateLandfillForm() {
       operational_timespan: '',
       longitude: '',
       latitude: '',
+      address: '', // Reset address field
     });
+  };
+
+  const handleGeocode = async () => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(landfillData.address)}`
+      );
+      if (response.data.length > 0) {
+        const { lat, lon } = response.data[0];
+        setLandfillData({
+          ...landfillData,
+          latitude: lat,
+          longitude: lon,
+        });
+      } else {
+        // Handle error, no results found
+        console.error('No results found');
+      }
+    } catch (error) {
+      // Handle error, e.g., network error, API error
+      console.error('Error fetching geocode data:', error);
+    }
   };
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
-        <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">
-          Create Landfill
-        </h2>
-        <form className="mt-6" onSubmit={handleSubmit}>
+      <h1 className="mt-6 text-3xl font-semibold text-center text-purple-700 underline">
+      Create Landfill
+        </h1>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -129,6 +153,20 @@ export default function CreateLandfillForm() {
             )}
           </div>
           <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
+              Address
+            </label>
+            <input
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+              id="address"
+              type="text"
+              name="address"
+              value={landfillData.address}
+              onChange={handleInputChange}
+              placeholder="Address"
+            />
+          </div>
+          <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="longitude">
               Longitude
             </label>
@@ -169,8 +207,14 @@ export default function CreateLandfillForm() {
             >
               Create Landfill
             </button>
+            <button
+              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button"
+              onClick={handleGeocode}
+            >
+              Get Geolocation
+            </button>
           </div>
-        </form>
         </form>
       </div>
     </div>

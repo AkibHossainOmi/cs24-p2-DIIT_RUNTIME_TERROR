@@ -1,24 +1,23 @@
-
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import { clearUserStatus, getCurrentUserId, getLoggedInStatus, setLoggedIn } from "./Status";
 import Navbar from "./Navbar";
 import axios from "axios";
 
-const UserProfile = () => {
+export default function Profile () {
   const isAuthenticated = getLoggedInStatus();
   const [userInfo, setUserInfo] = useState(null);
   const [permissions, setPermissions] = useState([]);
   const [error, setError] = useState(null);
-  const { userId } = useParams();
   const history = useNavigate();
+  const userId = parseInt(getCurrentUserId());
+
 
   useEffect(() => {
     if (!userId) {
       setError("Unauthorized");
       return;
     }
-
     // Fetch user basic information
     axios.get(`http://localhost:8000/users/${userId}`)
       .then(response => {
@@ -59,7 +58,8 @@ const UserProfile = () => {
   const confirmDeleteUser = () => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       deleteUser();
-      history('/');
+      clearUserStatus();
+      history('/registration');
       window.location.reload();
       // alert('User deleted successfully!');
     }
@@ -70,7 +70,6 @@ const UserProfile = () => {
 
     axios.delete(`http://localhost:8000/users/${userId}`)
   };
-
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
@@ -120,10 +119,7 @@ const UserProfile = () => {
               </ul>
             </div>
             <div className="flex justify-between items-center">
-              <Link to={`/admin_edit/${userId}`} className="text-blue-500 hover:underline">Assign Role</Link>
-                  <button onClick={confirmDeleteUser} className="text-red-500 hover:underline">
-                    Delete User
-                  </button>
+              <Link to={`/edit/${userId}`} className="text-blue-500 hover:underline">Edit Profile</Link>
             </div>
           </form>
         )}
@@ -131,5 +127,3 @@ const UserProfile = () => {
     </div>
   );
 };
-
-export default UserProfile;

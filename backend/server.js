@@ -326,9 +326,7 @@ app.get('/users/:userId', (req, res) => {
 app.post('/users', (req, res) => {
   let isvalid = false;
   const { username, email, password } = req.body;
-  emailValidator.check(email, function(error, response){
-    isvalid = response
-    if (!email.endsWith('@gmail.com') || !isvalid) {
+    if (!email.endsWith('@gmail.com')) {
       return res.status(400).json({ message: 'Email must be from organization domain' });
     }
     else
@@ -360,7 +358,6 @@ app.post('/users', (req, res) => {
         });
       });
     }
-  });
 });
 
 app.put('/users/:userId', (req, res) => {

@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import axios from 'axios';
 import { getCurrentUserId, getLoggedInStatus } from './Status';
 
-const EditProfile = () => {
+const AdminEdit = () => {
   const [userData, setUserData] = useState({
     first_name: '',
     last_name: '',
@@ -31,19 +31,12 @@ const EditProfile = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
       // Update user profile
-       axios.put('http://localhost:8000/profile', {
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        Phone: userData.phone,
-        Address: userData.address
-      }, 
-      {headers: {
-        userid: userId
-      }});
 
+      // Assign user role
+      axios.put(`http://localhost:8000/users/${userId}/roles`, { role: userData.role });
       alert('Profile updated successfully!');
       history(`/users/${userId}`);
-      window.location.reload();
+    //   window.location.reload();
   };
 
   return (
@@ -52,58 +45,10 @@ const EditProfile = () => {
       <div className="container mx-auto py-8 mt-10">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5">Edit Profile</h2>
+            <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5">Assign Role</h2>
             <hr className="mb-4" />
             <form onSubmit={handleSubmit}>
-              {/* First Name field */}
-              <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-700 mb-2">First Name:</label>
-                <input
-                  type="text"
-                  name="first_name"
-                  value={userData.first_name}
-                  onChange={handleChange}
-                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  required
-                />
-              </div>
-              {/* Last Name field */}
-              <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Last Name:</label>
-                <input
-                  type="text"
-                  name="last_name"
-                  value={userData.last_name}
-                  onChange={handleChange}
-                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  required
-                />
-              </div>
-              {/* Phone field */}
-              <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Phone:</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={userData.phone}
-                  onChange={handleChange}
-                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  required
-                />
-              </div>
-              {/* Address field */}
-              <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Address:</label>
-                <textarea
-                  name="address"
-                  value={userData.address}
-                  onChange={handleChange}
-                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  required
-                ></textarea>
-              </div>
-              {/* Role dropdown
-              {roleId === "1" && (
+              {/* Role dropdown */}
                 <div className="mb-4">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
                   <select
@@ -119,7 +64,6 @@ const EditProfile = () => {
                     <option value="Landfill Manager">Landfill Manager</option>
                   </select>
                 </div>
-              )} */}
 
               {/* <div className="mb-4">
                 <label className="block text-sm font-bold text-gray-700 mb-2">Permissions:</label>
@@ -222,4 +166,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default AdminEdit;

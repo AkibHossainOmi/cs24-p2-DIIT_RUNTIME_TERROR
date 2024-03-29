@@ -4,8 +4,6 @@ import { getLoggedInStatus, setLoggedIn, setUserId } from './Status';
 import Navbar from './Navbar';
 
 export default function Login() {
-    console.log(getLoggedInStatus());
-    
     const history = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
@@ -82,18 +80,25 @@ export default function Login() {
                 // console.log("Successful Login");
                 const responseData = await response.json();
                 const idResponse = await fetch(`http://localhost:8000/users`, { method: 'GET' });
-              if (idResponse.ok) {
-                  const userRoles = await idResponse.json();
-                  const data = userRoles.data;
-                  const userData = data.find(user => user.email === formData.email);
-                  let id = userData.userId;
-                  let role = userData.role;
-                  console.log("User ID:", id);
-                  console.log("User Role:", role);
-                  setUserId(id);
-                  setLoggedIn(role);
-                  history('/dashboard');
-                  window.location.reload();
+                if (idResponse.ok) {
+                    const userRoles = await idResponse.json();
+                    const data = userRoles.data;
+                    const userData = data.find(user => user.email === formData.email);
+                    let id = userData.userId;
+                    let role = userData.role;
+                    console.log("User ID:", id);
+                    console.log("User Role:", role);
+                    if(role!=="Unassigned")
+                    {
+                        setUserId(id);
+                        setLoggedIn(role);
+                        history('/dashboard');
+                        window.location.reload();
+                    }
+                    else
+                    {
+                        alert("You have no role assigned");
+                    }
               } else {
                   console.error("Failed to fetch user roles");
               }

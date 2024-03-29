@@ -85,14 +85,18 @@ export default function CreateUserForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
     };
-    // Replace 'url' with the actual API endpoint
-    const response = await fetch('url', requestOptions);
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage || 'Failed to create user');
+  
+    try {
+      const response = await fetch('http://localhost:8000/users', requestOptions);
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || 'Failed to create user');
+      }
+      return response.json();
+    } catch (error) {
+      throw new Error(error.message || 'Failed to create user');
     }
-    return response.json();
-  };
+  };  
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
@@ -157,7 +161,7 @@ export default function CreateUserForm() {
           <div className="flex items-center justify-between">
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
+              type="submit" onClick={handleSubmit}
             >
               Create User
             </button>

@@ -115,17 +115,15 @@ export default function Registration() {
         const responseData = await response.json();
               const idResponse = await fetch(`http://localhost:8000/users`, { method: 'GET' });
               if (idResponse.ok) {
-                  const userRoles = await idResponse.json();
-                  const data = userRoles.data;
-                  const userData = data.find(user => user.email === formData.email);
-                  let id = userData.userId;
-                  let role = userData.role;
-                  console.log("User ID:", id);
-                  console.log("User Role:", role);
-                  setUserId(id);
-                  setLoggedIn(role);
-                  history('/dashboard');
-                  window.location.reload();
+                const userRoles = await idResponse.json();
+                const data = userRoles.data;
+                const userData = data.find(user => user.email === formData.email);
+                let id = userData.userId;
+                let role = userData.role;
+                setUserId(id);
+                setLoggedIn(role);
+                history('/dashboard');
+                window.location.reload();
               } else {
                   console.error("Failed to fetch user roles");
               }
@@ -134,7 +132,7 @@ export default function Registration() {
                 const responseData = await response.json();
                     setErrors((prevErrors) => ({
                         ...prevErrors,
-                        password: responseData.message,
+                        password_confirmation: responseData.message,
                     }));
             }
       }

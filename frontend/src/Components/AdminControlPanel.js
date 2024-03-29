@@ -9,7 +9,7 @@ const AdminControlPanel = () => {
       <div className="container mx-auto py-8">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h1 className="text-3xl font-semibold text-center text-purple-700 underline mb-4">Admin Control Panel</h1>
+            <h1 className="text-3xl font-semibold text-center text-purple-700 pb-5">Admin Control Panel</h1>
             <div className="flex flex-col space-y-4">
               <Link
                 to="/admin/user_management"

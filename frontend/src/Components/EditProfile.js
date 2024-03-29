@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import axios from 'axios';
+import { getCurrentUserId, getLoggedInStatus } from './Status';
 
 const EditProfile = () => {
   const [userData, setUserData] = useState({
@@ -8,19 +10,18 @@ const EditProfile = () => {
     last_name: '',
     phone: '',
     address: '',
-    role: '', // New state for user role
-    permissions: [], // New state for user permissions
+    role: '', 
   });
 
+  const roleId = getLoggedInStatus();
+  const userId = getCurrentUserId();
+  const history = useNavigate();
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     if (type === 'checkbox') {
       if (checked) {
-        // Add the checked permission to the array
         setUserData({ ...userData, permissions: [...userData.permissions, value] });
       } else {
-        // Remove the unchecked permission from the array
         setUserData({ ...userData, permissions: userData.permissions.filter(permission => permission !== value) });
       }
     } else {
@@ -28,11 +29,30 @@ const EditProfile = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to update user profile data in the database goes here
-    console.log('Updated user profile:', userData);
-    alert('Profile updated successfully!');
+
+    try {
+      // Update user profile
+      await axios.put('http://localhost:8000/profile', {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        Phone: userData.phone,
+        Address: userData.address
+      }, 
+      {headers: {
+        userid: userId
+      }});
+
+      // Assign user role
+      await axios.put(`http://localhost:8000/users/${userId}/roles`, { role: userData.role });
+      alert('Profile updated successfully!');
+      history('/profile');
+      window.location.reload();
+    } catch (error) { 
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again later.');
+    }
   };
 
   return (
@@ -92,23 +112,25 @@ const EditProfile = () => {
                 ></textarea>
               </div>
               {/* Role dropdown */}
-              <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
-                <select
-                  name="role"
-                  value={userData.role}
-                  onChange={handleChange}
-                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  required
-                >
-                  <option value="">Select Role</option>
-                  <option value="System Admin">System Admin</option>
-                  <option value="STS Manager">STS Manager</option>
-                  <option value="Landfill Manager">Landfill Manager</option>
-                </select>
-              </div>
-              {/* Permissions checkboxes */}
-              <div className="mb-4">
+              {roleId === "1" && (
+                <div className="mb-4">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
+                  <select
+                    name="role"
+                    value={userData.role}
+                    onChange={handleChange}
+                    className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                    required
+                  >
+                    <option value="">Select Role</option>
+                    <option value="System Admin">System Admin</option>
+                    <option value="STS Manager">STS Manager</option>
+                    <option value="Landfill Manager">Landfill Manager</option>
+                  </select>
+                </div>
+              )}
+
+              {/* <div className="mb-4">
                 <label className="block text-sm font-bold text-gray-700 mb-2">Permissions:</label>
                 <div>
   <label className="inline-flex items-center">
@@ -189,8 +211,7 @@ const EditProfile = () => {
   </label>
 </div>
 
-                {/* Add more permission checkboxes as needed */}
-              </div>
+              </div> */}
               {/* Link to change password */}
               <div className="mb-4">
                 <Link to="/user/change_password" className="text-blue-500 hover:underline">Change Password</Link>

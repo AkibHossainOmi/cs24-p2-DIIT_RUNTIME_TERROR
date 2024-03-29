@@ -77,21 +77,23 @@ export default function Navbar() {
           )}
         </div>
 
-        <div className="hidden sm:block absolute top-0  m-4 space-x-4">
+        <div className="hidden sm:flex absolute top-0 m-4 space-x-4 items-center">
+          <Link to="/" className="text-white font-bold text-lg hover:underline flex items-center">
+              <img src="ecosync.jpg" alt="EcoSync Logo" className="h-8 mr-2" />
+              EcoSync
+          </Link>
           <Link to="/" className="text-white text-lg hover:underline">
-            Home
+              Home
           </Link>
-          <Link to="/trains" className="text-white text-lg hover:underline">
-            Trains
+          <Link to="/about" className="text-white text-lg hover:underline">
+              About
           </Link>
-          <Link to="/stations" className="text-white text-lg hover:underline">
-            Stations
-          </Link>
-          {isAuthenticated>0 && <Link to="/dashboard" className="text-white text-lg hover:underline">
-            Dashboard
-          </Link>}
-          {/* Add more links as needed */}
-        </div>
+          {isAuthenticated > 0 && (
+              <Link to="/dashboard" className="text-white text-lg hover:underline">
+                  Dashboard
+              </Link>
+          )}
+      </div>
 
         <div className="sm:hidden flex items-center w-full">
           <button className="text-white" onClick={toggleDropdown}>

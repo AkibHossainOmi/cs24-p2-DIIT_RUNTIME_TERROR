@@ -17,9 +17,9 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
-  host: 'ecosyncdb',
+  host: 'localhost',
   user: 'root',
-  password: '123456',
+  // password: '123456',
   database: 'ecosync',
   port: 3306,
   waitForConnections: true,
@@ -30,13 +30,8 @@ const pool = mysql.createPool({
 app.post('/auth/create', (req, res) => {
   let isvalid = false;
   const { username, email, password } = req.body;
-  emailValidator.check(email, function(error, response){
-    isvalid = response
-    if (!email.endsWith('@gmail.com') || !isvalid) {
-      return res.status(400).json({ message: 'Email must be from organization domain' });
-    }
-    else
-    {
+    if (email.endsWith('@gmail.com')) {
+      // return res.status(400).json({ message: 'Email must be from organization domain' });
       bcrypt.hash(password, 10, (err, hashedPassword) => {
         if (err) {
           console.error('Error hashing password:', err);
@@ -73,7 +68,10 @@ app.post('/auth/create', (req, res) => {
         });
       });
     }
-  });
+    // else
+    // {
+      
+    // }
 });
 
 app.post('/auth/login', (req, res) => {
@@ -589,50 +587,30 @@ app.post('/rbac/permissions', (req, res) => {
 });
 
 // Endpoint for assigning permission to a role
-app.post('/rbac/roles/:roleId/permissions', (req, res) => {
-  const roleId = req.params.roleId;
-  const { permission } = req.body;
-
-  // Check if roleId and permission are provided
-  if (!roleId || !permission) {
-    return res.status(400).json({ message: 'Role ID and permission must be provided' });
+app.post('/rbac/roles/:roleid/permissions', (req, res) => {
+  const roleId = req.params.roleid;
+  const { permissions } = req.body;
+  // Check if roleId and permissions are provided
+  if (!roleId || !permissions || !Array.isArray(permissions)) {
+    return res.status(400).json({ message: 'Role ID and an array of permissions must be provided' });
   }
 
-  // Perform insertion into the Role_Permissions table
-  pool.query('INSERT INTO Role_Permissions (role_id, permission_id) VALUES (?, (SELECT permission_id FROM Permissions WHERE name = ?))', [roleId, permission], (error, results) => {
+  // Prepare an array to hold the values for the batch insert
+  const values = permissions.map(permission => [roleId, permission]);
+
+  // Perform batch insertion into the Role_Permissions table
+  pool.query('INSERT INTO Role_Permissions (role_id, permission_id) SELECT ?, permission_id FROM Permissions WHERE name IN (?)', [roleId, permissions], (error, results) => {
     if (error) {
-      console.error('Error assigning permission to role:', error);
+      console.error('Error assigning permissions to role:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
 
-    return res.status(200).json({ message: 'Permission assigned to role was successful.' });
-  });
-});
-
-// Endpoint for assigning permission to a role
-app.post('/rbac/roles/:roleId/permissions', (req, res) => {
-  const roleId = req.params.roleId;
-  const { permission } = req.body;
-
-  // Check if roleId and permission are provided
-  if (!roleId || !permission) {
-    return res.status(400).json({ message: 'Role ID and permission must be provided' });
-  }
-
-  // Perform insertion into the Role_Permissions table
-  pool.query('INSERT INTO Role_Permissions (role_id, permission_id) VALUES (?, (SELECT permission_id FROM Permissions WHERE name = ?))', [roleId, permission], (error, results) => {
-    if (error) {
-      console.error('Error assigning permission to role:', error);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
-
-    return res.status(200).json({ message: 'Permission assigned to role was successful.' });
+    return res.status(200).json({ message: 'Permissions assigned to role were successful.' });
   });
 });
 
 app.get('/profile', (req, res) => {
   const userId = req.headers.userid;
-
   if (!userId) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
@@ -654,7 +632,7 @@ app.get('/profile', (req, res) => {
     const userProfile = {
       first_name: results[0].first_name,
       last_name: results[0].last_name,
-      number: results[0].phone,
+      phone: results[0].phone,
       address: results[0].address,
     };
 
@@ -663,8 +641,13 @@ app.get('/profile', (req, res) => {
 });
 
 app.put('/profile', (req, res) => {
-  const userId = req.headers.userId;
+  const userId = req.headers.userid;
   const { first_name, last_name, Phone, Address } = req.body;
+
+  // Check if any of the required fields are null or undefined
+  if (!first_name || !last_name || !Phone || !Address || !userId) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
 
   pool.query('UPDATE Users SET first_name = ?, last_name = ?, Phone = ?, Address = ? WHERE user_id = ?', 
       [first_name, last_name, Phone, Address, userId], 
@@ -686,6 +669,34 @@ app.put('/profile', (req, res) => {
 });
 
 
+app.get('/roles/:roleId/permissions', (req, res) => {
+  const { roleId } = req.params;
+
+  // Prepare SQL query
+  const sql = `SELECT Permissions.name as permission_name
+               FROM Role_Permissions 
+               JOIN Permissions ON Role_Permissions.permission_id = Permissions.permission_id 
+               WHERE Role_Permissions.role_id = ?`;
+
+  // Execute SQL query
+  pool.query(sql, [roleId], (err, results) => {
+    if (err) {
+      console.error('Error executing SQL query:', err);
+      res.status(500).json({ message: 'Internal server error' });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(200).json({ permissions: [] });
+      return;
+    }    
+
+    // Extract permission names from query results
+    const permissions = results.map(result => result.permission_name);
+    // Send permissions as response
+    res.status(200).json({ permissions });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -1,150 +1,136 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { clearUserStatus, getCurrentUserId, getLoggedInStatus, setLoggedIn } from "./Status";
+import Navbar from "./Navbar";
+import axios from "axios";
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState({
-    user_id: '123',
-    username: 'example_user',
-    email: 'user@example.com',
-    password: 'password123',
-    first_name: '',
-    last_name: '',
-    phone: '',
-    address: '',
-    role: 'STS Maneger', // Default role
-    permissions: ['Can change password', 'Can add vehicle'], // Default permissions
-  });
+  const isAuthenticated = getLoggedInStatus();
+  const [userInfo, setUserInfo] = useState(null);
+  const [permissions, setPermissions] = useState([]);
+  const [error, setError] = useState(null);
+  const history = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  };
+  useEffect(() => {
+    const userId = getCurrentUserId();
 
-  const handlePasswordReset = () => {
-    // Logic for resetting the password
-    alert('Password reset requested!');
-  };
+    if (!userId) {
+      setError("Unauthorized");
+      return;
+    }
+
+    // Fetch user basic information
+    axios.get(`http://localhost:8000/users/${userId}`)
+      .then(response => {
+        setUserInfo(response.data);
+      })
+      .catch(error => {
+        setError("Failed to fetch user profile");
+        console.error("Error fetching user profile:", error);
+      });
+
+    // Fetch additional user details
+    axios.get(`http://localhost:8000/profile`, {
+      headers: {
+        userid: userId
+      }
+    })
+      .then(response => {
+        setUserInfo(prevState => ({
+          ...prevState,
+          ...response.data
+        }));
+      })
+      .catch(error => {
+        console.error("Error fetching additional user details:", error);
+      });
+
+    // Fetch permissions for the role
+    axios.get(`http://localhost:8000/roles/${getLoggedInStatus()}/permissions`)
+      .then(response => {
+        setPermissions(response.data.permissions);
+      })
+      .catch(error => {
+        setError("Failed to fetch permissions");
+        console.error("Error fetching permissions:", error);
+      });
+  }, []);
 
   const confirmDeleteUser = () => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      // Logic for deleting the user
-      alert('User deleted successfully!');
+      deleteUser();
+      clearUserStatus();
+      history('/registration');
+      window.location.reload();
+      // alert('User deleted successfully!');
     }
   };
 
+  const deleteUser = () => {
+    const userId = getCurrentUserId();
+
+    axios.delete(`http://localhost:8000/users/${userId}`)
+  };
+
   return (
-    <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
+    <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
         <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">User Profile</h2>
         <hr className="mb-4" />
-        <form className="px-6 py-4">
-          <div className="mb-4 flex justify-between">
-            {/* User ID field */}
-            <div className="w-1/2 mr-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">User ID:</label>
-              <input
-                type="text"
-                name="user_id"
-                value={userData.user_id}
-                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                readOnly
-              />
+        {userInfo && (
+          <form className="px-6 py-4">
+            <div className="mb-4">
+              <label className="block mb-1">Role:</label>
+              <p className="border p-2">{userInfo.role}</p>
             </div>
-            {/* Role field */}
-            <div className="w-1/2 ml-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">Role:</label>
-              <input
-                type="text"
-                name="role"
-                value={userData.role}
-                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                readOnly
-              />
+            <div className="mb-4">
+              <label className="block mb-1">User ID:</label>
+              <p className="border p-2">{userInfo.userId}</p>
             </div>
-          </div>
-          <div className="mb-4 flex justify-between">
-            {/* First Name field */}
-            <div className="w-1/2 mr-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">First Name:</label>
-              <input
-                type="text"
-                name="first_name"
-                value={userData.first_name}
-                onChange={handleChange}
-                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              />
+            <div className="mb-4">
+              <label className="block mb-1">Username:</label>
+              <p className="border p-2">{userInfo.username}</p>
             </div>
-            {/* Last Name field */}
-            <div className="w-1/2 ml-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">Last Name:</label>
-              <input
-                type="text"
-                name="last_name"
-                value={userData.last_name}
-                onChange={handleChange}
-                className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              />
+            <div className="mb-4">
+              <label className="block mb-1">Email:</label>
+              <p className="border p-2">{userInfo.email}</p>
             </div>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Username:</label>
-            <input
-              type="text"
-              name="username"
-              value={userData.username}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={userData.email}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Phone:</label>
-            <input
-              type="text"
-              name="phone"
-              value={userData.phone}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Address:</label>
-            <textarea
-              name="address"
-              value={userData.address}
-              className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-              readOnly
-            ></textarea>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Permissions:</label>
-            {userData.permissions.map((permission, index) => (
-              <div key={index} className="mb-2">
-                <input
-                  type="text"
-                  value={permission}
-                  className="bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  readOnly
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between items-center mb-4">
-            <Link to="/user/edit_profile" className="text-blue-500 hover:underline">Edit Profile</Link>
-            <button onClick={confirmDeleteUser} className="text-red-500 hover:underline">Delete User</button>
-          </div>
-        </form>
+            <div className="mb-4">
+              <label className="block mb-1">First Name:</label>
+              <p className="border p-2">{userInfo.first_name}</p>
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Last Name:</label>
+              <p className="border p-2">{userInfo.last_name}</p>
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Phone:</label>
+              <p className="border p-2">{userInfo.phone}</p>
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Address:</label>
+              <p className="border p-2">{userInfo.address}</p>
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Permissions:</label>
+              <ul className="border p-2">
+                {permissions.map(permission => (
+                  <li key={permission}>{permission}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex justify-between items-center">
+              <Link to="/editprofile" className="text-blue-500 hover:underline">Edit Profile</Link>
+              {isAuthenticated === "1" &&
+                (
+                  <button onClick={confirmDeleteUser} className="text-red-500 hover:underline">
+                    Delete User
+                  </button>
+                )}
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

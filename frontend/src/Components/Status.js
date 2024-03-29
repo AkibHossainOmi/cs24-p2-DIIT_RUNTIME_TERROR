@@ -6,6 +6,7 @@ export const setLoggedIn = (name) => {
   if(name === 'STS Manager') roleId = 2;
   if(name === 'Landfill Manager') roleId = 3;
   if(name === 'Unassigned') roleId = 4;
+  if(name === 0) roleId = 0;
   localStorage.setItem('roleId', JSON.stringify(roleId));
 };
 

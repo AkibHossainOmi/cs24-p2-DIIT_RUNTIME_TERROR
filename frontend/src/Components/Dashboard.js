@@ -94,28 +94,30 @@ const Dashboard = () => {
   };
 
   return (
-    <div className=" relative h-screen bg-purple-100">
-      <Navbar/>
-      <h2 className="mt-20 text-3xl items-center flex justify-center font-bold mb-6 text-purple-700">Dashboard</h2>
-      <div className="mb-8 ">
-        <h3 className="text-xl font-bold mb-4 text-purple-700">Real-time Monitoring of Waste Collection</h3>
-        <Chart options={wasteCollectionData.options} series={wasteCollectionData.series} type="bar" height={350} />
-      </div>
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-4 text-purple-700">Real-time Monitoring of Transport Activities</h3>
-        <Chart options={transportActivitiesData.options} series={transportActivitiesData.series} type="bar" height={350} />
-      </div>
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-4 text-purple-700">Waste Collection at Each STS</h3>
-        <Chart options={wasteCollectionSTSData.options} series={wasteCollectionSTSData.series} type="bar" height={350} />
-      </div>
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-4 text-purple-700">Waste Collection at Each Landfill Site</h3>
-        <Chart options={wasteCollectionLandfillData.options} series={wasteCollectionLandfillData.series} type="bar" height={350} />
-      </div>
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-4 text-purple-700">Daily Fuel Cost for Trucks</h3>
-        <Chart options={dailyFuelCostData.options} series={dailyFuelCostData.series} type="bar" height={350} />
+    <div className="relative h-screen bg-purple-100">
+      <Navbar />
+      <div className="fixed top-20 inset-x-0 bg-white z-10 p-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+        <h2 className="text-3xl text-center font-bold mb-6 text-purple-700">Dashboard</h2>
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-4 text-purple-700">Real-time Monitoring of Waste Collection</h3>
+          <Chart options={wasteCollectionData.options} series={wasteCollectionData.series} type="bar" height={350} />
+        </div>
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-4 text-purple-700">Real-time Monitoring of Transport Activities</h3>
+          <Chart options={transportActivitiesData.options} series={transportActivitiesData.series} type="bar" height={350} />
+        </div>
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-4 text-purple-700">Waste Collection at Each STS</h3>
+          <Chart options={wasteCollectionSTSData.options} series={wasteCollectionSTSData.series} type="bar" height={350} />
+        </div>
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-4 text-purple-700">Waste Collection at Each Landfill Site</h3>
+          <Chart options={wasteCollectionLandfillData.options} series={wasteCollectionLandfillData.series} type="bar" height={350} />
+        </div>
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-4 text-purple-700">Daily Fuel Cost for Trucks</h3>
+          <Chart options={dailyFuelCostData.options} series={dailyFuelCostData.series} type="bar" height={350} />
+        </div>
       </div>
     </div>
   );

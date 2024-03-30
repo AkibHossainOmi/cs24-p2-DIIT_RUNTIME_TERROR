@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Navbar from "./Navbar";
+import Navbar from './Navbar';
 
 export default function ResetPassword() {
   const [resetToken, setResetToken] = useState('');
@@ -34,14 +34,12 @@ export default function ResetPassword() {
 
     try {
       // Send the password reset request to the backend
-      // Here you would typically make an API call to update the password
-      // Replace the placeholder URL with your actual endpoint
-      const response = await fetch('http://localhost:8000/api/reset-password', {
-        method: 'POST',
+      const response = await fetch('http://localhost:8000/auth/reset-password/confirm', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ resetToken, password }),
+        body: JSON.stringify({ token_or_code: resetToken, new_password: password }),
       });
 
       if (response.ok) {
@@ -49,7 +47,8 @@ export default function ResetPassword() {
         setResetStatus('Password reset successful. You can now log in with your new password.');
       } else {
         // Password reset failed
-        setResetStatus('Password reset failed. Please try again.');
+        const data = await response.json();
+        setResetStatus(data.message || 'Password reset failed. Please try again.');
       }
     } catch (error) {
       console.error('An error occurred during password reset:', error);
@@ -60,7 +59,7 @@ export default function ResetPassword() {
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
-        <Navbar/>
+      <Navbar />
       <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl">
         <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
           Reset Password

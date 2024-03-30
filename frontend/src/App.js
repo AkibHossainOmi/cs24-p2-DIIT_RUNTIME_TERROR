@@ -4,7 +4,6 @@ import Login from './Components/Login';
 import Registration from './Components/Registration';
 import Dashboard from './Components/Dashboard';
 import { getLoggedInStatus, setLoggedIn } from './Components/Status';
-import ForgotPassword from './ForgotPassword';
 import Home from './Components/Home';
 import CreateUserForm from './Components/CreateUserForm';
 import CreateStationForm from './Components/CreateStationForm';
@@ -32,6 +31,8 @@ import LandfillManagement from './Components/LandfillManagement';
 import CreateLandfillForm from './Components/CreateLandfill';
 import AllLandfills from './Components/AllLandfill';
 import CreateRole from './Components/CreateRole';
+import ForgotPassword from './Components/ForgotPassword';
+import ResetPassword from './Components/ResetPassword';
 
 
 
@@ -50,6 +51,8 @@ function App() {
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
+            <Route path="/forgot_password" element={<ForgotPassword />} />
+            <Route path="/reset_password" element={<ResetPassword />} />
             <Route path="*" element={<Navigate to="/navbar" />} />
           </>
         )}

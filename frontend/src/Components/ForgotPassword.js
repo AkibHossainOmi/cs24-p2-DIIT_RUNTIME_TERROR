@@ -1,42 +1,39 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
-  const history = useNavigate();
+export default function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [resetStatus, setResetStatus] = useState(null);
+  const [resetStatus, setResetStatus] = useState('');
+  const history =useNavigate();
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handleForgotPassword = async (e) => {
+  const handleForgotPassword = (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch(`http://localhost:8000/api/forgot-password?email=${email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    // Send a POST request to initiate password reset
+    axios.post('http://localhost:8000/auth/reset-password/initiate', { username_or_email: email })
+      .then(response => {
+        setResetStatus(response.data.message);
+        history('/reset_password');
+        window.location.reload();
+      })
+      .catch(error => {
+        if (error.response) {
+          setResetStatus(error.response.data.message);
+        } else {
+          setResetStatus('Error initiating password reset');
+        }
       });
-
-      if (response.ok) {
-        // Password reset request sent successfully
-        setResetStatus('Password reset instructions sent to your email.');
-      } else {
-        // Failed to send reset request
-        setResetStatus('Failed to send reset instructions. Please check your email.');
-      }
-    } catch (error) {
-      console.error('An error occurred during password reset:', error);
-      // Handle unexpected errors, e.g., network issues
-      setResetStatus('An unexpected error occurred. Please try again later.');
-    }
   };
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
+      <Navbar />
       <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl">
         <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
           Forgot Password

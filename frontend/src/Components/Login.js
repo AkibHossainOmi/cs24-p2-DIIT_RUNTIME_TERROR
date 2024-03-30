@@ -184,7 +184,7 @@ export default function Login() {
                             <p className="mt-1 text-xs text-red-500">{errors.password}</p>
                         )}
                     </div>
-                    <a href="/forgot-password" className="text-xs text-purple-600 hover:underline">
+                    <a href="/forgot_password" className="text-xs text-purple-600 hover:underline">
                         Forgot Password?
                     </a>
                     <div className="mt-6">

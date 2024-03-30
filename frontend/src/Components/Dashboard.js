@@ -95,10 +95,11 @@ const Dashboard = () => {
 
   return (
     <div className="relative h-screen bg-purple-100">
+      <div className="fixed top-20 inset-x-0 bg-white z-10 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 80px)' }}>
       <Navbar />
-      <div className="fixed top-20 inset-x-0 bg-white z-10 p-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 80px)' }}>
         <h2 className="text-3xl text-center font-bold mb-6 text-purple-700">Dashboard</h2>
-        <div className="mb-8">
+       <div className='ml-8'>
+       <div className="mb-8">
           <h3 className="text-xl font-bold mb-4 text-purple-700">Real-time Monitoring of Waste Collection</h3>
           <Chart options={wasteCollectionData.options} series={wasteCollectionData.series} type="bar" height={350} />
         </div>
@@ -118,6 +119,7 @@ const Dashboard = () => {
           <h3 className="text-xl font-bold mb-4 text-purple-700">Daily Fuel Cost for Trucks</h3>
           <Chart options={dailyFuelCostData.options} series={dailyFuelCostData.series} type="bar" height={350} />
         </div>
+       </div>
       </div>
     </div>
   );

@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS STS (
     WardNumber INT PRIMARY KEY,
     CapacityInTonnes INT NOT NULL,
     address VARCHAR(100) NOT NULL,
-    Longitude DECIMAL(10, 8) NOT NULL,
-    Latitude DECIMAL(10, 8) NOT NULL
+    Longitude VARCHAR(100) NOT NULL,
+    Latitude VARCHAR(100) NOT NULL
 );
 
 -- Table for STS Managers
@@ -95,10 +95,11 @@ CREATE TABLE IF NOT EXISTS STSEntries (
 -- Table for Landfill Sites
 CREATE TABLE IF NOT EXISTS LandfillSites (
     LandfillID INT PRIMARY KEY,
-    Capacity INT NOT NULL, -- in tonnes
+    Capacity INT NOT NULL,
     OperationalTimespan VARCHAR(100) NOT NULL,
-    Longitude DECIMAL(10, 8) NOT NULL,
-    Latitude DECIMAL(10, 8) NOT NULL
+    address VARCHAR(100) NOT NULL,
+    Longitude VARCHAR(100) NOT NULL,
+    Latitude VARCHAR(100) NOT NULL
 );
 
 -- Table for Landfill Managers

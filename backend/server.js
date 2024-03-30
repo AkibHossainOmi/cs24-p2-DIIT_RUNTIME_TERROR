@@ -830,6 +830,46 @@ app.get('/sts', (req, res) => {
   });
 });
 
+app.post('/landfills', (req, res) => {
+  // Extract data from the request body
+  const { LandfillID, capacity, operationalTimespan, address, longitude, latitude } = req.body;
+
+  // Check if all required fields are provided
+  if (!LandfillID || !capacity || !operationalTimespan || !address || !longitude || !latitude) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Insert query to add data into LandfillSites table
+  const sql = 'INSERT INTO LandfillSites (LandfillID, Capacity, OperationalTimespan, address, Longitude, Latitude) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [LandfillID, capacity, operationalTimespan, address, longitude, latitude];
+
+  // Execute the query
+  pool.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting data into LandfillSites table:', err);
+      return res.status(500).json({ error: 'Failed to insert data into LandfillSites table' });
+    }
+    console.log('Data inserted into LandfillSites table successfully');
+    res.status(200).json({ message: 'Data inserted into LandfillSites table successfully' });
+  });
+});
+
+app.get('/landfills', (req, res) => {
+  // Select query to fetch all data from LandfillSites table
+  const sql = 'SELECT * FROM LandfillSites';
+
+  // Execute the query
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching data from LandfillSites table:', err);
+      return res.status(500).json({ error: 'Failed to fetch data from LandfillSites table' });
+    }
+    console.log('Data fetched from LandfillSites table successfully');
+    res.status(200).json(result);
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

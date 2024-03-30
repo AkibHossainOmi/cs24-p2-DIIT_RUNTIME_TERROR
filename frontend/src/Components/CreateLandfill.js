@@ -4,18 +4,18 @@ import axios from 'axios';
 
 export default function CreateLandfillForm() {
   const [landfillData, setLandfillData] = useState({
-    name: '',
+    LandfillID: '',
     capacity: '',
-    operational_timespan: '',
+    operationalTimespan: '',
     longitude: '',
     latitude: '',
     address: '', // Add address state
   });
 
   const [errors, setErrors] = useState({
-    name: '',
+    LandfillID: '',
     capacity: '',
-    operational_timespan: '',
+    operationalTimespan: '',
     longitude: '',
     latitude: '',
   });
@@ -35,12 +35,12 @@ export default function CreateLandfillForm() {
   const validateForm = () => {
     let isValid = true;
 
-    const { name, capacity, operational_timespan, longitude, latitude } = landfillData;
+    const { LandfillID, capacity, operationalTimespan, longitude, latitude } = landfillData;
 
-    if (!name.trim()) {
+    if (!LandfillID.trim()) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        name: "Name can't be empty",
+        LandfillID: "LandfillID can't be empty",
       }));
       isValid = false;
     }
@@ -57,18 +57,34 @@ export default function CreateLandfillForm() {
       return;
     }
 
-    // Perform submission logic here (e.g., API call)
-    console.log('Landfill data:', landfillData);
+    // Prepare data to be sent to the backend
+    const requestData = {
+      LandfillID: landfillData.LandfillID,
+      capacity: landfillData.capacity,
+      operationalTimespan: landfillData.operationalTimespan,
+      address: landfillData.address,
+      longitude: landfillData.longitude,
+      latitude: landfillData.latitude,
+    };
 
-    // Reset form after successful submission
-    setLandfillData({
-      name: '',
-      capacity: '',
-      operational_timespan: '',
-      longitude: '',
-      latitude: '',
-      address: '', // Reset address field
-    });
+    // Perform POST request to insert data into the database
+    axios.post('http://localhost:8000/landfills', requestData)
+      .then(response => {
+        console.log('Data inserted successfully:', response.data);
+        // Reset form after successful submission
+        setLandfillData({
+          LandfillID: '',
+          capacity: '',
+          operationalTimespan: '',
+          longitude: '',
+          latitude: '',
+          address: '', // Reset address field
+        });
+      })
+      .catch(error => {
+        console.error('Error inserting data:', error);
+        // Handle error, display error message, etc.
+      });
   };
 
   const handleGeocode = async () => {
@@ -97,25 +113,25 @@ export default function CreateLandfillForm() {
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
-      <h1 className="mt-6 text-3xl font-semibold text-center text-purple-700 pb-5">
-      Create Landfill
+        <h1 className="mt-6 text-3xl font-semibold text-center text-purple-700 pb-5">
+          Create Landfill
         </h1>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-              Name
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="LandfillID">
+              Landfill ID
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.name ? "border-red-500" : ""}`}
-              id="name"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.LandfillID ? "border-red-500" : ""}`}
+              id="LandfillID"
               type="text"
-              name="name"
-              value={landfillData.name}
+              name="LandfillID"
+              value={landfillData.LandfillID}
               onChange={handleInputChange}
-              placeholder="Name"
+              placeholder="Landfill ID"
             />
-            {errors.name && (
-              <p className="text-red-500 text-xs italic">{errors.name}</p>
+            {errors.LandfillID && (
+              <p className="text-red-500 text-xs italic">{errors.LandfillID}</p>
             )}
           </div>
           <div className="mb-6">
@@ -136,20 +152,20 @@ export default function CreateLandfillForm() {
             )}
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="operational_timespan">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="operationalTimespan">
               Operational Timespan
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.operational_timespan ? "border-red-500" : ""}`}
-              id="operational_timespan"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.operationalTimespan ? "border-red-500" : ""}`}
+              id="operationalTimespan"
               type="text"
-              name="operational_timespan"
-              value={landfillData.operational_timespan}
+              name="operationalTimespan"
+              value={landfillData.operationalTimespan}
               onChange={handleInputChange}
               placeholder="Operational Timespan"
             />
-            {errors.operational_timespan && (
-              <p className="text-red-500 text-xs italic">{errors.operational_timespan}</p>
+            {errors.operationalTimespan && (
+              <p className="text-red-500 text-xs italic">{errors.operationalTimespan}</p>
             )}
           </div>
           <div className="mb-6">

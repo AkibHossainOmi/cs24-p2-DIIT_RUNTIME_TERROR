@@ -57,6 +57,9 @@ export default function Navbar() {
                     {isAuthenticated === 1 && <Link to="/control" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       Control Panel
                     </Link>}
+                    {isAuthenticated === 2 && <Link to="/sts_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                      STS Entries
+                    </Link>}
                     </li>
                     <li>
                       <button

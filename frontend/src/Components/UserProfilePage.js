@@ -66,8 +66,6 @@ const UserProfile = () => {
   };
 
   const deleteUser = () => {
-    const userId = getCurrentUserId();
-
     axios.delete(`http://localhost:8000/users/${userId}`)
   };
 

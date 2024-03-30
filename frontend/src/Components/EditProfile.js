@@ -42,7 +42,7 @@ const EditProfile = () => {
       }});
 
       alert('Profile updated successfully!');
-      history(`/users/${userId}`);
+      history(`/profile`);
       window.location.reload();
   };
 

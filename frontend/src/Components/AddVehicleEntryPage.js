@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import Navbar from "./Navbar";
+import { useNavigate } from 'react-router-dom';
 
 export default function AddVehicleEntryPage() {
+  const history = useNavigate();
   const [vehicleEntryData, setVehicleEntryData] = useState({
-    sts_id: '',
-    vehicle_number: '',
-    waste_volume: '',
-    arrival_time: '',
-    departure_time: '',
+    WardNumber: '',
+    VehicleRegistrationNumber: '',
+    WeightOfWaste: '',
+    TimeOfArrival: '',
+    TimeOfDeparture: '',
   });
 
   const [errors, setErrors] = useState({
-    sts_id: '',
-    vehicle_number: '',
-    waste_volume: '',
-    arrival_time: '',
-    departure_time: '',
+    WardNumber: '',
+    VehicleRegistrationNumber: '',
+    WeightOfWaste: '',
+    TimeOfArrival: '',
+    TimeOfDeparture: '',
   });
 
   const handleInputChange = (e) => {
@@ -33,39 +35,50 @@ export default function AddVehicleEntryPage() {
   const validateForm = () => {
     let isValid = true;
 
-    const { sts_id, vehicle_number, waste_volume, arrival_time, departure_time } = vehicleEntryData;
-
-    if (!sts_id.trim()) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        sts_id: "STS ID can't be empty",
-      }));
-      isValid = false;
+    for (const key in vehicleEntryData) {
+      if (!vehicleEntryData[key].trim()) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [key]: `${key} can't be empty`,
+        }));
+        isValid = false;
+      }
     }
-
-    // Similarly, add validation for other fields
 
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    // Perform submission logic here (e.g., API call)
-    console.log('Vehicle entry data:', vehicleEntryData);
+    try {
+      const response = await fetch('http://localhost:8000/sts-entries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(vehicleEntryData),
+      });
 
-    // Reset form after successful submission
-    setVehicleEntryData({
-      sts_id: '',
-      vehicle_number: '',
-      waste_volume: '',
-      arrival_time: '',
-      departure_time: '',
-    });
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log('Vehicle entry submitted successfully');
+        // Reset form after successful submission
+        history('/dashboard');
+        window.location.reload();
+      } else {
+        console.error('Error submitting vehicle entry:', responseData.error);
+        // Handle error scenario
+      }
+    } catch (error) {
+      console.error('An unexpected error occurred:', error);
+      // Handle unexpected errors, e.g., network issues
+    }
   };
 
   return (
@@ -77,37 +90,37 @@ export default function AddVehicleEntryPage() {
         </h1>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="sts_id">
-              STS ID
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="WardNumber">
+              Ward Number
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.sts_id ? "border-red-500" : ""}`}
-              id="sts_id"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.WardNumber ? "border-red-500" : ""}`}
+              id="WardNumber"
               type="text"
-              name="sts_id"
-              value={vehicleEntryData.sts_id}
+              name="WardNumber"
+              value={vehicleEntryData.WardNumber}
               onChange={handleInputChange}
-              placeholder="STS ID"
+              placeholder="Ward Number"
             />
-            {errors.sts_id && (
-              <p className="text-red-500 text-xs italic">{errors.sts_id}</p>
+            {errors.WardNumber && (
+              <p className="text-red-500 text-xs italic">{errors.WardNumber}</p>
             )}
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="vehicle_number">
-              Vehicle Number
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="VehicleRegistrationNumber">
+              Vehicle Registration Number
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.vehicle_number ? "border-red-500" : ""}`}
-              id="vehicle_number"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.VehicleRegistrationNumber ? "border-red-500" : ""}`}
+              id="VehicleRegistrationNumber"
               type="text"
-              name="vehicle_number"
-              value={vehicleEntryData.vehicle_number}
+              name="VehicleRegistrationNumber"
+              value={vehicleEntryData.VehicleRegistrationNumber}
               onChange={handleInputChange}
-              placeholder="Vehicle Number"
+              placeholder="Vehicle Registration Number"
             />
-            {errors.vehicle_number && (
-              <p className="text-red-500 text-xs italic">{errors.vehicle_number}</p>
+            {errors.VehicleRegistrationNumber && (
+              <p className="text-red-500 text-xs italic">{errors.VehicleRegistrationNumber}</p>
             )}
           </div>
           <div className="mb-6">
@@ -115,34 +128,33 @@ export default function AddVehicleEntryPage() {
               Volume of Waste
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.waste_volume ? "border-red-500" : ""}`}
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.WeightOfWaste ? "border-red-500" : ""}`}
               id="waste_volume"
               type="text"
-              name="waste_volume"
-              value={vehicleEntryData.waste_volume}
+              name="WeightOfWaste"
+              value={vehicleEntryData.WeightOfWaste}
               onChange={handleInputChange}
               placeholder="Volume of Waste"
             />
-            {errors.waste_volume && (
-              <p className="text-red-500 text-xs italic">{errors.waste_volume}</p>
+            {errors.WeightOfWaste && (
+              <p className="text-red-500 text-xs italic">{errors.WeightOfWaste}</p>
             )}
           </div>
-          
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="arrival_time">
               Time of Arrival
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.arrival_time ? "border-red-500" : ""}`}
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.TimeOfArrival ? "border-red-500" : ""}`}
               id="arrival_time"
-              type="datetime-local" // Change input type to datetime-local
-              name="arrival_time"
-              value={vehicleEntryData.arrival_time}
+              type="datetime-local"
+              name="TimeOfArrival"
+              value={vehicleEntryData.TimeOfArrival}
               onChange={handleInputChange}
               placeholder="Time of Arrival"
             />
-            {errors.arrival_time && (
-              <p className="text-red-500 text-xs italic">{errors.arrival_time}</p>
+            {errors.TimeOfArrival && (
+              <p className="text-red-500 text-xs italic">{errors.TimeOfArrival}</p>
             )}
           </div>
           <div className="mb-6">
@@ -150,19 +162,18 @@ export default function AddVehicleEntryPage() {
               Time of Departure
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.departure_time ? "border-red-500" : ""}`}
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.TimeOfDeparture ? "border-red-500" : ""}`}
               id="departure_time"
-              type="datetime-local" // Change input type to datetime-local
-              name="departure_time"
-              value={vehicleEntryData.departure_time}
+              type="datetime-local"
+              name="TimeOfDeparture"
+              value={vehicleEntryData.TimeOfDeparture}
               onChange={handleInputChange}
               placeholder="Time of Departure"
             />
-            {errors.departure_time && (
-              <p className="text-red-500 text-xs italic">{errors.departure_time}</p>
+            {errors.TimeOfDeparture && (
+              <p className="text-red-500 text-xs italic">{errors.TimeOfDeparture}</p>
             )}
           </div>
-
           <div className="flex items-center justify-between">
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

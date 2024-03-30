@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateUserForm() {
+  const history = useNavigate();
   const [userData, setUserData] = useState({
     username: '',
     email: '',
@@ -68,6 +70,8 @@ export default function CreateUserForm() {
     try {
       const response = await createUserAPI(userData);
       console.log('User created successfully:', response);
+      history('/all_users');
+      window.location.reload();
       // Reset form after successful user creation
       setUserData({
         username: '',

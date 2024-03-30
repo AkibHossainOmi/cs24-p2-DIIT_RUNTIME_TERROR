@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from "./Navbar";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddVehiclePage() {
+  const history =useNavigate();
   const [vehicleData, setVehicleData] = useState({
     vehicleRegistrationNumber: '',
     type: '',
@@ -37,6 +39,8 @@ export default function AddVehiclePage() {
       .then(response => {
         console.log(response.data);
         // Reset form fields and errors
+        history('/admin/all_vehicles');
+        window.location.reload();
         setVehicleData({
           vehicleRegistrationNumber: '',
           type: '',

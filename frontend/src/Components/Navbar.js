@@ -57,8 +57,8 @@ export default function Navbar() {
                     {isAuthenticated === 1 && <Link to="/control" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       Control Panel
                     </Link>}
-                    {isAuthenticated === 2 && <Link to="/sts_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
-                      STS Entries
+                    {isAuthenticated === 2 && <Link to="/vehicle_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                      Vehicle Entries
                     </Link>}
                     </li>
                     <li>
@@ -115,7 +115,7 @@ export default function Navbar() {
                     Home
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/trains" className="ml-8 text-white text-lg hover:underline">
                     Trains
                   </Link>
@@ -124,7 +124,7 @@ export default function Navbar() {
                   <Link to="/stations" className="ml-8 text-white text-lg hover:underline">
                     Stations
                   </Link>
-                </li>
+                </li> */}
                 {isAuthenticated > 0? (
                   <>
                   <li>

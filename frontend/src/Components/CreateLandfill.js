@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from "./Navbar";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateLandfillForm() {
+  const history = useNavigate();
   const [landfillData, setLandfillData] = useState({
     LandfillID: '',
     capacity: '',
@@ -72,6 +74,8 @@ export default function CreateLandfillForm() {
       .then(response => {
         console.log('Data inserted successfully:', response.data);
         // Reset form after successful submission
+        history('/admin/all_landfills');
+        window.location.reload();
         setLandfillData({
           LandfillID: '',
           capacity: '',

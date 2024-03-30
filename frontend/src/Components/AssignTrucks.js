@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from './Navbar';
 import axios from 'axios';
 
 const AssignTrucks = () => {
+  const history = useNavigate();
   const [selectedWard, setSelectedWard] = useState('');
   const [availableWards, setAvailableWards] = useState([]);
 
@@ -33,8 +34,10 @@ const AssignTrucks = () => {
     try {
       // Make a POST request to insert truck assignment
       await axios.post(`http://localhost:8000/vehicle/${VehicleRegistrationNumber}`, { WardNumber: selectedWard });
-      console.log('Truck assigned successfully');
+      console.log('Vehicle assigned successfully');
       // Reset form fields after submission
+      history('/admin/all_vehicles');
+      window.location.reload();
       setSelectedWard('');
     } catch (error) {
       console.error('Error assigning truck:', error);
@@ -47,7 +50,7 @@ const AssignTrucks = () => {
       <div className="container mx-auto py-8 mt-10">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5">Assign Truck to STS</h2>
+            <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5">Assign Vehicle to STS</h2>
             <hr className="mb-4" />
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -65,7 +68,7 @@ const AssignTrucks = () => {
                 </select>
               </div>
               <button type="submit" className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
-                Assign Truck
+                Assign Vehicle
               </button>
             </form>
           </div>

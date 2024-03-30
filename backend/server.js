@@ -869,6 +869,28 @@ app.get('/landfills', (req, res) => {
   });
 });
 
+app.post('/sts-entries', (req, res) => {
+  const { WardNumber, VehicleRegistrationNumber, WeightOfWaste, TimeOfArrival, TimeOfDeparture } = req.body;
+
+  // Check if all required fields are provided
+  if (!WardNumber || !VehicleRegistrationNumber || !WeightOfWaste || !TimeOfArrival || !TimeOfDeparture) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Insert query to add data into STSEntries table
+  const sql = 'INSERT INTO STSEntries (WardNumber, VehicleRegistrationNumber, WeightOfWaste, TimeOfArrival, TimeOfDeparture) VALUES (?, ?, ?, ?, ?)';
+  const values = [WardNumber, VehicleRegistrationNumber, WeightOfWaste, TimeOfArrival, TimeOfDeparture];
+
+  // Execute the query
+  pool.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting data into STSEntries table:', err);
+      return res.status(500).json({ error: 'Failed to insert data into STSEntries table' });
+    }
+    console.log('Data inserted into STSEntries table successfully');
+    res.status(200).json({ message: 'Data inserted into STSEntries table successfully' });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

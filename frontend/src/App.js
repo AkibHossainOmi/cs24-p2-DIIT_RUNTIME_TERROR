@@ -89,8 +89,9 @@ function App() {
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit/:userId" element={<EditProfile />} />
-            <Route path="/sts_entries" element={<AddVehicleEntryPage />} />
+            <Route path="/vehicle_entries" element={<AddVehicleEntryPage />} />
             <Route path="/user/change_password" element={<ChangePassword />} />
+            <Route path="/users/:userId" element={<UserProfile />} />
             <Route path="*" element={<Navigate to="/navbar" />} />
           </>
         )}
@@ -101,6 +102,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit/:userId" element={<EditProfile />} />
             <Route path="/user/change_password" element={<ChangePassword />} />
+            <Route path="/users/:userId" element={<UserProfile />} />
             {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
           </>
         )}

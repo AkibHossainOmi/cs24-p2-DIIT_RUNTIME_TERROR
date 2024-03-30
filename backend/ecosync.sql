@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS STSVehicles (
 
 -- Table for STS Entries
 CREATE TABLE IF NOT EXISTS STSEntries (
-    EntryID INT PRIMARY KEY,
+    EntryID INT PRIMARY KEY AUTO_INCREMENT,
     WardNumber INT,
     VehicleRegistrationNumber VARCHAR(20),
     WeightOfWaste INT NOT NULL,

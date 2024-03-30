@@ -117,6 +117,7 @@ export default function AddVehiclePage() {
               <option value="3">3 ton</option>
               <option value="5">5 ton</option>
               <option value="7">7 ton</option>
+              <option value="15">15 ton</option>
             </select>
             {errors.capacity && (
               <p className="text-red-500 text-xs italic">{errors.capacity}</p>

@@ -26,6 +26,12 @@ import VehicleManagement from './Components/VehicleManagement';
 import AllVehicles from './Components/AllVehicles';
 import VehicleProfile from './Components/Vehicle';
 import AssignTrucks from './Components/AssignTrucks';
+import STSManagement from './Components/StsManagement';
+import AllSTS from './Components/AllSts';
+import LandfillManagement from './Components/LandfillManagement';
+import CreateLandfillForm from './Components/CreateLandfill';
+import AllLandfills from './Components/AllLandfill';
+import CreateRole from './Components/CreateRole';
 
 
 
@@ -63,6 +69,13 @@ function App() {
             <Route path="/admin/all_vehicles" element={<AllVehicles />} /> 
             <Route path="/admin/create_sts" element={<CreateStationForm />} /> 
             <Route path="/vehicles/:VehicleRegistrationNumber" element={<AssignTrucks />} /> 
+            <Route path="/admin/sts_management" element={<STSManagement />} /> 
+            <Route path="/admin/all_sts" element={<AllSTS />} /> 
+            <Route path="/admin/landfill_management" element={<LandfillManagement />} />
+            <Route path="/admin/create_landfill" element={<CreateLandfillForm />} />
+            <Route path="/admin/all_landfills" element={<AllLandfills />} />
+            <Route path="/admin/create_roles" element={<CreateRole />} />
+            <Route path="/user/change_password" element={<ChangePassword />} />
             {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
           </>
         )}
@@ -72,6 +85,8 @@ function App() {
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit/:userId" element={<EditProfile />} />
+            <Route path="/sts_entries" element={<AddVehicleEntryPage />} />
+            <Route path="/user/change_password" element={<ChangePassword />} />
             {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
           </>
         )}
@@ -81,6 +96,7 @@ function App() {
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit/:userId" element={<EditProfile />} />
+            <Route path="/user/change_password" element={<ChangePassword />} />
             {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
           </>
         )}

@@ -715,8 +715,8 @@ app.post('/vehicles', (req, res) => {
 });
 
 app.get('/vehicles', (req, res) => {
-  // Select query to fetch all vehicles
-  const sql = 'SELECT * FROM Vehicles';
+  // Select query to fetch all vehicles with their corresponding STS ward numbers
+  const sql = 'SELECT Vehicles.*, STSVehicles.WardNumber FROM Vehicles LEFT JOIN STSVehicles ON Vehicles.VehicleRegistrationNumber = STSVehicles.VehicleRegistrationNumber';
 
   // Execute the query
   pool.query(sql, (err, result) => {
@@ -729,6 +729,7 @@ app.get('/vehicles', (req, res) => {
     res.status(200).json(result);
   });
 });
+
 
 // API Endpoint to insert STS ID to a vehicle
 app.post('/sts-vehicles', (req, res) => {
@@ -812,6 +813,20 @@ app.post('/vehicle/:vehicleid', (req, res) => {
     }
     console.log('Data inserted into STSVehicles table successfully');
     res.status(200).json({ message: 'Data inserted into STSVehicles table successfully' });
+  });
+});
+
+app.get('/sts', (req, res) => {
+  const sql = 'SELECT * FROM STS';
+
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching STS data:', err);
+      res.status(500).json({ error: 'Failed to fetch STS data' });
+      return;
+    }
+
+    res.status(200).json(result);
   });
 });
 

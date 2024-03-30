@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS STSManagers (
 CREATE TABLE IF NOT EXISTS STSVehicles (
     WardNumber INT,
     VehicleRegistrationNumber VARCHAR(20),
-    PRIMARY KEY (WardNumber, VehicleRegistrationNumber),
+    PRIMARY KEY (VehicleRegistrationNumber),
     FOREIGN KEY (WardNumber) REFERENCES STS(WardNumber),
     FOREIGN KEY (VehicleRegistrationNumber) REFERENCES Vehicles(VehicleRegistrationNumber)
 );

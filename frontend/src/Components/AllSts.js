@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-
-// Dummy STS data
-const dummySTS = [
-  { sts_word_number: 1, capacity: 100, address: 'Dummy Address 1' },
-  { sts_word_number: 2, capacity: 200, address: 'Dummy Address 2' },
-  { sts_word_number: 3, capacity: 150, address: 'Dummy Address 3' },
-  { sts_word_number: 4, capacity: 180, address: 'Dummy Address 4' },
-];
+import axios from 'axios';
 
 const AllSTS = () => {
   const [stsList, setSTSList] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching STS data from the backend
-    setTimeout(() => {
-      setSTSList(dummySTS);
-    }, 1000); // Simulate 1 second delay
+    // Fetch STS data from the backend
+    axios.get('http://localhost:8000/sts')
+      .then(response => {
+        setSTSList(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching STS data:', error);
+      });
   }, []);
 
   return (
@@ -29,8 +26,8 @@ const AllSTS = () => {
             <div className="divide-y divide-gray-200">
               {stsList.map((sts, index) => (
                 <div key={index} className="py-4">
-                  <p className="text-lg font-semibold text-black-500">{`STS Word Number: ${sts.sts_word_number}`}</p>
-                  <p className="text-sm text-gray-600">{`Capacity: ${sts.capacity}, Address: ${sts.address}`}</p>
+                  <p className="text-lg font-semibold text-black-500">{`STS Ward Number: ${sts.WardNumber}`}</p>
+                  <p className="text-sm text-gray-600">{`Capacity: ${sts.CapacityInTonnes}, Address: ${sts.address}`}</p>
                 </div>
               ))}
             </div>

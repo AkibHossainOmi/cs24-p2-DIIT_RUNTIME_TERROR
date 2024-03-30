@@ -9,7 +9,7 @@ const AdminControlPanel = () => {
       <div className="container mx-auto py-8">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h1 className="text-3xl font-semibold text-center text-purple-700 pb-5">Admin Control Panel</h1>
+            <h1 className="text-3xl font-semibold text-center text-purple-700 underline mb-4">Admin Control Panel</h1>
             <div className="flex flex-col space-y-4">
               <Link
                 to="/admin/user_management"
@@ -24,16 +24,16 @@ const AdminControlPanel = () => {
                 Vehicle Management
               </Link>
               <Link
-                to="/admin/create_sts"
+                to="/admin/sts_management"
                 className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
               >
-                Create STS
+                STS Management
               </Link>
               <Link
-                to="/admin/create_landfill"
+                to="/admin/landfill_management" // Changed the route to '/admin/landfill_management'
                 className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
               >
-                Create Landfill
+                Landfill Management
               </Link>
               <Link
                 to="/admin/create_roles"
@@ -41,7 +41,6 @@ const AdminControlPanel = () => {
               >
                 Create Roles
               </Link>
-              
             </div>
           </div>
         </div>

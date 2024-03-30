@@ -22,6 +22,10 @@ import AdminControlPanel from './Components/AdminControlPanel';
 import UserManagement from './Components/UserManagement';
 import Profile from './Components/Profile';
 import AdminEdit from './Components/AdminEdit';
+import VehicleManagement from './Components/VehicleManagement';
+import AllVehicles from './Components/AllVehicles';
+import VehicleProfile from './Components/Vehicle';
+import AssignTrucks from './Components/AssignTrucks';
 
 
 
@@ -50,10 +54,15 @@ function App() {
             <Route path="/users/:userId" element={<UserProfile />} />
             <Route path="/control" element={<AdminControlPanel />} />
             <Route path="/admin/user_management" element={<UserManagement />} />
-            <Route path="admin/all_users" element={<AllUsers />} />
-            <Route path="admin_edit/:userId" element={<AdminEdit />} />
+            <Route path="/admin/all_users" element={<AllUsers />} />
+            <Route path="/admin_edit/:userId" element={<AdminEdit />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="admin/create_user" element={<CreateUserForm />} />
+            <Route path="/admin/create_user" element={<CreateUserForm />} />
+            <Route path="/admin/vehicle_management" element={<VehicleManagement />} />
+            <Route path="/admin/create_vehicle" element={<AddVehiclePage />} />
+            <Route path="/admin/all_vehicles" element={<AllVehicles />} /> 
+            <Route path="/admin/create_sts" element={<CreateStationForm />} /> 
+            <Route path="/vehicles/:VehicleRegistrationNumber" element={<AssignTrucks />} /> 
             {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
           </>
         )}

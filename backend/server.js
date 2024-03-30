@@ -362,10 +362,10 @@ app.post('/users', (req, res) => {
 
 app.put('/users/:userId', (req, res) => {
   const userId = req.params.userId;
-  const { username, email, password, roll_id } = req.body;
+  const { username, email, password, role_id } = req.body;
 
   // Check if any of the fields are provided in the request body
-  if (!username && !email && !password && !roll_id) {
+  if (!username && !email && !password && !role_id) {
     return res.status(400).json({ message: 'At least one field must be provided for updating' });
   }
 
@@ -396,10 +396,10 @@ app.put('/users/:userId', (req, res) => {
       updateFields.push('password_hash = ?');
       updateValues.push(hashedPassword);
 
-      // Check if the roll_id is provided
-      if (roll_id) {
-        updateFields.push('roll_id = ?');
-        updateValues.push(roll_id);
+      // Check if the role_id is provided
+      if (role_id) {
+        updateFields.push('role_id = ?');
+        updateValues.push(role_id);
       }
 
       // Add the fields to the update query
@@ -692,6 +692,126 @@ app.get('/roles/:roleId/permissions', (req, res) => {
     const permissions = results.map(result => result.permission_name);
     // Send permissions as response
     res.status(200).json({ permissions });
+  });
+});
+
+app.post('/vehicles', (req, res) => {
+  const { VehicleRegistrationNumber, Type, Capacity, FuelCostPerKmLoaded, FuelCostPerKmUnloaded } = req.body;
+
+  // Insert query
+  const sql = `INSERT INTO Vehicles (VehicleRegistrationNumber, Type, Capacity, FuelCostPerKmLoaded, FuelCostPerKmUnloaded) 
+               VALUES (?, ?, ?, ?, ?)`;
+
+  // Execute the query
+  pool.query(sql, [VehicleRegistrationNumber, Type, Capacity, FuelCostPerKmLoaded, FuelCostPerKmUnloaded], (err, result) => {
+    if (err) {
+      console.error('Error inserting vehicle:', err);
+      res.status(500).send('Error inserting vehicle');
+      return;
+    }
+    console.log('Vehicle inserted successfully');
+    return res.status(200).json({ message: 'Vehicle inserted successfully' });
+  });
+});
+
+app.get('/vehicles', (req, res) => {
+  // Select query to fetch all vehicles
+  const sql = 'SELECT * FROM Vehicles';
+
+  // Execute the query
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching vehicles:', err);
+      res.status(500).send('Error fetching vehicles');
+      return;
+    }
+    // Send the fetched vehicles as JSON response
+    res.status(200).json(result);
+  });
+});
+
+// API Endpoint to insert STS ID to a vehicle
+app.post('/sts-vehicles', (req, res) => {
+  const { STSID, VehicleRegistrationNumber } = req.body;
+
+  if (!STSID || !VehicleRegistrationNumber) {
+    return res.status(400).json({ error: 'STS ID and Vehicle Registration Number are required' });
+  }
+
+  const sql = 'INSERT INTO STSVehicles (STSID, VehicleRegistrationNumber) VALUES (?, ?)';
+  const values = [STSID, VehicleRegistrationNumber];
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting STS ID to vehicle: ', err);
+      return res.status(500).json({ error: 'Failed to insert STS ID to vehicle' });
+    }
+    console.log('STS ID inserted to vehicle successfully');
+    res.status(200).json({ message: 'STS ID inserted to vehicle successfully' });
+  });
+});
+
+// API Endpoint to insert STS data
+app.post('/sts', (req, res) => {
+  const { WardNumber, CapacityInTonnes, address, Longitude, Latitude } = req.body;
+
+  if (!WardNumber || !CapacityInTonnes || !address || !Longitude || !Latitude) {
+    return res.status(400).json({ error: 'WardNumber, CapacityInTonnes, address, Longitude, and Latitude are required' });
+  }
+
+  const sql = 'INSERT INTO STS (WardNumber, CapacityInTonnes, address, Longitude, Latitude) VALUES (?, ?, ?, ?, ?)';
+  const values = [WardNumber, CapacityInTonnes, address, Longitude, Latitude];
+
+  pool.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting STS data: ', err);
+      return res.status(500).json({ error: 'Failed to insert STS data' });
+    }
+    console.log('STS data inserted successfully');
+    res.status(200).json({ message: 'STS data inserted successfully' });
+  });
+});
+
+// Route handler to get all STS ward numbers
+app.get('/sts/wardnumbers', (req, res) => {
+  // Query to fetch all STS ward numbers from the database
+  const sql = 'SELECT WardNumber FROM STS';
+
+  // Execute the query
+  pool.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching STS ward numbers:', err);
+      return res.status(500).json({ error: 'Failed to fetch STS ward numbers' });
+    }
+
+    // Extract the ward numbers from the query results
+    const wardNumbers = results.map(result => result.WardNumber);
+
+    // Send the ward numbers as response
+    res.json({ wardNumbers });
+  });
+});
+
+app.post('/vehicle/:vehicleid', (req, res) => {
+  const { vehicleid } = req.params;
+  const { WardNumber } = req.body;
+
+  if (!WardNumber || !vehicleid) {
+    return res.status(400).json({ error: 'WardNumber and VehicleRegistrationNumber are required' });
+  }
+
+  // Query to insert data into STSVehicles table
+  const sql = 'INSERT INTO STSVehicles (WardNumber, VehicleRegistrationNumber) VALUES (?, ?)';
+  const values = [WardNumber, vehicleid];
+
+  // Execute the query
+  pool.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting data into STSVehicles table:', err);
+      return res.status(500).json({ error: 'Failed to insert data into STSVehicles table' });
+    }
+    console.log('Data inserted into STSVehicles table successfully');
+    res.status(200).json({ message: 'Data inserted into STSVehicles table successfully' });
   });
 });
 

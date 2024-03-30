@@ -1,96 +1,84 @@
 import React, { useState } from 'react';
 import Navbar from "./Navbar";
+import axios from 'axios';
 
 export default function AddVehiclePage() {
   const [vehicleData, setVehicleData] = useState({
-    vehicle_number: '',
+    vehicleRegistrationNumber: '',
     type: '',
     capacity: '',
-    fuel_cost_loaded: '',
-    fuel_cost_unloaded: '',
+    fuelCostPerKmLoaded: '',
+    fuelCostPerKmUnloaded: '',
   });
 
-  const [errors, setErrors] = useState({
-    vehicle_number: '',
-    type: '',
-    capacity: '',
-    fuel_cost_loaded: '',
-    fuel_cost_unloaded: '',
-  });
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setVehicleData({
       ...vehicleData,
-      [e.target.name]: e.target.value,
+      [name]: value
     });
-
-    setErrors({
-      ...errors,
-      [e.target.name]: '',
-    });
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-
-    const { vehicle_number, type, capacity, fuel_cost_loaded, fuel_cost_unloaded } = vehicleData;
-
-    if (!vehicle_number.trim()) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        vehicle_number: "Vehicle Number can't be empty",
-      }));
-      isValid = false;
-    }
-
-    // Add validation for other fields
-
-    return isValid;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
-
-    // Perform submission logic here (e.g., API call)
-    console.log('Vehicle data:', vehicleData);
-
-    // Reset form after successful submission
-    setVehicleData({
-      vehicle_number: '',
-      type: '',
-      capacity: '',
-      fuel_cost_loaded: '',
-      fuel_cost_unloaded: '',
-    });
+    // Gather all the data
+    const dataToSubmit = {
+      VehicleRegistrationNumber: vehicleData.vehicleRegistrationNumber,
+      Type: vehicleData.type,
+      Capacity: vehicleData.capacity,
+      FuelCostPerKmLoaded: vehicleData.fuelCostPerKmLoaded,
+      FuelCostPerKmUnloaded: vehicleData.fuelCostPerKmUnloaded,
+    };
+    // Post data to the API
+    axios.post('http://localhost:8000/vehicles', dataToSubmit)
+      .then(response => {
+        console.log(response.data);
+        // Reset form fields and errors
+        setVehicleData({
+          vehicleRegistrationNumber: '',
+          type: '',
+          capacity: '',
+          fuelCostPerKmLoaded: '',
+          fuelCostPerKmUnloaded: '',
+        });
+        setErrors({});
+        // Optionally, you can show a success message or redirect to another page
+      })
+      .catch(error => {
+        if (error.response && error.response.data) {
+          setErrors(error.response.data);
+        } else {
+          console.error('Error adding vehicle:', error.message);
+        }
+      });
   };
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
-      <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5">
+        <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">
           Add Vehicle
         </h2>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="vehicle_number">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="vehicleRegistrationNumber">
               Vehicle Registration Number
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.vehicle_number ? "border-red-500" : ""}`}
-              id="vehicle_number"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.vehicleRegistrationNumber ? "border-red-500" : ""}`}
+              id="vehicleRegistrationNumber"
               type="text"
-              name="vehicle_number"
-              value={vehicleData.vehicle_number}
+              name="vehicleRegistrationNumber"
+              value={vehicleData.vehicleRegistrationNumber}
               onChange={handleInputChange}
               placeholder="Vehicle Registration Number"
             />
-            {errors.vehicle_number && (
-              <p className="text-red-500 text-xs italic">{errors.vehicle_number}</p>
+            {errors.vehicleRegistrationNumber && (
+              <p className="text-red-500 text-xs italic">{errors.vehicleRegistrationNumber}</p>
             )}
           </div>
           <div className="mb-6">
@@ -104,7 +92,7 @@ export default function AddVehiclePage() {
               value={vehicleData.type}
               onChange={handleInputChange}
             >
-              <option value="">Select a type</option>
+              <option value="">Select a Type</option>
               <option value="Open Truck">Open Truck</option>
               <option value="Dump Truck">Dump Truck</option>
               <option value="Compactor">Compactor</option>
@@ -125,10 +113,10 @@ export default function AddVehiclePage() {
               value={vehicleData.capacity}
               onChange={handleInputChange}
             >
-              <option value="">Select a capacity</option>
-              <option value="3 ton">3 ton</option>
-              <option value="5 ton">5 ton</option>
-              <option value="7 ton">7 ton</option>
+              <option value="">Select a Capacity</option>
+              <option value="3">3 ton</option>
+              <option value="5">5 ton</option>
+              <option value="7">7 ton</option>
             </select>
             {errors.capacity && (
               <p className="text-red-500 text-xs italic">{errors.capacity}</p>
@@ -136,37 +124,37 @@ export default function AddVehiclePage() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fuel_cost_loaded">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fuelCostPerKmLoaded">
               Fuel Cost per Kilometer - Fully Loaded
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fuel_cost_loaded ? "border-red-500" : ""}`}
-              id="fuel_cost_loaded"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fuelCostPerKmLoaded ? "border-red-500" : ""}`}
+              id="fuelCostPerKmLoaded"
               type="text"
-              name="fuel_cost_loaded"
-              value={vehicleData.fuel_cost_loaded}
+              name="fuelCostPerKmLoaded"
+              value={vehicleData.fuelCostPerKmLoaded}
               onChange={handleInputChange}
               placeholder="Fuel Cost per Kilometer - Fully Loaded"
             />
-            {errors.fuel_cost_loaded && (
-              <p className="text-red-500 text-xs italic">{errors.fuel_cost_loaded}</p>
+            {errors.fuelCostPerKmLoaded && (
+              <p className="text-red-500 text-xs italic">{errors.fuelCostPerKmLoaded}</p>
             )}
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fuel_cost_unloaded">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fuelCostPerKmUnloaded">
               Fuel Cost per Kilometer - Unloaded
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fuel_cost_unloaded ? "border-red-500" : ""}`}
-              id="fuel_cost_unloaded"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fuelCostPerKmUnloaded ? "border-red-500" : ""}`}
+              id="fuelCostPerKmUnloaded"
               type="text"
-              name="fuel_cost_unloaded"
-              value={vehicleData.fuel_cost_unloaded}
+              name="fuelCostPerKmUnloaded"
+              value={vehicleData.fuelCostPerKmUnloaded}
               onChange={handleInputChange}
               placeholder="Fuel Cost per Kilometer - Unloaded"
             />
-            {errors.fuel_cost_unloaded && (
-              <p className="text-red-500 text-xs italic">{errors.fuel_cost_unloaded}</p>
+            {errors.fuelCostPerKmUnloaded && (
+              <p className="text-red-500 text-xs italic">{errors.fuelCostPerKmUnloaded}</p>
             )}
           </div>
 

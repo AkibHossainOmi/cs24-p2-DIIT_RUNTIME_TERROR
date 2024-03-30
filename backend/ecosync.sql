@@ -44,83 +44,82 @@ CREATE TABLE IF NOT EXISTS Role_Permissions (
     PRIMARY KEY (role_id, permission_id)
 );
 
--- Vehicles Table
+-- Table for Vehicles
 CREATE TABLE IF NOT EXISTS Vehicles (
-    vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
-    vehicle_number VARCHAR(20),
-    type ENUM('Open Truck', 'Dump Truck', 'Compactor', 'Container Carrier'),
-    capacity ENUM('3 ton', '5 ton', '7 ton')
+    VehicleRegistrationNumber VARCHAR(20) PRIMARY KEY,
+    Type VARCHAR(20) NOT NULL,
+    Capacity INT NOT NULL, -- in tonnes
+    FuelCostPerKmLoaded DECIMAL(10, 2) NOT NULL,
+    FuelCostPerKmUnloaded DECIMAL(10, 2) NOT NULL
 );
 
--- STS (Secondary Transfer Stations) Table
+-- Table for STS (Solid Transfer Stations)
 CREATE TABLE IF NOT EXISTS STS (
-    sts_id INT AUTO_INCREMENT PRIMARY KEY,
-    ward_number INT,
-    capacity_tonnes INT,
-    latitude DECIMAL(10, 8),
-    longitude DECIMAL(11, 8),
-    sts_manager_id INT,
-    FOREIGN KEY (sts_manager_id) REFERENCES Users(user_id)
+    WardNumber INT PRIMARY KEY,
+    CapacityInTonnes INT NOT NULL,
+    address VARCHAR(100) NOT NULL,
+    Longitude DECIMAL(10, 8) NOT NULL,
+    Latitude DECIMAL(10, 8) NOT NULL
 );
 
--- Vehicle_Entries Table
-CREATE TABLE IF NOT EXISTS Vehicle_Entries (
-    entry_id INT AUTO_INCREMENT PRIMARY KEY,
-    sts_id INT,
-    vehicle_id INT,
-    volume_of_waste DECIMAL(10, 2),
-    time_of_arrival DATETIME,
-    time_of_departure DATETIME,
-    FOREIGN KEY (sts_id) REFERENCES STS(sts_id),
-    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(vehicle_id)
+-- Table for STS Managers
+CREATE TABLE IF NOT EXISTS STSManagers (
+    STSManagerID INT PRIMARY KEY,
+    WardNumber INT,
+    Name VARCHAR(50),
+    FOREIGN KEY (WardNumber) REFERENCES STS(WardNumber),
+    FOREIGN KEY (STSManagerID) REFERENCES Users(user_id)
 );
 
--- Landfills Table
-CREATE TABLE IF NOT EXISTS Landfills (
-    landfill_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255),
-    latitude DECIMAL(10, 8),
-    longitude DECIMAL(11, 8)
+-- Many-to-Many Table for STS and Vehicles
+CREATE TABLE IF NOT EXISTS STSVehicles (
+    WardNumber INT,
+    VehicleRegistrationNumber VARCHAR(20),
+    PRIMARY KEY (WardNumber, VehicleRegistrationNumber),
+    FOREIGN KEY (WardNumber) REFERENCES STS(WardNumber),
+    FOREIGN KEY (VehicleRegistrationNumber) REFERENCES Vehicles(VehicleRegistrationNumber)
 );
 
--- Landfill_Entries Table
-CREATE TABLE IF NOT EXISTS Landfill_Entries (
-    entry_id INT AUTO_INCREMENT PRIMARY KEY,
-    landfill_id INT,
-    vehicle_id INT,
-    volume_of_waste DECIMAL(10, 2),
-    time_of_arrival DATETIME,
-    time_of_departure DATETIME,
-    FOREIGN KEY (landfill_id) REFERENCES Landfills(landfill_id),
-    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(vehicle_id)
+-- Table for STS Entries
+CREATE TABLE IF NOT EXISTS STSEntries (
+    EntryID INT PRIMARY KEY,
+    WardNumber INT,
+    VehicleRegistrationNumber VARCHAR(20),
+    WeightOfWaste INT NOT NULL,
+    TimeOfArrival DATETIME NOT NULL,
+    TimeOfDeparture DATETIME NOT NULL,
+    FOREIGN KEY (WardNumber) REFERENCES STS(WardNumber),
+    FOREIGN KEY (VehicleRegistrationNumber) REFERENCES Vehicles(VehicleRegistrationNumber)
 );
 
--- Oil_Allocation Table
-CREATE TABLE IF NOT EXISTS Oil_Allocation (
-    oil_allocation_id INT AUTO_INCREMENT PRIMARY KEY,
-    vehicle_id INT,
-    amount_allocated DECIMAL(10, 2),
-    date_allocated DATE,
-    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(vehicle_id)
+-- Table for Landfill Sites
+CREATE TABLE IF NOT EXISTS LandfillSites (
+    LandfillID INT PRIMARY KEY,
+    Capacity INT NOT NULL, -- in tonnes
+    OperationalTimespan VARCHAR(100) NOT NULL,
+    Longitude DECIMAL(10, 8) NOT NULL,
+    Latitude DECIMAL(10, 8) NOT NULL
 );
 
--- STS Entries Table
-CREATE TABLE IF NOT EXISTS STS_Entries (
-    entry_id INT AUTO_INCREMENT PRIMARY KEY,
-    sts_id INT,
-    vehicle_id INT,
-    volume_of_waste DECIMAL(10, 2),
-    time_of_arrival DATETIME,
-    time_of_departure DATETIME,
-    FOREIGN KEY (sts_id) REFERENCES STS(sts_id),
-    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(vehicle_id)
+-- Table for Landfill Managers
+CREATE TABLE IF NOT EXISTS LandfillManagers (
+    LandfillManagerID INT PRIMARY KEY,
+    LandfillID INT,
+    Name VARCHAR(50),
+    FOREIGN KEY (LandfillID) REFERENCES LandfillSites(LandfillID),
+    FOREIGN KEY (LandfillManagerID) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS STS_Manager_Assignment (
-    manager_id INT,
-    ward_number INT,
-    FOREIGN KEY (manager_id) REFERENCES Users(user_id),
-    PRIMARY KEY (ward_number)
+-- Table for Landfill Entries
+CREATE TABLE IF NOT EXISTS LandfillEntries (
+    EntryID INT PRIMARY KEY,
+    LandfillID INT,
+    VehicleRegistrationNumber VARCHAR(20),
+    WeightOfWaste INT NOT NULL,
+    TimeOfArrival DATETIME NOT NULL,
+    TimeOfDeparture DATETIME NOT NULL,
+    FOREIGN KEY (LandfillID) REFERENCES LandfillSites(LandfillID),
+    FOREIGN KEY (VehicleRegistrationNumber) REFERENCES Vehicles(VehicleRegistrationNumber)
 );
 
 INSERT IGNORE INTO Roles (name, description)

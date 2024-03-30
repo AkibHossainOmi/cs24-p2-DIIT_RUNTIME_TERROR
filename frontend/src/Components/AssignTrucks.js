@@ -1,22 +1,44 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Navbar from './Navbar';
+import axios from 'axios';
 
-const AssignTrucks = ({ truckId }) => {
+const AssignTrucks = () => {
   const [selectedWard, setSelectedWard] = useState('');
-  const availableWards = ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4'];
+  const [availableWards, setAvailableWards] = useState([]);
+
+  const { VehicleRegistrationNumber } = useParams();
+  console.log(VehicleRegistrationNumber);
+  
+  useEffect(() => {
+    // Fetch STS ward numbers from the backend API
+    const fetchWardNumbers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/sts/wardnumbers');
+        setAvailableWards(response.data.wardNumbers);
+      } catch (error) {
+        console.error('Error fetching STS ward numbers:', error);
+      }
+    };
+
+    fetchWardNumbers();
+  }, []);
 
   const handleWardSelect = (ward) => {
     setSelectedWard(ward);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to submit truck assignment to backend goes here
-    console.log('Selected Ward:', selectedWard);
-    console.log('Assigned Truck ID:', truckId);
-    // Reset form fields after submission
-    setSelectedWard('');
+    try {
+      // Make a POST request to insert truck assignment
+      await axios.post(`http://localhost:8000/vehicle/${VehicleRegistrationNumber}`, { WardNumber: selectedWard });
+      console.log('Truck assigned successfully');
+      // Reset form fields after submission
+      setSelectedWard('');
+    } catch (error) {
+      console.error('Error assigning truck:', error);
+    }
   };
 
   return (

@@ -4,17 +4,19 @@ import axios from 'axios';
 
 export default function CreateStationForm() {
   const [stationData, setStationData] = useState({
-    ward_number: '',
-    capacity: '',
-    longitude: '',
-    latitude: '',
+    WardNumber: '',
+    CapacityInTonnes: '',
+    address: '',
+    Longitude: '',
+    Latitude: '',
   });
 
   const [errors, setErrors] = useState({
-    ward_number: '',
-    capacity: '',
-    longitude: '',
-    latitude: '',
+    WardNumber: '',
+    CapacityInTonnes: '',
+    address: '',
+    Longitude: '',
+    Latitude: '',
   });
 
   const handleInputChange = (e) => {
@@ -32,38 +34,42 @@ export default function CreateStationForm() {
   const validateForm = () => {
     let isValid = true;
 
-    const { ward_number, capacity, longitude, latitude } = stationData;
+    const { WardNumber, CapacityInTonnes, address, Longitude, Latitude } = stationData;
 
-    if (!ward_number.trim()) {
+    if (!WardNumber.trim()) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        ward_number: "Ward Number can't be empty",
+        WardNumber: "Ward Number can't be empty",
       }));
       isValid = false;
     }
-
-    // Similarly, add validation for other fields
+    // Add validation for other fields (e.g., CapacityInTonnes, address, Longitude, Latitude)
 
     return isValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    // Perform submission logic here (e.g., API call)
-    console.log('Station data:', stationData);
-
-    // Reset form after successful submission
-    setStationData({
-      ward_number: '',
-      capacity: '',
-      longitude: '',
-      latitude: '',
-    });
+    try {
+      const response = await axios.post('http://localhost:8000/sts', stationData);
+      console.log('Response from API:', response.data);
+      
+      // Reset form after successful submission
+      setStationData({
+        WardNumber: '',
+        CapacityInTonnes: '',
+        address: '',
+        Longitude: '',
+        Latitude: '',
+      });
+    } catch (error) {
+      console.error('Error inserting STS data:', error);
+    }
   };
 
   const handleGeocode = async () => {
@@ -75,8 +81,8 @@ export default function CreateStationForm() {
         const { lat, lon } = response.data[0];
         setStationData({
           ...stationData,
-          latitude: lat,
-          longitude: lon,
+          Latitude: lat,
+          Longitude: lon,
         });
       } else {
         // Handle error, no results found
@@ -97,37 +103,37 @@ export default function CreateStationForm() {
         </h1>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="ward_number">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="WardNumber">
               Ward Number
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.ward_number ? "border-red-500" : ""}`}
-              id="ward_number"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.WardNumber ? "border-red-500" : ""}`}
+              id="WardNumber"
               type="text"
-              name="ward_number"
-              value={stationData.ward_number}
+              name="WardNumber"
+              value={stationData.WardNumber}
               onChange={handleInputChange}
               placeholder="Ward Number"
             />
-            {errors.ward_number && (
-              <p className="text-red-500 text-xs italic">{errors.ward_number}</p>
+            {errors.WardNumber && (
+              <p className="text-red-500 text-xs italic">{errors.WardNumber}</p>
             )}
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="capacity">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="CapacityInTonnes">
               Capacity
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.capacity ? "border-red-500" : ""}`}
-              id="capacity"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.CapacityInTonnes ? "border-red-500" : ""}`}
+              id="CapacityInTonnes"
               type="text"
-              name="capacity"
-              value={stationData.capacity}
+              name="CapacityInTonnes"
+              value={stationData.CapacityInTonnes}
               onChange={handleInputChange}
               placeholder="Capacity"
             />
-            {errors.capacity && (
-              <p className="text-red-500 text-xs italic">{errors.capacity}</p>
+            {errors.CapacityInTonnes && (
+              <p className="text-red-500 text-xs italic">{errors.CapacityInTonnes}</p>
             )}
           </div>
           <div className="mb-6">
@@ -145,37 +151,37 @@ export default function CreateStationForm() {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="longitude">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Longitude">
               Longitude
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.longitude ? "border-red-500" : ""}`}
-              id="longitude"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.Longitude ? "border-red-500" : ""}`}
+              id="Longitude"
               type="text"
-              name="longitude"
-              value={stationData.longitude}
+              name="Longitude"
+              value={stationData.Longitude}
               onChange={handleInputChange}
               placeholder="Longitude"
             />
-            {errors.longitude && (
-              <p className="text-red-500 text-xs italic">{errors.longitude}</p>
+            {errors.Longitude && (
+              <p className="text-red-500 text-xs italic">{errors.Longitude}</p>
             )}
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="latitude">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Latitude">
               Latitude
             </label>
             <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.latitude ? "border-red-500" : ""}`}
-              id="latitude"
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.Latitude ? "border-red-500" : ""}`}
+              id="Latitude"
               type="text"
-              name="latitude"
-              value={stationData.latitude}
+              name="Latitude"
+              value={stationData.Latitude}
               onChange={handleInputChange}
               placeholder="Latitude"
             />
-            {errors.latitude && (
-              <p className="text-red-500 text-xs italic">{errors.latitude}</p>
+            {errors.Latitude && (
+              <p className="text-red-500 text-xs italic">{errors.Latitude}</p>
             )}
           </div>
           

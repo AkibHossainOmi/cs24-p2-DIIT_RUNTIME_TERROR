@@ -156,7 +156,7 @@ export default function Registration() {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-semibold text-gray-800"
               >
                 Username
               </label>
@@ -166,7 +166,7 @@ export default function Registration() {
                   name="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  className={`block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
+                  className={`block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
                     errors.username ? "border-red-500" : ""
                   }`}
                 />
@@ -178,7 +178,7 @@ export default function Registration() {
             <div className="mt-4">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-semibold text-gray-800"
               >
                 Email
               </label>
@@ -188,7 +188,7 @@ export default function Registration() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
+                  className={`block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
                     errors.email ? "border-red-500" : ""
                   }`}
                 />
@@ -200,7 +200,7 @@ export default function Registration() {
             <div className="mt-4">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-semibold text-gray-800"
               >
                 Password
               </label>
@@ -210,7 +210,7 @@ export default function Registration() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
+                  className={`block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
                     errors.password ? "border-red-500" : ""
                   }`}
                 />
@@ -222,7 +222,7 @@ export default function Registration() {
             <div className="mt-4">
               <label
                 htmlFor="password_confirmation"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-semibold text-gray-800"
               >
                 Confirm Password
               </label>
@@ -232,7 +232,7 @@ export default function Registration() {
                   name="password_confirmation"
                   value={formData.password_confirmation}
                   onChange={handleInputChange}
-                  className={`block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ${
+                  className={`block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 ${
                     errors.password_confirmation ? "border-red-500" : ""
                   }`}
                 />
@@ -246,7 +246,7 @@ export default function Registration() {
             <div className="flex items-center justify-end mt-4">
               <button
                 type="submit"
-                className="inline-flex items-center px-4 py-2 ml-4 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-900 border border-transparent rounded-md active:bg-gray-900"
+                className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600"
               >
                 Register
               </button>

@@ -45,11 +45,12 @@ function App() {
         <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/navbar" element={<Navbar />} />
           {isAuthenticated === 0 && (
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
-            {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
+            <Route path="*" element={<Navigate to="/navbar" />} />
           </>
         )}
           {isAuthenticated === 1 && (
@@ -76,7 +77,7 @@ function App() {
             <Route path="/admin/all_landfills" element={<AllLandfills />} />
             <Route path="/admin/create_roles" element={<CreateRole />} />
             <Route path="/user/change_password" element={<ChangePassword />} />
-            {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
+            <Route path="*" element={<Navigate to="/navbar" />} />
           </>
         )}
         {isAuthenticated === 2 && (
@@ -87,7 +88,7 @@ function App() {
             <Route path="/edit/:userId" element={<EditProfile />} />
             <Route path="/sts_entries" element={<AddVehicleEntryPage />} />
             <Route path="/user/change_password" element={<ChangePassword />} />
-            {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
+            <Route path="*" element={<Navigate to="/navbar" />} />
           </>
         )}
         {isAuthenticated === 3 && (

@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-
-// Dummy landfill data with addresses in Dhaka North
-const dummyLandfills = [
-  { name: 'Landfill 1', capacity: 500, address: 'Dhaka North, Dummy Address 1', operational_timespan: '2020-2025' },
-  { name: 'Landfill 2', capacity: 700, address: 'Dhaka North, Dummy Address 2', operational_timespan: '2018-2023' },
-  { name: 'Landfill 3', capacity: 800, address: 'Dhaka North, Dummy Address 3', operational_timespan: '2019-2024' },
-  { name: 'Landfill 4', capacity: 600, address: 'Dhaka North, Dummy Address 4', operational_timespan: '2022-2027' },
-];
+import axios from 'axios';
 
 const AllLandfills = () => {
   const [landfillList, setLandfillList] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching landfill data from the backend
-    setTimeout(() => {
-      setLandfillList(dummyLandfills);
-    }, 1000); // Simulate 1 second delay
+    // Fetch landfill data from the backend
+    axios.get('http://localhost:8000/landfills')
+      .then(response => {
+        setLandfillList(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching landfills:', error);
+      });
   }, []);
 
   return (
@@ -29,9 +26,9 @@ const AllLandfills = () => {
             <div className="divide-y divide-gray-200">
               {landfillList.map((landfill, index) => (
                 <div key={index} className="py-4">
-                  <p className="text-lg font-semibold text-black-500">{`Landfill Name: ${landfill.name}`}</p>
-                  <p className="text-sm text-gray-600">{`Capacity: ${landfill.capacity}, Address: ${landfill.address}`}</p>
-                  <p className="text-sm text-gray-600">{`Operational Timespan: ${landfill.operational_timespan}`}</p>
+                  <p className="text-lg font-semibold text-black-500">{`Landfill ID: ${landfill.LandfillID}`}</p>
+                  <p className="text-sm text-gray-600">{`Capacity: ${landfill.Capacity}, Address: ${landfill.address}`}</p>
+                  <p className="text-sm text-gray-600">{`Operational Timespan: ${landfill.OperationalTimespan}`}</p>
                 </div>
               ))}
             </div>

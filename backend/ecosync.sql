@@ -140,7 +140,8 @@ SELECT * FROM (
     SELECT 'Assign Roles', 'Permission to assign roles to users' UNION ALL
     SELECT 'Add Vehicles', 'Permission to add vehicles to the system' UNION ALL
     SELECT 'Create STS', 'Permission to create a new STS' UNION ALL
-    SELECT 'Add Entry of Vehicles', 'Permission to add entry of vehicles to the system'
+    SELECT 'Add Entry of Lanfills', 'Permission to create a new STS' UNION ALL
+    SELECT 'Add Entry of STS', 'Permission to add entry of vehicles to the system'
 ) AS permissions
 WHERE NOT EXISTS (SELECT * FROM Permissions);
 

@@ -128,7 +128,7 @@ app.post('/auth/reset-password/initiate', (req, res) => {
     }
 
     
-    const userId = results[0].userId;
+    const userId = results[0].user_id;
     const token = jwt.sign({ userId }, 'ecosync_secret', { expiresIn: '5m' });
     
     const mailOptions = {
@@ -165,7 +165,7 @@ app.put('/auth/reset-password/confirm', (req, res) => {
 
   
   const decoded = jwt.verify(token_or_code, 'ecosync_secret'); 
-  const userId = decoded.user_id;
+  const userId = decoded.userId;
 
   
   bcrypt.hash(new_password, 10, (err, hashedPassword) => {
@@ -181,7 +181,7 @@ app.put('/auth/reset-password/confirm', (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
       }
 
-      
+      console.log(userId);
       return res.status(200).json({ message: 'Password reset successful' });
     });
   });

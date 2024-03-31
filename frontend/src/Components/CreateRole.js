@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios'; // Import Axios library
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const CreateRole = () => {
+  const history = useNavigate();
   const [roleName, setRoleName] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [availablePermissions] = useState([
@@ -29,14 +31,30 @@ const CreateRole = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to submit role data to backend goes here
-    console.log('Role Name:', roleName);
-    console.log('Selected Permissions:', selectedPermissions);
-    // Reset form fields after submission
-    setRoleName('');
-    setSelectedPermissions([]);
+    
+    try {
+      let ID;
+      // Make an HTTP POST request to the backend endpoint
+      if(roleName === 'System Admin') ID = 1;
+      if(roleName === 'STS Manager') ID = 2;
+      if(roleName === 'Landfill Manager') ID = 3;
+      if(roleName === 'Unassigned') ID = 4;
+      const response = await axios.post(`http://localhost:8000/rbac/roles/${ID}/permissions`, { permissions: selectedPermissions });
+      
+      // Handle success response
+      console.log(response.data.message); // Log success message
+      
+      // Reset form fields after submission
+      history('/control');
+      window.location.reload();
+      setRoleName('');
+      setSelectedPermissions([]);
+    } catch (error) {
+      // Handle error
+      console.error('Error assigning permissions:', error);
+    }
   };
 
   return (
@@ -45,7 +63,7 @@ const CreateRole = () => {
       <div className="container mx-auto py-8 mt-10">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h2 className="text-3xl font-semibold text-center text-purple-700   mb-2">Create Role</h2>
+            <h2 className="text-3xl font-semibold text-center text-purple-700   mb-2">Assign Permissions</h2>
             <hr className="mb-4" />
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -79,7 +97,7 @@ const CreateRole = () => {
                 ))}
               </div>
               <button type="submit" className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
-                Create Role
+                Submit
               </button>
             </form>
           </div>

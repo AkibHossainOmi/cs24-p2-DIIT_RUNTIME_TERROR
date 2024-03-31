@@ -94,10 +94,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="relative h-screen bg-purple-100">
-      <div className="fixed top-20 inset-x-0 bg-purple-100 z-10 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+    <div className="relative h-screen">
+      <div className="relative z-50">
       <Navbar />
-        <h2 className="text-3xl text-center font-bold mb-6 text-purple-700"></h2>
+    </div>
+      <div style={{ maxHeight: 'calc(100vh - 80px)' }}>
+        <h2 className="mt-20 text-3xl text-center font-bold mb-6 text-purple-700"></h2>
        <div className='ml-8 mt-10'>
        <div className="mb-8">
           <h3 className="text-xl font-bold mb-4 text-purple-700">Real-time Monitoring of Waste Collection</h3>

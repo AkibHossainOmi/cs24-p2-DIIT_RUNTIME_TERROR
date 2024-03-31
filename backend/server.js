@@ -17,9 +17,9 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
-  host: 'localhost',
+  host: 'ecosyncdb',
   user: 'root',
-  // password: '123456',
+  password: '123456',
   database: 'ecosync',
   port: 3306,
   waitForConnections: true,
@@ -742,7 +742,7 @@ app.post('/sts-vehicles', (req, res) => {
   const sql = 'INSERT INTO STSVehicles (STSID, VehicleRegistrationNumber) VALUES (?, ?)';
   const values = [STSID, VehicleRegistrationNumber];
 
-  connection.query(sql, values, (err, result) => {
+  pool.query(sql, values, (err, result) => {
     if (err) {
       console.error('Error inserting STS ID to vehicle: ', err);
       return res.status(500).json({ error: 'Failed to insert STS ID to vehicle' });

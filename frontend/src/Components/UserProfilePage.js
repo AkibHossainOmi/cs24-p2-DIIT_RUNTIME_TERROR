@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import axios from "axios";
 
 const UserProfile = () => {
+  let roleId = 4;
   const isAuthenticated = getLoggedInStatus();
   const [userInfo, setUserInfo] = useState(null);
   const [permissions, setPermissions] = useState([]);
@@ -44,9 +45,14 @@ const UserProfile = () => {
       .catch(error => {
         console.error("Error fetching additional user details:", error);
       });
-
-    // Fetch permissions for the role
-    axios.get(`http://localhost:8000/roles/${getLoggedInStatus()}/permissions`)
+    axios.get(`http://localhost:8000/users/${userId}`)
+    .then(response => {
+      console.log(response.data.role);
+      if(response.data.role==="System Admin") roleId = 1;
+      if(response.data.role==="STS Manager") roleId = 2;
+      if(response.data.role==="Landfill Manager") roleId = 3;
+      if(response.data.role==="Unassigned") roleId = 4;
+      axios.get(`http://localhost:8000/roles/${roleId}/permissions`)
       .then(response => {
         setPermissions(response.data.permissions);
       })
@@ -54,6 +60,8 @@ const UserProfile = () => {
         setError("Failed to fetch permissions");
         console.error("Error fetching permissions:", error);
       });
+    })
+    // Fetch permissions for the role
   }, [userId]);
 
   const confirmDeleteUser = () => {
@@ -73,7 +81,7 @@ const UserProfile = () => {
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto mt-15 bg-white rounded-md shadow-md lg:max-w-xl">
-        <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5">User Profile</h2>
+        <h2 className="text-3xl font-semibold text-center text-purple-700 pb-5 pt-20">User Profile</h2>
         <hr className="mb-4" />
         {userInfo && (
           <form className="px-6 py-4">

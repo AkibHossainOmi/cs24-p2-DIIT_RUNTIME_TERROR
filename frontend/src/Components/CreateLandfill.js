@@ -117,10 +117,10 @@ export default function CreateLandfillForm() {
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
-        <h1 className="mt-6 text-3xl font-semibold text-center text-purple-700 pb-5">
+        <h1 className="mt-10 text-3xl font-semibold text-center text-purple-700 pb-5">
           Create Landfill
         </h1>
-        <form className="mt-6" onSubmit={handleSubmit}>
+        <form className="" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="LandfillID">
               Landfill ID

@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS LandfillManagers (
 
 -- Table for Landfill Entries
 CREATE TABLE IF NOT EXISTS LandfillEntries (
-    EntryID INT PRIMARY KEY,
+    EntryID INT PRIMARY KEY AUTO_INCREMENT,
     LandfillID INT,
     VehicleRegistrationNumber VARCHAR(20),
     WeightOfWaste INT NOT NULL,
@@ -140,8 +140,7 @@ SELECT * FROM (
     SELECT 'Assign Roles', 'Permission to assign roles to users' UNION ALL
     SELECT 'Add Vehicles', 'Permission to add vehicles to the system' UNION ALL
     SELECT 'Create STS', 'Permission to create a new STS' UNION ALL
-    SELECT 'Add Entry of Vehicles', 'Permission to add entry of vehicles to the system' UNION ALL
-    SELECT 'Add Entry of Truck', 'Permission to add entry of truck to the system'
+    SELECT 'Add Entry of Vehicles', 'Permission to add entry of vehicles to the system'
 ) AS permissions
 WHERE NOT EXISTS (SELECT * FROM Permissions);
 

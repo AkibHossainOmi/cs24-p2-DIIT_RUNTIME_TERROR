@@ -27,7 +27,7 @@ const AllVehicles = () => {
             <div className="divide-y divide-gray-200">
               {vehicles.map(vehicle => (
                 <div key={vehicle.VehicleRegistrationNumber} className="py-4">
-                  <Link to={`/vehicles/${vehicle.VehicleRegistrationNumber}`} className="text-lg font-semibold text-black-500 hover:underline">{`${vehicle.VehicleRegistrationNumber}`}</Link>
+                  <Link to={`/vehicles/${vehicle.VehicleRegistrationNumber}`} className="text-lg font-semibold text-black-500 hover: ">{`${vehicle.VehicleRegistrationNumber}`}</Link>
                   <p className="text-sm text-gray-600">{`Type: ${vehicle.Type}, Capacity: ${vehicle.Capacity}`}</p>
                   {vehicle.WardNumber===null&&<p className="text-sm text-gray-600">Ward Number: Unassigned</p>}
                   {vehicle.WardNumber!==null&&<p className="text-sm text-gray-600">{`Ward Number: ${vehicle.WardNumber}`}</p>}

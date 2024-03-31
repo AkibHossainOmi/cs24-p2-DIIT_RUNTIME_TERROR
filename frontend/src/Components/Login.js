@@ -120,10 +120,10 @@ export default function Login() {
         <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
             <Navbar/>
             <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl">
-                <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
+                <h1 className="text-3xl font-semibold text-center text-purple-700">
                    Sign in
                 </h1>
-                <form className="mt-6" onSubmit={handleLogin}>
+                <form className="" onSubmit={handleLogin}>
                 <div className="mb-2">
                         <label
                         htmlFor="username"
@@ -184,7 +184,7 @@ export default function Login() {
                             <p className="mt-1 text-xs text-red-500">{errors.password}</p>
                         )}
                     </div>
-                    <a href="/forgot_password" className="text-xs text-purple-600 hover:underline">
+                    <a href="/forgot_password" className="text-xs text-purple-600 hover: ">
                         Forgot Password?
                     </a>
                     <div className="mt-6">
@@ -199,7 +199,7 @@ export default function Login() {
                     Don't have an account?{" "}
                     <a
                         href="registration"
-                        className="font-medium text-purple-600 hover:underline"
+                        className="font-medium text-purple-600 hover: "
                     >
                         Sign up
                     </a>

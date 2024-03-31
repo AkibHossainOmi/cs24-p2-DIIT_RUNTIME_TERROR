@@ -147,11 +147,11 @@ export default function Registration() {
   return (
     <div>
     <Navbar/>
-      <div className="flex flex-col items-center min-h-screen pt-6 sm:justify-center sm:pt-0 bg-gray-50">
-        <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
+      <div className="flex flex-col items-center min-h-screen pt-6 sm:justify-center sm:pt-0 bg-gray-50 mt-5">
+        <h1 className="text-3xl font-semibold text-center text-purple-700  ">
           Register
         </h1>
-        <div className="w-full px-6 py-4 mt-6 overflow-hidden bg-white shadow-md sm:max-w-md sm:rounded-lg">
+        <div className="w-full px-6 py-4 overflow-hidden bg-white shadow-md sm:max-w-md sm:rounded-lg">
           <form onSubmit={handleRegistration}>
             <div>
               <label

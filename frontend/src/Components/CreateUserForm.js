@@ -70,7 +70,7 @@ export default function CreateUserForm() {
     try {
       const response = await createUserAPI(userData);
       console.log('User created successfully:', response);
-      history('/all_users');
+      history('/admin/all_users');
       window.location.reload();
       // Reset form after successful user creation
       setUserData({
@@ -105,11 +105,11 @@ export default function CreateUserForm() {
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
       <Navbar />
-      <div className="w-full p-6 m-auto mt-10 bg-white rounded-md shadow-md lg:max-w-xl">
-        <h1 className="text-3xl font-semibold text-center text-purple-700 underline">
+      <div className="w-full p-6 m-auto mt-15 bg-white rounded-md shadow-md lg:max-w-xl">
+        <h1 className="text-3xl font-semibold text-center text-purple-700  ">
           Create User
         </h1>
-        <form className="mt-6" onSubmit={handleSubmit}>
+        <form className="" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
               Username

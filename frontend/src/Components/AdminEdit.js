@@ -149,7 +149,7 @@ const AdminEdit = () => {
               </div> */}
               {/* Link to change password */}
               <div className="mb-4">
-                <Link to="/user/change_password" className="text-blue-500 hover:underline">Change Password</Link>
+                <Link to="/user/change_password" className="text-blue-500 hover: ">Change Password</Link>
               </div>
               {/* Submit button */}
               <button

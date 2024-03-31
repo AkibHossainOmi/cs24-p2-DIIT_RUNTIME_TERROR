@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Components/Login';
 import Registration from './Components/Registration';
 import Dashboard from './Components/Dashboard';
-import { getLoggedInStatus, setLoggedIn } from './Components/Status';
+import { getLoggedInStatus } from './Components/Status';
 import Home from './Components/Home';
 import CreateUserForm from './Components/CreateUserForm';
 import CreateStationForm from './Components/CreateStationForm';
@@ -14,7 +14,6 @@ import ChangePassword from './Components/ChangePassword';
 import EditProfile from './Components/EditProfile';
 import About from './Components/About';
 import Navbar from './Components/Navbar';
-import Users from './Components/Users';
 import AllUsers from './Components/AllUsers';
 import UserProfile from './Components/UserProfilePage';
 import AdminControlPanel from './Components/AdminControlPanel';
@@ -23,7 +22,6 @@ import Profile from './Components/Profile';
 import AdminEdit from './Components/AdminEdit';
 import VehicleManagement from './Components/VehicleManagement';
 import AllVehicles from './Components/AllVehicles';
-import VehicleProfile from './Components/Vehicle';
 import AssignTrucks from './Components/AssignTrucks';
 import STSManagement from './Components/StsManagement';
 import AllSTS from './Components/AllSts';
@@ -33,6 +31,7 @@ import AllLandfills from './Components/AllLandfill';
 import CreateRole from './Components/CreateRole';
 import ForgotPassword from './Components/ForgotPassword';
 import ResetPassword from './Components/ResetPassword';
+import BillingView from './Components/Billingview';
 
 
 
@@ -101,9 +100,11 @@ function App() {
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit/:userId" element={<EditProfile />} />
+            <Route path="/vehicle_entries" element={<AddDumpingEntryPage />} />
             <Route path="/user/change_password" element={<ChangePassword />} />
             <Route path="/users/:userId" element={<UserProfile />} />
-            {/* <Route path="*" element={<Navigate to="/navbar" />} /> */}
+            <Route path="/billing" element={<BillingView />} />
+            <Route path="*" element={<Navigate to="/navbar" />} />
           </>
         )}
         </Routes>

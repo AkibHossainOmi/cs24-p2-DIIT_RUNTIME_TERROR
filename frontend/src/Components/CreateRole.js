@@ -6,7 +6,6 @@ const CreateRole = () => {
   const [roleName, setRoleName] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [availablePermissions] = useState([
-    'Add Entry of Truck',
     'Add Entry of Vehicles',
     'Create STS',
     'Add Vehicles',
@@ -46,7 +45,7 @@ const CreateRole = () => {
       <div className="container mx-auto py-8 mt-10">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h2 className="text-3xl font-semibold text-center text-purple-700 underline mb-2">Create Role</h2>
+            <h2 className="text-3xl font-semibold text-center text-purple-700   mb-2">Create Role</h2>
             <hr className="mb-4" />
             <form onSubmit={handleSubmit}>
               <div className="mb-4">

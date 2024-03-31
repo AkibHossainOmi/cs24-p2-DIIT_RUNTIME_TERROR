@@ -67,7 +67,7 @@ const AllUsers = () => {
               {/* Render sorted and filtered users */}
               {sortedUsers.map(user => (
                 <div key={user.userId} className="py-4">
-                  <Link to={`/users/${user.userId}`} className="text-lg font-semibold text-black-500 hover:underline">{user.username}</Link>
+                  <Link to={`/users/${user.userId}`} className="text-lg font-semibold text-black-500 hover: ">{user.username}</Link>
                   <p className="text-sm text-gray-600">{user.role}</p>
                 </div>
               ))}

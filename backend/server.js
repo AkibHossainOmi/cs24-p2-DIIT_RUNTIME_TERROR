@@ -892,6 +892,104 @@ app.post('/sts-entries', (req, res) => {
   });
 });
 
+app.post('/landfill-entries', (req, res) => {
+  const { LandfillID, VehicleRegistrationNumber, WeightOfWaste, TimeOfArrival, TimeOfDeparture } = req.body;
+
+  // Check if all required fields are provided
+  if (!LandfillID || !VehicleRegistrationNumber || !WeightOfWaste || !TimeOfArrival || !TimeOfDeparture) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Insert query to add data into LandfillEntries table
+  const sql = 'INSERT INTO LandfillEntries (LandfillID, VehicleRegistrationNumber, WeightOfWaste, TimeOfArrival, TimeOfDeparture) VALUES (?, ?, ?, ?, ?)';
+  const values = [LandfillID, VehicleRegistrationNumber, WeightOfWaste, TimeOfArrival, TimeOfDeparture];
+
+  // Execute the query
+  pool.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting data into LandfillEntries table:', err);
+      return res.status(500).json({ error: 'Failed to insert data into LandfillEntries table' });
+    }
+    console.log('Data inserted into LandfillEntries table successfully');
+    res.status(200).json({ message: 'Data inserted into LandfillEntries table successfully' });
+  });
+});
+
+app.post('/ward-number', (req, res) => {
+  const { vehicleRegistrationNumber } = req.body;
+
+  // Check if the vehicle registration number is provided
+  if (!vehicleRegistrationNumber) {
+    return res.status(400).json({ error: 'Vehicle registration number is required' });
+  }
+
+  // Query to fetch the ward number based on the vehicle registration number
+  const sql = 'SELECT WardNumber FROM STSVehicles WHERE VehicleRegistrationNumber = ?';
+  pool.query(sql, [vehicleRegistrationNumber], (error, results) => {
+    if (error) {
+      console.error('Error fetching ward number:', error);
+      return res.status(500).json({ error: 'Failed to fetch ward number' });
+    }
+
+    // Check if a ward number was found
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Ward number not found for the provided vehicle registration number' });
+    }
+
+    // Extract the ward number from the result and send it in the response
+    const wardNumber = results[0].WardNumber;
+    res.status(200).json({ wardNumber });
+  });
+});
+
+// API endpoint to fetch details based on WardNumber, LandfillID, and VehicleRegistrationNumber
+app.post('/billing-calculation-details', (req, res) => {
+  const { WardNumber, LandfillID, VehicleRegistrationNumber } = req.body;
+
+  // Fetch details from the database based on input parameters
+  const sql = `SELECT STS.Latitude AS WardLatitude, STS.Longitude AS WardLongitude,
+                LandfillSites.Latitude AS LandfillLatitude, LandfillSites.Longitude AS LandfillLongitude,
+                Vehicles.FuelCostPerKmLoaded, Vehicles.FuelCostPerKmUnloaded
+                FROM STS
+                JOIN LandfillSites ON STS.WardNumber = ?
+                JOIN Vehicles ON LandfillSites.LandfillID = ?
+                WHERE Vehicles.VehicleRegistrationNumber = ?`;
+
+  pool.query(sql, [WardNumber, LandfillID, VehicleRegistrationNumber], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      if (result.length > 0) {
+        const { WardLatitude, WardLongitude, LandfillLatitude, LandfillLongitude, FuelCostPerKmLoaded, FuelCostPerKmUnloaded } = result[0];
+
+        // Calculate distance between Ward and Landfill
+        const dLat = LandfillLatitude - WardLatitude;
+        const dLng = LandfillLongitude - WardLongitude;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(WardLatitude) * Math.cos(LandfillLatitude) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const calculatedDistance = 6371 * c; // Radius of the Earth in kilometers
+
+        // Calculate per kilometer cost
+        const perKilometerCost = parseFloat(FuelCostPerKmUnloaded) + (3 / 5) * (parseFloat(FuelCostPerKmLoaded) - parseFloat(FuelCostPerKmUnloaded));
+
+        res.status(200).json({
+          WardLatitude,
+          WardLongitude,
+          LandfillLatitude,
+          LandfillLongitude,
+          PerKilometerCost: perKilometerCost.toFixed(2),
+          Distance: calculatedDistance.toFixed(2)
+        });
+      } else {
+        res.status(404).json({ error: 'Details not found' });
+      }
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

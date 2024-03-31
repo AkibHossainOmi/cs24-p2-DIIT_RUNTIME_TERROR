@@ -119,7 +119,7 @@ export default function Profile () {
               </ul>
             </div>
             <div className="flex justify-between items-center">
-              <Link to={`/edit/${userId}`} className="text-blue-500 hover:underline">Edit Profile</Link>
+              <Link to={`/edit/${userId}`} className="text-blue-500 hover: ">Edit Profile</Link>
             </div>
           </form>
         )}

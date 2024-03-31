@@ -102,10 +102,10 @@ export default function CreateStationForm() {
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl mt-8">
-        <h1 className="mt-6 text-3xl font-semibold text-center text-purple-700 underline">
+        <h1 className="mt-10 text-3xl font-semibold text-center text-purple-700  ">
           Create STS
         </h1>
-        <form className="mt-6" onSubmit={handleSubmit}>
+        <form className="" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="WardNumber">
               Ward Number

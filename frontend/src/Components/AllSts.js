@@ -22,7 +22,7 @@ const AllSTS = () => {
       <div className="container mx-auto py-8 mt-10">
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
           <div className="px-6 py-4">
-            <h1 className="text-3xl font-semibold text-center text-purple-700 underline mb-4">All STS</h1>
+            <h1 className="text-3xl font-semibold text-center text-purple-700   mb-4">All STS</h1>
             <div className="divide-y divide-gray-200">
               {stsList.map((sts, index) => (
                 <div key={index} className="py-4">

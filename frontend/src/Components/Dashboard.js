@@ -57,7 +57,7 @@ const Dashboard = () => {
     ],
   };
 
-  // Sample data for daily fuel cost statistics for the trucks
+  // Sample data for daily fuel cost statistics for the Vehicles
   const dailyFuelCostData = {
     options: {
       chart: {
@@ -69,7 +69,7 @@ const Dashboard = () => {
     },
     series: [
       {
-        name: 'Daily Fuel Cost for Trucks (BDT)',
+        name: 'Daily Fuel Cost for Vehicles (BDT)',
         data: [100, 120, 90, 110, 130, 100, 115], // Dummy values for daily fuel cost
       },
     ],
@@ -116,7 +116,7 @@ const Dashboard = () => {
           <Chart options={wasteCollectionLandfillData.options} series={wasteCollectionLandfillData.series} type="bar" height={350} />
         </div>
         <div className="mb-8">
-          <h3 className="text-xl font-bold mb-4 text-purple-700">Daily Fuel Cost for Trucks</h3>
+          <h3 className="text-xl font-bold mb-4 text-purple-700">Daily Fuel Cost for Vehicles</h3>
           <Chart options={dailyFuelCostData.options} series={dailyFuelCostData.series} type="bar" height={350} />
         </div>
        </div>

@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS ecosync;
 CREATE DATABASE IF NOT EXISTS ecosync;
 use ecosync;
 -- Users Table

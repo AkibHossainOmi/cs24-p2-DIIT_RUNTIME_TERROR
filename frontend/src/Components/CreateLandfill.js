@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from "./Navbar";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Map from './Map';
 
 export default function CreateLandfillForm() {
   const history = useNavigate();
@@ -91,26 +92,12 @@ export default function CreateLandfillForm() {
       });
   };
 
-  const handleGeocode = async () => {
-    try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(landfillData.address)}`
-      );
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0];
-        setLandfillData({
-          ...landfillData,
-          latitude: lat,
-          longitude: lon,
-        });
-      } else {
-        // Handle error, no results found
-        console.error('No results found');
-      }
-    } catch (error) {
-      // Handle error, e.g., network error, API error
-      console.error('Error fetching geocode data:', error);
-    }
+  const handleLatLngChange = (lat, lng) => {
+    setLandfillData({
+      ...landfillData,
+      latitude: lat,
+      longitude: lng,
+    });
   };
 
   return (
@@ -176,63 +163,14 @@ export default function CreateLandfillForm() {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
               Address
             </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-              id="address"
-              type="text"
-              name="address"
-              value={landfillData.address}
-              onChange={handleInputChange}
-              placeholder="Address"
-            />
+            <Map onLatLngChange={handleLatLngChange} />
           </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="longitude">
-              Longitude
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.longitude ? "border-red-500" : ""}`}
-              id="longitude"
-              type="text"
-              name="longitude"
-              value={landfillData.longitude}
-              onChange={handleInputChange}
-              placeholder="Longitude"
-            />
-            {errors.longitude && (
-              <p className="text-red-500 text-xs italic">{errors.longitude}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="latitude">
-              Latitude
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.latitude ? "border-red-500" : ""}`}
-              id="latitude"
-              type="text"
-              name="latitude"
-              value={landfillData.latitude}
-              onChange={handleInputChange}
-              placeholder="Latitude"
-            />
-            {errors.latitude && (
-              <p className="text-red-500 text-xs italic">{errors.latitude}</p>
-            )}
-          </div>
-          <div className="flex items-center justify-between">
+          <div className="pt-24 flex items-center justify-between">
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               Create Landfill
-            </button>
-            <button
-              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              onClick={handleGeocode}
-            >
-              Get Geolocation
             </button>
           </div>
         </form>

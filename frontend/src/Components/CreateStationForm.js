@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from "./Navbar";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Map from './Map';
 
 export default function CreateStationForm() {
   const history = useNavigate();
@@ -76,26 +77,12 @@ export default function CreateStationForm() {
     }
   };
 
-  const handleGeocode = async () => {
-    try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(stationData.address)}`
-      );
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0];
-        setStationData({
-          ...stationData,
-          Latitude: lat,
-          Longitude: lon,
-        });
-      } else {
-        // Handle error, no results found
-        console.error('No results found');
-      }
-    } catch (error) {
-      // Handle error, e.g., network error, API error
-      console.error('Error fetching geocode data:', error);
-    }
+  const handleLatLngChange = (lat, lng) => {
+    setStationData({
+      ...stationData,
+      Latitude: lat,
+      Longitude: lng,
+    });
   };
 
   return (
@@ -144,64 +131,14 @@ export default function CreateStationForm() {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
               Address
             </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-              id="address"
-              type="text"
-              name="address"
-              value={stationData.address}
-              onChange={handleInputChange}
-              placeholder="Address"
-            />
+            <Map onLatLngChange={handleLatLngChange} />
           </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Longitude">
-              Longitude
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.Longitude ? "border-red-500" : ""}`}
-              id="Longitude"
-              type="text"
-              name="Longitude"
-              value={stationData.Longitude}
-              onChange={handleInputChange}
-              placeholder="Longitude"
-            />
-            {errors.Longitude && (
-              <p className="text-red-500 text-xs italic">{errors.Longitude}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Latitude">
-              Latitude
-            </label>
-            <input
-              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.Latitude ? "border-red-500" : ""}`}
-              id="Latitude"
-              type="text"
-              name="Latitude"
-              value={stationData.Latitude}
-              onChange={handleInputChange}
-              placeholder="Latitude"
-            />
-            {errors.Latitude && (
-              <p className="text-red-500 text-xs italic">{errors.Latitude}</p>
-            )}
-          </div>
-          
-          <div className="flex items-center justify-between">
+          <div className="pt-24 flex items-center justify-between">
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               Create Station
-            </button>
-            <button
-              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              onClick={handleGeocode}
-            >
-              Get Geolocation
             </button>
           </div>
         </form>

@@ -139,20 +139,28 @@ const WastageEntry = () => {
           </div>
           <div className="flex justify-between"> {/* Adjusted to use flex */}
             <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Submit
+                Submit
             </button>
             <Link to="/all-entries"> {/* Link to the All Entries page */}
-              <button
+                <button
                 type="button"
                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
+                >
                 All Entries
-              </button>
+                </button>
             </Link>
-          </div>
+            <Link to="/createbill"> {/* Link to the Create Bill page */}
+                <button
+                type="button"
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                Create Bill
+                </button>
+            </Link>
+            </div>
         </form>
       </div>
     </div>

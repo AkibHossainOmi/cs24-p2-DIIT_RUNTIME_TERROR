@@ -42,6 +42,7 @@ import EnterWorkingHours from './Components/EnterWorkingHours';
 import WorkforceRegistrationPage from './Components/WorkforceRegistrationPage';
 import AllEmployees from './Components/AllEmployees';
 import WastageEntries from './Components/WastageEntries';
+import AllWastageEntries from './Components/AllWastageEntries';
 
 
 
@@ -116,6 +117,8 @@ function App() {
             <Route path="*" element={<Navigate to="/navbar" />} />
 
             <Route path="/wastage_entries" element={<WastageEntries />} />
+            <Route path="/all-entries" element={<AllWastageEntries />} />
+
 
           </>
         )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const WastageEntry = () => {
   const [formData, setFormData] = useState({
@@ -136,13 +137,21 @@ const WastageEntry = () => {
               <option value="Mini Truck">Mini Truck</option>
             </select>
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-between"> {/* Adjusted to use flex */}
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Submit
             </button>
+            <Link to="/all-entries"> {/* Link to the All Entries page */}
+              <button
+                type="button"
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                All Entries
+              </button>
+            </Link>
           </div>
         </form>
       </div>

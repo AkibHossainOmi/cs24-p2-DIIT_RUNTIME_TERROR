@@ -1,7 +1,9 @@
+// Import necessary libraries and components
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import axios from 'axios';
 
+// Define the component
 const AllWastageEntries = () => {
   const [wastageEntries, setWastageEntries] = useState([]);
 
@@ -16,6 +18,7 @@ const AllWastageEntries = () => {
       });
   }, []);
 
+  // Render the component UI
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
@@ -26,9 +29,9 @@ const AllWastageEntries = () => {
             <div className="divide-y divide-gray-200">
               {wastageEntries.map((entry, index) => (
                 <div key={index} className="py-4">
-                  <p className="text-lg font-semibold text-black-500">{`Time and Date of Collection: ${entry.dateTime}`}</p>
+                  <p className="text-lg font-semibold text-black-500">{`Contractor ID: ${entry.contractorId}`}</p>
+                  <p className="text-sm text-gray-600">{`Time and Date: ${entry.dateTime}`}</p>
                   <p className="text-sm text-gray-600">{`Amount Collected: ${entry.amountCollected} kg`}</p>
-                  <p className="text-sm text-gray-600">{`Contractor ID: ${entry.contractorId}`}</p>
                   <p className="text-sm text-gray-600">{`Type of Waste Collected: ${entry.wasteType}`}</p>
                   <p className="text-sm text-gray-600">{`Designated STS for Deposit: ${entry.designatedSTS}`}</p>
                   <p className="text-sm text-gray-600">{`Vehicle Used for Transportation: ${entry.vehicleUsed}`}</p>

@@ -1163,6 +1163,55 @@ app.get('/working-hours', (req, res) => {
   });
 });
 
+app.post('/wastage-entries', (req, res) => {
+  const { dateTime, amountCollected, contractorId, wasteType, designatedSTS, vehicleUsed } = req.body;
+
+  // Insert the data into the database
+  pool.query(
+    'INSERT INTO WastageEntries (dateTime, amountCollected, contractorId, wasteType, designatedSTS, vehicleUsed) VALUES (?, ?, ?, ?, ?, ?)',
+    [dateTime, amountCollected, contractorId, wasteType, designatedSTS, vehicleUsed],
+    (error, results, fields) => {
+      if (error) {
+        console.error('Error submitting wastage entry:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+      } else {
+        res.status(201).json({ success: true, message: 'Wastage entry submitted successfully' });
+      }
+    }
+  );
+});
+
+app.get('/wastage-entries', async (req, res) => {
+  try {
+    // Get a connection from the pool
+    pool.getConnection((err, connection) => {
+      if (err) {
+        console.error('Error getting database connection:', err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+        return;
+      }
+      
+      // Execute the query
+      connection.query('SELECT * FROM WastageEntries', (err, results) => {
+        // Release the connection back to the pool
+        connection.release();
+
+        if (err) {
+          console.error('Error fetching wastage entries:', err);
+          res.status(500).json({ success: false, message: 'Internal server error' });
+          return;
+        }
+
+        // Send the wastage entries data as JSON response
+        res.json(results);
+      });
+    });
+  } catch (error) {
+    console.error('Error fetching wastage entries:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

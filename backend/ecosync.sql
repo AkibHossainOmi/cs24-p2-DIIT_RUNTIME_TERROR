@@ -200,4 +200,16 @@ CREATE TABLE EmployeeWorkingHours (
     CONSTRAINT fk_employee_id FOREIGN KEY (employeeId) REFERENCES employees(employeeId)
 );
 
+CREATE TABLE IF NOT EXISTS WastageEntries (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  dateTime DATETIME,
+  amountCollected DECIMAL(10, 2),
+  contractorId VARCHAR(50),
+  wasteType VARCHAR(255),
+  designatedSTS INT, 
+  vehicleUsed VARCHAR(255),
+  FOREIGN KEY (contractorId) REFERENCES contractors(contract_id),
+  FOREIGN KEY (designatedSTS) REFERENCES STS(WardNumber) 
+);
+
 

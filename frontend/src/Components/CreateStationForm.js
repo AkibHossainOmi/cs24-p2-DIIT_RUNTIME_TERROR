@@ -12,6 +12,7 @@ export default function CreateStationForm() {
     address: '',
     Longitude: '',
     Latitude: '',
+    fineForCompensation: '', // Added new fine for compensation parameter
   });
 
   const [errors, setErrors] = useState({
@@ -20,6 +21,7 @@ export default function CreateStationForm() {
     address: '',
     Longitude: '',
     Latitude: '',
+    fineForCompensation: '', // Added corresponding error state
   });
 
   const handleInputChange = (e) => {
@@ -37,7 +39,7 @@ export default function CreateStationForm() {
   const validateForm = () => {
     let isValid = true;
 
-    const { WardNumber, CapacityInTonnes, address, Longitude, Latitude } = stationData;
+    const { WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation } = stationData;
 
     if (!WardNumber.trim()) {
       setErrors((prevErrors) => ({
@@ -46,7 +48,8 @@ export default function CreateStationForm() {
       }));
       isValid = false;
     }
-    // Add validation for other fields (e.g., CapacityInTonnes, address, Longitude, Latitude)
+
+    // Add validation for other fields (e.g., CapacityInTonnes, address, Longitude, Latitude, fineForCompensation)
 
     return isValid;
   };
@@ -72,6 +75,7 @@ export default function CreateStationForm() {
         address: '',
         Longitude: '',
         Latitude: '',
+        fineForCompensation: '', // Reset the new parameter as well
       });
     } catch (error) {
       console.error('Error inserting STS data:', error);
@@ -129,12 +133,31 @@ export default function CreateStationForm() {
               <p className="text-red-500 text-xs italic">{errors.CapacityInTonnes}</p>
             )}
           </div>
+          {/* New input field for fine for compensation */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fineForCompensation">
+              Fine for Compensation
+            </label>
+            <input
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.fineForCompensation ? "border-red-500" : ""}`}
+              id="fineForCompensation"
+              type="text"
+              name="fineForCompensation"
+              value={stationData.fineForCompensation}
+              onChange={handleInputChange}
+              placeholder="Fine for Compensation"
+            />
+            {errors.fineForCompensation && (
+              <p className="text-red-500 text-xs italic">{errors.fineForCompensation}</p>
+            )}
+          </div>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
               Address
             </label>
             <Map onLatLngChange={handleLatLngChange} />
           </div>
+          
           <div className="pt-24 flex items-center justify-between">
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

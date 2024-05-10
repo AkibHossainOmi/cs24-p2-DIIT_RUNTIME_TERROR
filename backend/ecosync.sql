@@ -60,8 +60,10 @@ CREATE TABLE IF NOT EXISTS STS (
     CapacityInTonnes INT NOT NULL,
     address VARCHAR(500) NOT NULL,
     Longitude VARCHAR(100) NOT NULL,
-    Latitude VARCHAR(100) NOT NULL
+    Latitude VARCHAR(100) NOT NULL,
+    fineForCompensation DECIMAL(10, 2) NOT NULL 
 );
+
 
 -- Table for STS Managers
 CREATE TABLE IF NOT EXISTS STSManagers (

@@ -62,6 +62,8 @@ const AdminEdit = () => {
                     <option value="System Admin">System Admin</option>
                     <option value="STS Manager">STS Manager</option>
                     <option value="Landfill Manager">Landfill Manager</option>
+                    <option value="Contractor Manager">Contractor Manager</option>
+
                   </select>
                 </div>
 

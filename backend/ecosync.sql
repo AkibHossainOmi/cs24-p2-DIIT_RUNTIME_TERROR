@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS ecosync;backend/server.js
+DROP DATABASE IF EXISTS ecosync;
 CREATE DATABASE IF NOT EXISTS ecosync;
 use ecosync;
 -- Users Table
@@ -129,7 +129,8 @@ SELECT * FROM (
     SELECT 'System Admin', 'Full access to all system functionalities' UNION ALL
     SELECT 'STS Manager', 'Manage Secondary Transfer Stations' UNION ALL
     SELECT 'Landfill Manager', 'Manage Landfill Operations' UNION ALL
-    SELECT 'Unassigned', 'No access granted. Default role for newly created users.'
+    SELECT 'Unassigned', 'No access granted. Default role for newly created users.' UNION ALL
+    SELECT 'Contractor Manager', 'Manage 3rd party contractor'
 ) AS roles
 WHERE NOT EXISTS (SELECT * FROM Roles);
 

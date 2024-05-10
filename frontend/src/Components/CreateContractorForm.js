@@ -170,6 +170,7 @@ export default function CreateContractorForm() {
     }
 
     try {
+      console.log(contractorData);
       const response = await axios.post('http://localhost:8000/contractors', contractorData);
       console.log('Response from API:', response.data);
       

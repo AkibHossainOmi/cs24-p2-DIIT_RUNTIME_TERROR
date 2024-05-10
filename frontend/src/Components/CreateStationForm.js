@@ -59,6 +59,7 @@ export default function CreateStationForm() {
     }
 
     try {
+      console.log(stationData);
       const response = await axios.post('http://localhost:8000/sts', stationData);
       console.log('Response from API:', response.data);
       
@@ -77,11 +78,12 @@ export default function CreateStationForm() {
     }
   };
 
-  const handleLatLngChange = (lat, lng) => {
+  const handleLatLngChange = (lat, lng, add) => {
     setStationData({
       ...stationData,
       Latitude: lat,
       Longitude: lng,
+      address: add,
     });
   };
 

@@ -991,6 +991,29 @@ app.post('/billing-calculation-details', (req, res) => {
 });
 
 
+app.post('/contractors', (req, res) => {
+  const { companyName, contractID, registrationID, registrationDate, TIN, contactNumber, workforceSize, paymentPerTonnage, requiredAmountPerDay, contractDuration, areaOfCollection, designatedSTS } = req.body;
+
+  // Check if all required fields are provided
+  if (!companyName || !contractID || !registrationID || !registrationDate || !TIN || !contactNumber || !workforceSize || !paymentPerTonnage || !requiredAmountPerDay || !contractDuration || !areaOfCollection || !designatedSTS) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Insert query to add data into contractors table
+  const sql = 'INSERT INTO contractors (company_name, contract_id, registration_id, registration_date, tin, contact_number, workforce_size, payment_per_tonnage, required_amount_per_day, contract_duration, area_of_collection, designated_sts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [companyName, contractID, registrationID, registrationDate, TIN, contactNumber, workforceSize, paymentPerTonnage, requiredAmountPerDay, contractDuration, areaOfCollection, designatedSTS];
+
+  // Execute the query
+  pool.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting data into contractors table:', err);
+      return res.status(500).json({ error: 'Failed to insert data into contractors table' });
+    }
+    console.log('Data inserted into contractors table successfully');
+    res.status(200).json({ message: 'Data inserted into contractors table successfully' });
+  });
+});
+
 
 
 

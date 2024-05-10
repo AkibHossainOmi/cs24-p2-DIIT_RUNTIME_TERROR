@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS ecosync;
+DROP DATABASE IF EXISTS ecosync;backend/server.js
 CREATE DATABASE IF NOT EXISTS ecosync;
 use ecosync;
 -- Users Table
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS Vehicles (
 CREATE TABLE IF NOT EXISTS STS (
     WardNumber INT PRIMARY KEY,
     CapacityInTonnes INT NOT NULL,
-    address VARCHAR(100) NOT NULL,
+    address VARCHAR(500) NOT NULL,
     Longitude VARCHAR(100) NOT NULL,
     Latitude VARCHAR(100) NOT NULL
 );
@@ -146,4 +146,18 @@ SELECT * FROM (
 ) AS permissions
 WHERE NOT EXISTS (SELECT * FROM Permissions);
 
-
+CREATE TABLE contractors (
+    company_name VARCHAR(255) NOT NULL,
+    contract_id VARCHAR(50) PRIMARY KEY,
+    registration_id VARCHAR(50) NOT NULL,
+    registration_date DATE NOT NULL,
+    tin VARCHAR(20) NOT NULL,
+    contact_number VARCHAR(20) NOT NULL,
+    workforce_size INT NOT NULL,
+    payment_per_tonnage DECIMAL(10, 2) NOT NULL,
+    required_amount_per_day INT NOT NULL,
+    contract_duration INT NOT NULL,
+    area_of_collection VARCHAR(255) NOT NULL,
+    designated_sts INT NOT NULL,
+    FOREIGN KEY (designated_sts) REFERENCES STS(WardNumber)
+);

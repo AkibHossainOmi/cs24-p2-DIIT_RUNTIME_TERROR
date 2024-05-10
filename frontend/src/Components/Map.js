@@ -48,6 +48,7 @@ const Map = ({ onLatLngChange }) => {
       const { lat, lon } = data[0];
       console.log("Latitude:", lat, "Longitude:", lon); // Log latitude and longitude
       setSelectedPlace({ lat: parseFloat(lat), lng: parseFloat(lon) });
+      onLatLngChange(lat, lon, searchQuery);
     } else {
       console.log("No results found");
       setSelectedPlace(null);
@@ -60,7 +61,7 @@ const Map = ({ onLatLngChange }) => {
   const handleClick = (e) => {
     const { lat, lng } = e.latlng;
     setSelectedPlace({ lat, lng });
-    onLatLngChange(lat, lng); // Call the callback function with lat and lng
+    onLatLngChange(lat, lng, searchQuery); // Call the callback function with lat and lng
   };
 
   console.log("Selected Place:", selectedPlace);

@@ -92,11 +92,12 @@ export default function CreateLandfillForm() {
       });
   };
 
-  const handleLatLngChange = (lat, lng) => {
+  const handleLatLngChange = (lat, lng, add) => {
     setLandfillData({
       ...landfillData,
       latitude: lat,
       longitude: lng,
+      address: add,
     });
   };
 

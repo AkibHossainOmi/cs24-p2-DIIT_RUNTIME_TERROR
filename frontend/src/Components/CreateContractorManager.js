@@ -88,7 +88,17 @@ export default function CreateContractorManager() {
       console.log(managerData);
       const response = await axios.post('http://localhost:8000/create-contractor-manager', managerData);
       console.log('Response from API:', response.data);
-      
+      const userData = {
+        username: managerData.username,
+        email: managerData.emailAddress,
+        password: managerData.password
+      };
+      try{
+      const userResponse = await axios.post('http://localhost:8000/users', userData);
+      console.log('User response from API:', userResponse.data);
+    } catch (error) {
+      console.error('Error creating contractor manager:', error);
+    }
       // Reset form after successful submission
       history('/admin/all_contractor_managers');
       window.location.reload();

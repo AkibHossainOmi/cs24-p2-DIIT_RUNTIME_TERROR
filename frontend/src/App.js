@@ -140,7 +140,7 @@ function App() {
             <Route path="/create_employee" element={<WorkforceRegistrationPage />} />
             <Route path="/all_employee" element={<AllEmployees />} />
 
-            <Route path="/EnterWorkingHours" element={<EnterWorkingHours />} />
+            <Route path="/employees/:employeeId" element={<EnterWorkingHours />} />
 
             <Route path="/monitoring_employee" element={<LoggedWorkingHours />} />
 

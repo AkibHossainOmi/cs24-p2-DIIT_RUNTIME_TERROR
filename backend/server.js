@@ -17,9 +17,9 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
-  host: 'ecosyncdb',
+  host: 'localhost',
   user: 'root',
-  password: '123456',
+  password: 'password',
   database: 'ecosync',
   port: 3306,
   waitForConnections: true,
@@ -1083,8 +1083,53 @@ app.get('/all-contractor-managers', (req, res) => {
   });
 });
 
+// Route to handle POST request for workforce registration
+app.post('/workforce-registration', (req, res) => {
+  try {
+    const { employeeId, fullName, dateOfBirth, dateOfHire, jobTitle, paymentRatePerHour, contactInformation, assignedCollectionRoute } = req.body;
 
+    // Insert the data into the database
+    new Promise((resolve, reject) => {
+      pool.query('INSERT INTO employees (employeeId, fullName, dateOfBirth, dateOfHire, jobTitle, paymentRatePerHour, contactInformation, assignedCollectionRoute) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+      [employeeId, fullName, dateOfBirth, dateOfHire, jobTitle, paymentRatePerHour, contactInformation, assignedCollectionRoute], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    })
+    .then(result => {
+      // Send a success response
+      res.status(200).json({ success: true, message: 'Employee registered successfully.' });
+    })
+    .catch(error => {
+      console.error('Error registering employee:', error);
+      // Send an error response
+      res.status(500).json({ success: false, message: 'Internal server error.' });
+    });
+  } catch (error) {
+    console.error('Error registering employee:', error);
+    // Send an error response
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+});
 
+app.get('/employees', (req, res) => {
+  try {
+    pool.query('SELECT * FROM employees', (error, results) => {
+      if (error) {
+        console.error('Error fetching employees:', error);
+        res.status(500).json({ status: 'error', message: 'Internal server error.' });
+      } else {
+        res.status(200).json({ status: 'success', data: results });
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error.' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -75,7 +75,7 @@ export default function WorkforceRegistrationPage() {
       if (response.ok) {
         console.log('Workforce registration submitted successfully');
         // Reset form after successful submission
-        history('/dashboard');
+        history('/all_employee');
         window.location.reload();
       } else {
         console.error('Error submitting workforce registration:', responseData.error);

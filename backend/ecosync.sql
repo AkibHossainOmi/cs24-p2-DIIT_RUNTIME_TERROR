@@ -179,3 +179,15 @@ CREATE TABLE IF NOT EXISTS ContractorManagers (
     FOREIGN KEY (assignedContractorCompany) REFERENCES contractors(company_name)
 );
 
+CREATE TABLE employees (
+    employeeId INT AUTO_INCREMENT PRIMARY KEY,
+    fullName VARCHAR(255) NOT NULL,
+    dateOfBirth DATE NOT NULL,
+    dateOfHire DATE NOT NULL,
+    jobTitle VARCHAR(255) NOT NULL,
+    paymentRatePerHour DECIMAL(10, 2) NOT NULL,
+    contactInformation VARCHAR(255) NOT NULL,
+    assignedCollectionRoute VARCHAR(255) NOT NULL
+);
+
+

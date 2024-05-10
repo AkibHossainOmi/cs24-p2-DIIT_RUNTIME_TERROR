@@ -63,6 +63,16 @@ export default function Navbar() {
                     {isAuthenticated === 3 && <Link to="/vehicle_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       Landfill Entries
                     </Link>}
+
+                    {isAuthenticated === 5 && <Link to="/create_employee" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                      Create Employee
+                    </Link>}
+                    {isAuthenticated === 5 && <Link to="/all_employee" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                      All Employe
+                    </Link>}
+                    {isAuthenticated === 5 && <Link to="/monitoring_employee" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                      Monitoring Employee
+                    </Link>}
                     </li>
                     <li>
                       <button

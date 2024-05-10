@@ -37,6 +37,10 @@ import ContractorManagement from './Components/ContractorManagement';
 import AllContractors from './Components/AllContractors';
 import CreateContractorManager from './Components/CreateContractorManager';
 import AllContractorManagers from './Components/AllContractorManagers';
+import LoggedWorkingHours from './Components/LoggedWorkingHours';
+import EnterWorkingHours from './Components/EnterWorkingHours';
+import WorkforceRegistrationPage from './Components/WorkforceRegistrationPage';
+import AllEmployees from './Components/AllEmployees';
 
 
 
@@ -51,6 +55,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/navbar" element={<Navbar />} />
+        <Route path="/n" element={<LoggedWorkingHours />} />
         
 
           {isAuthenticated === 0 && (
@@ -121,6 +126,25 @@ function App() {
             <Route path="/users/:userId" element={<UserProfile />} />
             <Route path="/billing" element={<BillingView />} />
             <Route path="*" element={<Navigate to="/navbar" />} />
+          </>
+        )}
+        {isAuthenticated === 5 && (
+          <>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/edit/:userId" element={<EditProfile />} />          
+            <Route path="/user/change_password" element={<ChangePassword />} />
+            <Route path="/users/:userId" element={<UserProfile />} />
+            <Route path="*" element={<Navigate to="/navbar" />} />
+
+            <Route path="/create_employee" element={<WorkforceRegistrationPage />} />
+            <Route path="/all_employee" element={<AllEmployees />} />
+
+            <Route path="/EnterWorkingHours" element={<EnterWorkingHours />} />
+
+            <Route path="/monitoring_employee" element={<LoggedWorkingHours />} />
+
+            
           </>
         )}
         </Routes>

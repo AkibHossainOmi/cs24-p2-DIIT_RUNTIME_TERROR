@@ -32,6 +32,9 @@ import CreateRole from './Components/CreateRole';
 import ForgotPassword from './Components/ForgotPassword';
 import ResetPassword from './Components/ResetPassword';
 import BillingView from './Components/Billingview';
+import CreateContractorForm from './Components/CreateContractorForm';
+import ContractorManagement from './Components/ContractorManagement';
+import AllContractors from './Components/AllContractors';
 
 
 
@@ -46,6 +49,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/navbar" element={<Navbar />} />
+        
+
           {isAuthenticated === 0 && (
           <>
             <Route path="/login" element={<Login />} />
@@ -80,6 +85,11 @@ function App() {
             <Route path="/admin/create_roles" element={<CreateRole />} />
             <Route path="/user/change_password" element={<ChangePassword />} />
             <Route path="*" element={<Navigate to="/navbar" />} />
+            <Route path="/admin/contractor_management" element={<ContractorManagement />} />
+            <Route path="/admin/create_contractor" element={<CreateContractorForm />} />
+            <Route path="/admin/all_contractors" element={<AllContractors />} />
+
+
           </>
         )}
         {isAuthenticated === 2 && (

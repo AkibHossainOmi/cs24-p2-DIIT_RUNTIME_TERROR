@@ -41,6 +41,7 @@ import LoggedWorkingHours from './Components/LoggedWorkingHours';
 import EnterWorkingHours from './Components/EnterWorkingHours';
 import WorkforceRegistrationPage from './Components/WorkforceRegistrationPage';
 import AllEmployees from './Components/AllEmployees';
+import WastageEntries from './Components/WastageEntries';
 
 
 
@@ -113,6 +114,9 @@ function App() {
             <Route path="/user/change_password" element={<ChangePassword />} />
             <Route path="/users/:userId" element={<UserProfile />} />
             <Route path="*" element={<Navigate to="/navbar" />} />
+
+            <Route path="/wastage_entries" element={<WastageEntries />} />
+
           </>
         )}
         {isAuthenticated === 3 && (

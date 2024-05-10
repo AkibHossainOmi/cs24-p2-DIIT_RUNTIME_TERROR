@@ -60,6 +60,9 @@ export default function Navbar() {
                     {isAuthenticated === 2 && <Link to="/vehicle_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       STS Entries
                     </Link>}
+                    {isAuthenticated === 2 && <Link to="/wastage_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                      Wastage Entries
+                    </Link>}
                     {isAuthenticated === 3 && <Link to="/vehicle_entries" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       Landfill Entries
                     </Link>}
@@ -68,7 +71,7 @@ export default function Navbar() {
                       Create Employee
                     </Link>}
                     {isAuthenticated === 5 && <Link to="/all_employee" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
-                      All Employe
+                      All Employee
                     </Link>}
                     {isAuthenticated === 5 && <Link to="/monitoring_employee" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       Monitoring Employee

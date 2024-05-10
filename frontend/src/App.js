@@ -44,6 +44,8 @@ import AllEmployees from './Components/AllEmployees';
 import WastageEntries from './Components/WastageEntries';
 import AllWastageEntries from './Components/AllWastageEntries';
 import BillGeneration from './Components/BillGeneration';
+import CreateCollectionPlan from './Components/CreateCollectionPlan';
+import AllCollectionPlans from './Components/AllCollectionPlans';
 
 
 
@@ -153,6 +155,11 @@ function App() {
             <Route path="/employees/:employeeId" element={<EnterWorkingHours />} />
 
             <Route path="/monitoring_employee" element={<LoggedWorkingHours />} />
+            <Route path="/collecton_plan" element={<CreateCollectionPlan/>} />
+            <Route path="/all_plan" element={<AllCollectionPlans/>} />
+
+
+            
 
             
           </>

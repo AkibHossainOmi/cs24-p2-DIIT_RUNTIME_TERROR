@@ -23,6 +23,18 @@ const UserManagement = () => {
               >
                 All Users
               </Link>
+              <Link
+                to="/admin/create_contractor_manager"
+                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
+              >
+                Create Contractor Manager
+              </Link>
+              <Link
+                to="/admin/all_contractor_managers"
+                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
+              >
+                All Contractor Managers
+              </Link>
             </div>
           </div>
         </div>

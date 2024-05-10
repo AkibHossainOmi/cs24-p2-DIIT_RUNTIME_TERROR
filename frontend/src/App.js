@@ -35,6 +35,8 @@ import BillingView from './Components/Billingview';
 import CreateContractorForm from './Components/CreateContractorForm';
 import ContractorManagement from './Components/ContractorManagement';
 import AllContractors from './Components/AllContractors';
+import CreateContractorManager from './Components/CreateContractorManager';
+import AllContractorManagers from './Components/AllContractorManagers';
 
 
 
@@ -88,6 +90,10 @@ function App() {
             <Route path="/admin/contractor_management" element={<ContractorManagement />} />
             <Route path="/admin/create_contractor" element={<CreateContractorForm />} />
             <Route path="/admin/all_contractors" element={<AllContractors />} />
+            <Route path="/admin/create_contractor_manager" element={<CreateContractorManager />} />
+            <Route path="/admin/all_contractor_managers" element={<AllContractorManagers />} />
+
+
 
 
           </>

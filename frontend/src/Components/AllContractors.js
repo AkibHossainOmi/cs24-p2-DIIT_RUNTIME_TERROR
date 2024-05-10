@@ -8,7 +8,7 @@ const AllContractors = () => {
   const [sortBy, setSortBy] = useState('name'); // Default sort by name
 
   useEffect(() => {
-    fetch('http://localhost:8000/contractors') // Assuming the endpoint for fetching contractors is different
+    fetch('http://localhost:8000/contractors')
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -24,13 +24,13 @@ const AllContractors = () => {
 
   // Filter contractors based on search term
   const filteredContractors = contractors.filter(contractor =>
-    contractor.name.toLowerCase().includes(searchTerm.toLowerCase())
+    contractor.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Sort contractors based on the selected criteria
   const sortedContractors = filteredContractors.sort((a, b) => {
     if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
+      return a.company_name.localeCompare(b.company_name);
     } else {
       return a.type.localeCompare(b.type);
     }
@@ -66,9 +66,16 @@ const AllContractors = () => {
             <div className="divide-y divide-gray-200">
               {/* Render sorted and filtered contractors */}
               {sortedContractors.map(contractor => (
-                <div key={contractor.contractorId} className="py-4">
-                  <Link to={`/contractors/${contractor.contractorId}`} className="text-lg font-semibold text-black-500 hover: ">{contractor.name}</Link>
-                  <p className="text-sm text-gray-600">{contractor.type}</p>
+                <div key={contractor.contract_id} className="py-4">
+                  <Link to={`/contractors/${contractor.contract_id}`} className="text-lg font-semibold text-black-500 hover: ">{contractor.company_name}</Link>
+                  <p className="text-sm text-gray-600">TIN: {contractor.tin}</p>
+                  <p className="text-sm text-gray-600">Contact Number: {contractor.contact_number}</p>
+                  <p className="text-sm text-gray-600">Workforce Size: {contractor.workforce_size}</p>
+                  <p className="text-sm text-gray-600">Payment per Tonnage: {contractor.payment_per_tonnage}</p>
+                  <p className="text-sm text-gray-600">Required Amount per Day: {contractor.required_amount_per_day}</p>
+                  <p className="text-sm text-gray-600">Contract Duration: {contractor.contract_duration}</p>
+                  <p className="text-sm text-gray-600">Area of Collection: {contractor.area_of_collection}</p>
+                  <p className="text-sm text-gray-600">Designated STS: {contractor.designated_sts}</p>
                 </div>
               ))}
             </div>

@@ -1014,6 +1014,21 @@ app.post('/contractors', (req, res) => {
   });
 });
 
+app.get('/contractors', (req, res) => {
+  const sql = 'SELECT * FROM contractors';
+
+  // Execute the query
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching data from contractors table:', err);
+      return res.status(500).json({ error: 'Failed to fetch data from contractors table' });
+    }
+    // Send the fetched data as a JSON response
+    res.status(200).json({ status: 'success', data: result });
+  });
+});
+
+
 
 
 

@@ -1030,6 +1030,60 @@ app.get('/contractors', (req, res) => {
 
 
 
+app.post('/create-contractor-manager', (req, res) => {
+  try {
+    const { fullName, userID, emailAddress, dateOfAccountCreation, contactNumber, assignedContractorCompany, accessLevel, username, password } = req.body;
+
+    // Validate the incoming data (you can use Joi, Yup, or any other validation library)
+    // Your validation code goes here
+
+    // Insert the data into the database
+    new Promise((resolve, reject) => {
+      pool.query('INSERT INTO ContractorManagers (fullName, userID, emailAddress, dateOfAccountCreation, contactNumber, assignedContractorCompany, accessLevel, username, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [fullName, userID, emailAddress, dateOfAccountCreation, contactNumber, assignedContractorCompany, accessLevel, username, password], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    })
+    .then(result => {
+      // Send a success response
+      res.status(200).json({ success: true, message: 'Contractor manager created successfully.' });
+    })
+    .catch(error => {
+      console.error('Error creating contractor manager:', error);
+      // Send an error response
+      res.status(500).json({ success: false, message: 'Internal server error.' });
+    });
+  } catch (error) {
+    console.error('Error creating contractor manager:', error);
+    // Send an error response
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+  }
+});
+
+app.get('/all-contractor-managers', (req, res) => {
+  new Promise((resolve, reject) => {
+    pool.query('SELECT * FROM ContractorManagers', (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  })
+  .then(managers => {
+    // If the query is successful, send the results as JSON response
+    res.status(200).json(managers);
+  })
+  .catch(error => {
+    console.error('Error fetching contractor managers:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  });
+});
+
+
 
 
 app.listen(port, () => {

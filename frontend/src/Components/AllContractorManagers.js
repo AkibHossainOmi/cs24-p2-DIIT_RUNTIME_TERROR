@@ -11,8 +11,9 @@ const AllContractorManagers = () => {
   useEffect(() => {
     const fetchContractorManagers = async () => {
       try {
-        const response = await axios.get('API_ENDPOINT_URL_HERE');
+        const response = await axios.get('http://localhost:8000/all-contractor-managers');
         if (response.status === 200) {
+          console.log(response);
           setManagers(response.data);
         } else {
           console.error('Error fetching contractor managers:', response.statusText);
@@ -70,8 +71,13 @@ const AllContractorManagers = () => {
               {/* Render sorted and filtered managers */}
               {sortedManagers.map(manager => (
                 <div key={manager.userId} className="py-4">
-                  <Link to={`/contractor_managers/${manager.userId}`} className="text-lg font-semibold text-black-500 hover: ">{manager.username}</Link>
-                  <p className="text-sm text-gray-600">Access Level: {manager.accessLevel}</p>
+                  {/* Render all fields */}
+                  <p className="text-lg font-semibold text-black-500 hover: ">Username: {manager.username}</p>
+                  <p>Email Address: {manager.emailAddress}</p>
+                  <p>Date of Account Creation: {manager.dateOfAccountCreation}</p>
+                  <p>Contact Number: {manager.contactNumber}</p>
+                  <p>Assigned Contractor Company: {manager.assignedContractorCompany}</p>
+                  <p>Access Level: {manager.accessLevel}</p>
                 </div>
               ))}
             </div>

@@ -162,3 +162,20 @@ CREATE TABLE contractors (
     designated_sts INT NOT NULL,
     FOREIGN KEY (designated_sts) REFERENCES STS(WardNumber)
 );
+
+ALTER TABLE contractors
+ADD INDEX idx_company_name (company_name);
+
+CREATE TABLE IF NOT EXISTS ContractorManagers (
+    userID VARCHAR(255) PRIMARY KEY,
+    fullName VARCHAR(255) NOT NULL,
+    emailAddress VARCHAR(255) NOT NULL,
+    dateOfAccountCreation DATE NOT NULL,
+    contactNumber VARCHAR(20) NOT NULL,
+    assignedContractorCompany VARCHAR(255) NOT NULL,
+    accessLevel VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    FOREIGN KEY (assignedContractorCompany) REFERENCES contractors(company_name)
+);
+

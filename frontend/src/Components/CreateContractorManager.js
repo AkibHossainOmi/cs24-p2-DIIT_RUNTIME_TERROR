@@ -86,7 +86,7 @@ export default function CreateContractorManager() {
 
     try {
       console.log(managerData);
-      const response = await axios.post('API_ENDPOINT_URL_HERE', managerData);
+      const response = await axios.post('http://localhost:8000/create-contractor-manager', managerData);
       console.log('Response from API:', response.data);
       
       // Reset form after successful submission
@@ -112,8 +112,8 @@ export default function CreateContractorManager() {
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <Navbar />
       <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl mt-8">
-        <h1 className="mt-10 text-3xl font-semibold text-center text-purple-700">
-          Creation of Contractor Manager User
+        <h1 className="mb-6 mt-10 text-3xl font-semibold text-center text-purple-700">
+          Creation of Contractor Manager
         </h1>
         <form className="" onSubmit={handleSubmit}>
           {/* Full Name */}

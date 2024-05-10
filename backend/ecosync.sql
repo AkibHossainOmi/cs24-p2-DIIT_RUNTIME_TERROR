@@ -190,4 +190,12 @@ CREATE TABLE employees (
     assignedCollectionRoute VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE EmployeeWorkingHours (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employeeId INT,
+    loginTime DATETIME,
+    logoutTime DATETIME,
+    CONSTRAINT fk_employee_id FOREIGN KEY (employeeId) REFERENCES employees(employeeId)
+);
+
 

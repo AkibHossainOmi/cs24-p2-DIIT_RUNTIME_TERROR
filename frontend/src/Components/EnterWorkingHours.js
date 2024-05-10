@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
 import axios from 'axios';
+import { useParams } from 'react-router-dom'; // Import useParams hook
 
 const EnterWorkingHours = () => {
+  const { employeeId } = useParams(); // Extract employeeId from URL params
+  
   const [formData, setFormData] = useState({
     loginTime: '',
     logoutTime: '',
@@ -18,7 +21,7 @@ const EnterWorkingHours = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/working-hours', formData);
+      const response = await axios.post(`http://localhost:8000/employees/${employeeId}/working-hours`, formData);
       console.log('Working hours entry submitted successfully:', response.data);
       // Clear form data after successful submission
       setFormData({

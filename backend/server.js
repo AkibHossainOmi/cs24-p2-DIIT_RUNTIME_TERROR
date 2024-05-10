@@ -1131,6 +1131,37 @@ app.get('/employees', (req, res) => {
   }
 });
 
+app.post('/employees/:employeeId/working-hours', (req, res) => {
+  const { employeeId } = req.params;
+  const { loginTime, logoutTime } = req.body;
+
+  // Assuming you have a connection pool named 'pool' set up
+  
+  pool.query('INSERT INTO EmployeeWorkingHours (employeeId, loginTime, logoutTime) VALUES (?, ?, ?)', [employeeId, loginTime, logoutTime], (error, result) => {
+    if (error) {
+      console.error('Error inserting working hours:', error);
+      res.status(500).json({ success: false, message: 'Internal server error.' });
+    } else {
+      res.status(200).json({ success: true, message: 'Working hours submitted successfully.' });
+    }
+  });
+});
+
+app.get('/working-hours', (req, res) => {
+
+  // Assuming you have a connection pool named 'pool' set up
+
+  pool.query('SELECT * FROM EmployeeWorkingHours', (error, result) => {
+    if (error) {
+      console.error('Error retrieving working hours:', error);
+      res.status(500).json({ success: false, message: 'Internal server error.' });
+    } else {
+      console.log('Working hours retrieved successfully');
+      res.status(200).json({ success: true, data: result });
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -42,7 +42,7 @@ const BillGeneration = ({ weightOfWasteCollected, requiredWaste, paymentPerTonna
                 <p className="text-lg font-semibold text-gray-800 mb-4">Total Bill: BDT {totalBill}</p>
               </div>
               <div className="mt-10 text-center w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
-                <button onClick={calculateBill}>Generate Bill</button>
+                <button onClick={calculateBill} className=''>Generate Bill</button>
               </div>
             </div>
           </div>

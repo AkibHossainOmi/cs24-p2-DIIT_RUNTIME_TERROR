@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import BillGeneration from './BillGeneration'; // Import the BillGeneration component
 
 const WastageEntry = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ const WastageEntry = () => {
     designatedSTS: '',
     vehicleUsed: '', // Updated to hold the selected vehicle used
   });
+
+  const [billData, setBillData] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,18 +27,35 @@ const WastageEntry = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8000/wastage-entries', formData);
-      console.log('Wastage entry submitted successfully:', response.data);
+      // console.log('Wastage entry submitted successfully:', response.data);
       // Clear form data after successful submission
-      setFormData({
-        dateTime: '',
-        amountCollected: '',
-        contractorId: '',
-        wasteType: '',
-        designatedSTS: '',
-        vehicleUsed: '',
-      });
+      // setFormData({
+      //   dateTime: '',
+      //   amountCollected: '',
+      //   contractorId: '',
+      //   wasteType: '',
+      //   designatedSTS: '',
+      //   vehicleUsed: '',
+      // });
     } catch (error) {
       console.error('Error submitting wastage entry:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch bill data when contractorId changes
+    if (formData.contractorId) {
+      fetchBillData(formData.contractorId);
+    }
+  }, [formData.contractorId]);
+
+  const fetchBillData = async (contractorId) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/bill-data/${contractorId}`);
+      setBillData(response.data[0]);
+      console.log(response.data[0]);
+    } catch (error) {
+      console.error('Error fetching bill data:', error);
     }
   };
 
@@ -152,16 +172,17 @@ const WastageEntry = () => {
                 All Entries
                 </button>
             </Link>
-            <Link to="/createbill"> {/* Link to the Create Bill page */}
-                <button
-                type="button"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                Create Bill
-                </button>
-            </Link>
+
             </div>
         </form>
+        {billData && (
+          <BillGeneration
+            weightOfWasteCollected={formData.amountCollected}
+            requiredWaste={billData.RequiredWaste}
+            paymentPerTonnage={billData.PaymentPerTonnage}
+            fineRate={billData.FineRate}
+          />
+        )}
       </div>
     </div>
   );

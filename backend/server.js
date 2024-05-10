@@ -1212,6 +1212,37 @@ app.get('/wastage-entries', async (req, res) => {
   }
 });
 
+app.get('/bill-data/:contractId', (req, res) => {
+  const { contractId } = req.params;
+
+  // Execute query
+  pool.query(
+    `
+    SELECT
+      STS.CapacityInTonnes AS RequiredWaste,
+      contractors.payment_per_tonnage AS PaymentPerTonnage,
+      STS.fineForCompensation AS FineRate
+    FROM
+      contractors
+    JOIN
+      STS ON contractors.designated_sts = STS.WardNumber
+    WHERE
+      contractors.contract_id = ?
+    `,
+    [contractId],
+    (error, results, fields) => {
+      if (error) {
+        console.error('Error fetching bill data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+
+      // Send the fetched data as response
+      res.json(results);
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

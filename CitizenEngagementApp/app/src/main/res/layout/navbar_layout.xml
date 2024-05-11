@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#9C27B0"
+    android:layout_alignParentTop="true"
+    tools:ignore="ExtraText">
+
+    <!-- Three dot button -->
+    <ImageButton
+        android:id="@+id/btnThreeDot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        android:background="@android:color/transparent"
+        android:padding="16dp"
+        android:contentDescription="Three Dot Menu" />
+
+
+
+</LinearLayout>

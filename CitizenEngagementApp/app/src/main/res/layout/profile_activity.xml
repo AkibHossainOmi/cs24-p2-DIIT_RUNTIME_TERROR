@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+    <!-- Include Navbar Layout -->
+    <include layout="@layout/navbar_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:background="@drawable/box_stroke"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <!-- User Profile headline -->
+            <TextView
+                android:id="@+id/textViewUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_profile"
+                android:textSize="24dp"
+                style="@style/BoldTextStyle"
+                android:padding="16dp"/>
+        </RelativeLayout>
+
+        <!-- User profile information -->
+        <TextView
+            android:id="@+id/textViewUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username:"
+            android:textSize="18sp"
+            android:layout_below="@id/navbar"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"/>
+
+        <!-- New field for Full Name -->
+        <TextView
+            android:id="@+id/textViewFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Name:"
+            android:textSize="18sp"
+            android:layout_below="@id/textViewPhone"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email:"
+            android:textSize="18sp"
+            android:layout_below="@id/textViewUsername"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address:"
+            android:textSize="18sp"
+            android:layout_below="@id/textViewEmail"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewWardNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ward No:"
+            android:textSize="18sp"
+            android:layout_below="@id/textViewWardNo"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone:"
+            android:textSize="18sp"
+            android:layout_below="@id/textViewAddress"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <!-- Edit Profile and Reset Password buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/textViewFullName"
+            android:layout_marginTop="16dp">
+
+            <!-- Edit Profile button -->
+            <Button
+                android:id="@+id/btnEditProfile"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Edit Profile"
+                android:textSize="14sp"
+                android:textColor="#9C27B0"
+                android:background="@android:color/transparent"
+                android:textAllCaps="false"
+                android:onClick="editProfile"/>
+
+            <!-- Reset Password button -->
+            <Button
+                android:id="@+id/btnResetPassword"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Reset Password"
+                android:textSize="14sp"
+                android:textColor="#9C27B0"
+                android:background="@android:color/transparent"
+                android:textAllCaps="false"
+                android:onClick="resetPassword"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

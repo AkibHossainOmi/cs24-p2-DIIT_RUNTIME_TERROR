@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DashboardActivity">
+
+    <!-- Include Navbar Layout -->
+    <include layout="@layout/navbar_layout" />
+
+    <!-- Article Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/navbar"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewArticleContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Empowering Communities: Join the Movement for Sustainable Waste Management\n\nDear Users,\n\nWelcome to our community-driven platform dedicated to revolutionizing waste management in our cities! We're thrilled to have you join us in this important mission to create cleaner, healthier, and more sustainable environments for all.\n\nWith our app, you have the power to make a real difference right from your fingertips. Here's how:\n\n1. **Report and Resolve**: Notice an overflowing bin, littering hotspot, or illegal dumping site? With just a few taps, you can report these issues directly to your city corporation, ensuring prompt action and a cleaner community.\n\n2. **Stay Informed**: No more guessing about garbage collection schedules or local waste management events. Our app keeps you informed with timely notifications, so you never miss an opportunity to participate or contribute.\n\n3. **Community Engagement**: Connect with like-minded individuals, share your experiences, and learn from others through our vibrant community forum. Together, we can inspire and support each other to make positive changes in our neighborhoods.\n\n4. **Educational Resources**: Explore a wealth of educational content on waste management, recycling, and sustainability. Whether you're a novice or an expert, there's always something new to discover and share with others.\n\n5. **Interactive Maps**: Navigate your city with ease using our interactive maps, which highlight nearby recycling facilities, drop-off points, and volunteer opportunities. Find convenient locations to dispose of your waste responsibly or get involved in local initiatives.\n\nBy using our app, you're not just a user — you're an active participant in shaping the future of waste management in your community. Together, let's work towards a cleaner, greener, and more sustainable world for generations to come.\n\nJoin us today and be part of the solution!\n\nWarm regards,\n\nCitizen Engagement with the DNCC Team"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+    </ScrollView>
+</RelativeLayout>

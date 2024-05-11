@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Include Navbar Layout -->
+    <include layout="@layout/navbar_layout" />
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/navbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notification Settings"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Notification options -->
+            <CheckBox
+                android:id="@+id/checkBoxGarbageCollection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receive updates about garbage collection schedules"
+                android:layout_marginBottom="8dp"/>
+
+            <CheckBox
+                android:id="@+id/checkBoxWasteManagementEvents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receive updates about forthcoming local waste management events"
+                android:layout_marginBottom="8dp"/>
+
+            <CheckBox
+                android:id="@+id/checkBoxRecyclingGuidelines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receive updates about recycling guidelines"
+                android:layout_marginBottom="8dp"/>
+
+            <CheckBox
+                android:id="@+id/checkBoxEducationalMaterials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receive updates about new educational materials"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

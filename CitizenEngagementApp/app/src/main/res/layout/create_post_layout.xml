@@ -1,0 +1,61 @@
+<!-- create_post_layout.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Include Navbar Layout -->
+    <include layout="@layout/navbar_layout" />
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/navbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+                <!-- Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create Post"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"/>
+            </RelativeLayout>
+            <!-- Post Title -->
+            <EditText
+                android:id="@+id/editTextPostTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Post Content -->
+            <EditText
+                android:id="@+id/editTextPostContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Content"
+                android:layout_marginBottom="16dp"
+                android:inputType="textMultiLine"
+                android:lines="5"/>
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/btnSubmitPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

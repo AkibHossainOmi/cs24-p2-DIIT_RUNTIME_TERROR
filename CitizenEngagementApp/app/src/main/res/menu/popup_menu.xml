@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_user_profile"
+        android:title="User Profile" />
+    <item
+        android:id="@+id/menu_issue_reporting"
+        android:title="Report an Issue" />
+    <item
+        android:id="@+id/menu_notification"
+        android:title="Notifications"/>
+    <item
+        android:id="@+id/menu_comunity_engagement"
+        android:title="Community Forum"/>
+    <item
+        android:id="@+id/menu_logout"
+        android:title="Log Out" />
+</menu>

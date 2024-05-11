@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="issue_types">
+        <item>Overflowing Bins</item>
+        <item>Littering</item>
+        <item>Illegal Dumping</item>
+        <item>Damaged Infrastructure</item>
+        <!-- Add more issue types as needed -->
+    </string-array>
+</resources>

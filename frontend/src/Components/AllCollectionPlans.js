@@ -25,11 +25,11 @@ const AllCollectionPlans = () => {
           {plans.map((plan, index) => (
             <div key={index} className="bg-white shadow-md rounded-md p-4">
               <h2 className="text-xl font-semibold text-gray-800 mb-2">{plan.area}</h2>
-              <p><strong>Start Time:</strong> {plan.startTime}</p>
+              <p><strong>Start Time:</strong> {plan.start_time}</p>
               <p><strong>Duration:</strong> {plan.duration} hours</p>
-              <p><strong>Laborers:</strong> {plan.numLaborers}</p>
-              <p><strong>Vans:</strong> {plan.numVans}</p>
-              <p><strong>Expected Weight:</strong> {plan.expectedWeight} tons</p>
+              <p><strong>Laborers:</strong> {plan.num_laborers}</p>
+              <p><strong>Vans:</strong> {plan.num_vans}</p>
+              <p><strong>Expected Weight:</strong> {plan.expected_weight} tons</p>
             </div>
           ))}
         </div>

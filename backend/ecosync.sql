@@ -212,4 +212,15 @@ CREATE TABLE IF NOT EXISTS WastageEntries (
   FOREIGN KEY (designatedSTS) REFERENCES STS(WardNumber) 
 );
 
+CREATE TABLE IF NOT EXISTS collection_plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    area VARCHAR(255) NOT NULL,
+    start_time TIME NOT NULL,
+    duration INT NOT NULL,
+    num_laborers INT NOT NULL,
+    num_vans INT NOT NULL,
+    expected_weight DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+
 

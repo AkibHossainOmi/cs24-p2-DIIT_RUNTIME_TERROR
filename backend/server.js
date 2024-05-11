@@ -1243,6 +1243,40 @@ app.get('/bill-data/:contractId', (req, res) => {
   );
 });
 
+app.post('/create-collection-plan', async (req, res) => {
+  try {
+    const { area, startTime, duration, numLaborers, numVans, expectedWeight } = req.body;
+
+    // Insert the collection plan data into the database
+    const [result] = await pool.promise().query(`
+      INSERT INTO collection_plans (area, start_time, duration, num_laborers, num_vans, expected_weight)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `, [area, startTime, duration, numLaborers, numVans, expectedWeight]);
+
+    // Send a success response
+    res.status(201).json({ message: 'Collection plan created successfully', result });
+  } catch (error) {
+    console.error('Error creating collection plan:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/all-collection-plans', (req, res) => {
+  // Query to fetch all collection plans from the database
+  const query = 'SELECT * FROM collection_plans';
+
+  // Execute the query
+  pool.query(query, (error, results) => {
+    if (error) {
+      console.error('Error fetching collection plans:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      // Send the fetched collection plans as response
+      res.json(results);
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

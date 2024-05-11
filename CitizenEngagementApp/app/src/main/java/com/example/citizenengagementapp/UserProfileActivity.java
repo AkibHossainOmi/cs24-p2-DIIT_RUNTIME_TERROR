@@ -1,22 +1,58 @@
 package com.example.citizenengagementapp;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class UserProfileActivity extends AppCompatActivity {
 
+    private TextView textViewUsername, textViewEmail, textViewAddress, textViewWardNo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
+
+        // Initialize TextViews
+        textViewUsername = findViewById(R.id.textViewUsername);
+        textViewEmail = findViewById(R.id.textViewEmail);
+        textViewAddress = findViewById(R.id.textViewAddress);
+        textViewWardNo = findViewById(R.id.textViewWardNo);
+
+        // Fetch user data from the database based on the signed-in email address
+        String signedInEmail = getSignedInEmail(); // Method to retrieve signed-in email from SharedPreferences
+        DatabaseHelperClass dbHelper = new DatabaseHelperClass(this);
+        User user = dbHelper.getUserByEmail(signedInEmail);
+
+        // Debug logs to check user data retrieval
+        if (user != null) {
+            Log.d("UserProfileActivity", "User found: " + user.getUsername());
+        } else {
+            Log.d("UserProfileActivity", "No user found for email: " + signedInEmail);
+        }
+
+        // Display user data in TextViews
+        if (user != null) {
+            textViewUsername.setText("Username: " + user.getUsername());
+            textViewEmail.setText("Email: " + user.getEmail());
+            textViewAddress.setText("Address: " + user.getAddress());
+            textViewWardNo.setText("Ward No: " + user.getWardNo());
+        } else {
+            // Handle case when user is null (no data found)
+            textViewUsername.setText("No user data found");
+            textViewEmail.setText("");
+            textViewAddress.setText("");
+            textViewWardNo.setText("");
+        }
+
 
         // Initialize the three-dot button
         ImageButton btnThreeDot = findViewById(R.id.btnThreeDot);
@@ -56,7 +92,6 @@ public class UserProfileActivity extends AppCompatActivity {
         PopupMenu popupMenu = new PopupMenu(this, view);
         popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.menu_logout) {
@@ -88,7 +123,6 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     // Method to redirect to NotificationSettingsActivity
     private void redirectToNotificationActivity() {
         Intent intent = new Intent(UserProfileActivity.this, NotificationActivity.class);
@@ -107,5 +141,13 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivity(intent);
         // Finish the current activity
         finish();
+    }
+
+    // Method to retrieve signed-in email from SharedPreferences
+    private String getSignedInEmail() {
+        // Retrieve signed-in email from SharedPreferences or any other local storage mechanism
+        // For simplicity, let's assume you're using SharedPreferences
+        // You need to implement this method based on your SharedPreferences setup
+        return "user@example.com"; // Example email, replace it with actual retrieval logic
     }
 }

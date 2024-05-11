@@ -17,9 +17,9 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
-  host: 'localhost',
+  host: 'ecosyncdb',
   user: 'root',
-  password: 'password',
+  password: '123456',
   database: 'ecosync',
   port: 3306,
   waitForConnections: true,

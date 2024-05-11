@@ -46,6 +46,8 @@ import AllWastageEntries from './Components/AllWastageEntries';
 import BillGeneration from './Components/BillGeneration';
 import CreateCollectionPlan from './Components/CreateCollectionPlan';
 import AllCollectionPlans from './Components/AllCollectionPlans';
+import ScheduleCollection from './Components/ScheduleCollection';
+import Dashboard2 from './Components/Dashboard2';
 
 
 
@@ -142,7 +144,7 @@ function App() {
         )}
         {isAuthenticated === 5 && (
           <>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard2 />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/edit/:userId" element={<EditProfile />} />          
             <Route path="/user/change_password" element={<ChangePassword />} />
@@ -157,6 +159,10 @@ function App() {
             <Route path="/monitoring_employee" element={<LoggedWorkingHours />} />
             <Route path="/collecton_plan" element={<CreateCollectionPlan/>} />
             <Route path="/all_plan" element={<AllCollectionPlans/>} />
+            <Route path="/schedule_collection" element={<ScheduleCollection />} />
+
+
+            
 
 
             

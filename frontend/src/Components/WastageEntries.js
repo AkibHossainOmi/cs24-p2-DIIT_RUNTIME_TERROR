@@ -81,7 +81,7 @@ const WastageEntry = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amountCollected">
-              Amount of Waste Collected (kg)
+              Amount of Waste Collected (Tons)
             </label>
             <input
               id="amountCollected"

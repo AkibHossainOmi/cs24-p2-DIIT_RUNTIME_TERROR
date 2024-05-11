@@ -89,6 +89,9 @@ public class ReportIssueActivity extends AppCompatActivity {
                 // For demonstration, let's just display a toast message
                 String message = "Location: " + location + "\nIssue Type: " + issueType + "\nDescription: " + description + "\nAnonymous: " + isAnonymous;
                 Toast.makeText(ReportIssueActivity.this, message, Toast.LENGTH_LONG).show();
+
+                // After submitting the report, redirect to the ReportedIssuesActivity
+                redirectToReportedIssuesActivity();
             }
         });
 
@@ -129,6 +132,16 @@ public class ReportIssueActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(ReportIssueActivity.this, VolunteerActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_reported_issues) {
+                    Intent intent = new Intent(ReportIssueActivity.this, ReportedIssuesActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
                 return false;
             }
         });
@@ -149,9 +162,9 @@ public class ReportIssueActivity extends AppCompatActivity {
         finish();
     }
 
-    // Method to redirect to UserProfileActivity
-    private void redirectToUserProfile() {
-        Intent intent = new Intent(ReportIssueActivity.this, UserProfileActivity.class);
+    // Method to redirect to ReportedIssuesActivity
+    private void redirectToReportedIssuesActivity() {
+        Intent intent = new Intent(ReportIssueActivity.this, ReportedIssuesActivity.class);
         startActivity(intent);
     }
 

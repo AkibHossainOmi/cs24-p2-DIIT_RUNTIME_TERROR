@@ -54,8 +54,15 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Insert user data into the database
+                // Check if the user already exists in the database
                 DatabaseHelperClass dbHelper = new DatabaseHelperClass(SignUpActivity.this);
+                if (dbHelper.isUserExists(email)) {
+                    // Show error message if user already exists
+                    Toast.makeText(SignUpActivity.this, "User with this email already exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Insert user data into the database
                 long result = dbHelper.insertData(username, password, email, address, wardNo);
 
                 // Check if insertion was successful

@@ -1,6 +1,7 @@
 package com.example.citizenengagementapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -111,6 +112,17 @@ public class UserProfileActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(UserProfileActivity.this, VolunteerActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_reported_issues) {
+                    Intent intent = new Intent(UserProfileActivity.this, ReportedIssuesActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+
                 return false;
             }
         });
@@ -145,9 +157,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     // Method to retrieve signed-in email from SharedPreferences
     private String getSignedInEmail() {
-        // Retrieve signed-in email from SharedPreferences or any other local storage mechanism
-        // For simplicity, let's assume you're using SharedPreferences
-        // You need to implement this method based on your SharedPreferences setup
-        return "user@example.com"; // Example email, replace it with actual retrieval logic
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        return sharedPreferences.getString("signed_in_email", "");
     }
 }

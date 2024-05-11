@@ -68,7 +68,6 @@ public class EnterTokenActivity extends AppCompatActivity {
                         finish(); // Close the EnterTokenActivity
                     }
                 });
-
             }
         });
     }

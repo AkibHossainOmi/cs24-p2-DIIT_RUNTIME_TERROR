@@ -35,6 +35,7 @@
         <activity android:name=".NotificationActivity"/>
         <activity android:name=".ForumActivity"/>
         <activity android:name=".CreatePostActivity"/>
+        <activity android:name=".VolunteerActivity"/>
     </application>
 
 </manifest>

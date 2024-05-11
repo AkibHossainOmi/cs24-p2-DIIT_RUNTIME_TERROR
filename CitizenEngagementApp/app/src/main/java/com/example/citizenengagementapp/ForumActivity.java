@@ -81,6 +81,16 @@ public class ForumActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(ForumActivity.this, VolunteerActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_reported_issues) {
+                    Intent intent = new Intent(ForumActivity.this, ReportedIssuesActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
                 return false;
             }
         });

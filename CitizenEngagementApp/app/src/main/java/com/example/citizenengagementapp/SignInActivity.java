@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SignInActivity extends AppCompatActivity {
 
-    private EditText editTextUsernameEmail, editTextPassword;
+    private EditText editTextEmail, editTextPassword;
     private Button btnSignIn, btnForgotPassword, btnSignUp;
 
     // SharedPreferences
@@ -24,7 +24,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
 
         // Initialize EditText fields and buttons
-        editTextUsernameEmail = findViewById(R.id.editTextUsernameEmail);
+        editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
         btnForgotPassword = findViewById(R.id.btnForgotPassword);
@@ -38,15 +38,15 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Retrieve user input from EditText fields
-                String usernameEmail = editTextUsernameEmail.getText().toString().trim();
+                String email = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
 
                 // Validate input (you can add your validation logic here)
 
-                // Example: Check if username/email is empty
-                if (usernameEmail.isEmpty()) {
-                    editTextUsernameEmail.setError("Username/E-mail is required");
-                    editTextUsernameEmail.requestFocus();
+                // Example: Check if email is empty
+                if (email.isEmpty()) {
+                    editTextEmail.setError("E-mail is required");
+                    editTextEmail.requestFocus();
                     return;
                 }
 
@@ -61,7 +61,7 @@ public class SignInActivity extends AppCompatActivity {
                 // Here you can add your code to authenticate the user or perform any other desired actions
                 // For simplicity, let's assume the authentication is successful
                 // Save the signed-in email in SharedPreferences
-                saveSignedInEmail(usernameEmail);
+                saveSignedInEmail(email);
 
                 // Navigate to the dashboard
                 Intent intent = new Intent(SignInActivity.this, DashboardActivity.class);

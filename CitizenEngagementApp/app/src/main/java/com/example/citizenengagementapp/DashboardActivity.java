@@ -58,6 +58,11 @@ public class DashboardActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(DashboardActivity.this, VolunteerActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
                 return false;
             }
         });

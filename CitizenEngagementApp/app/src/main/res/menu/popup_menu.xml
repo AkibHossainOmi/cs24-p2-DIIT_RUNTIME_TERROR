@@ -6,11 +6,17 @@
         android:id="@+id/menu_issue_reporting"
         android:title="Report an Issue" />
     <item
+        android:id="@+id/menu_reported_issues"
+        android:title="Reported Issues" />
+    <item
         android:id="@+id/menu_notification"
         android:title="Notifications"/>
     <item
         android:id="@+id/menu_comunity_engagement"
         android:title="Community Forum"/>
+    <item
+        android:id="@+id/menu_events"
+        android:title="Events"/>
     <item
         android:id="@+id/menu_logout"
         android:title="Log Out" />

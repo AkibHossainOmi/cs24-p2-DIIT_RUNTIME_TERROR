@@ -112,6 +112,16 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(NotificationSettingsActivity.this, VolunteerActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(NotificationSettingsActivity.this, ReportedIssuesActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
                 return false;
             }
         });

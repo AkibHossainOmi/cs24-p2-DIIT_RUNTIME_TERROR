@@ -48,12 +48,13 @@ public class ReportedIssuesActivity extends AppCompatActivity {
             }
         });
 
-        // Set onClick listener for the Three-dot Button
+        // Initialize the three-dot button
+        ImageButton btnThreeDot = findViewById(R.id.btnThreeDot);
         btnThreeDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Show the PopupMenu
-                showPopupMenu();
+                // Create and show the PopupMenu
+                showPopupMenu(btnThreeDot);
             }
         });
     }
@@ -70,14 +71,34 @@ public class ReportedIssuesActivity extends AppCompatActivity {
     }
 
     // Method to show the PopupMenu
-    private void showPopupMenu() {
-        PopupMenu popupMenu = new PopupMenu(this, btnThreeDot);
+    private void showPopupMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
         popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.menu_logout) {
                     logoutUser();
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_user_profile) {
+                    Intent intent = new Intent(ReportedIssuesActivity.this, UserProfileActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_notification) {
+                    Intent intent = new Intent(ReportedIssuesActivity.this, NotificationActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_comunity_engagement) {
+                    Intent intent = new Intent(ReportedIssuesActivity.this, ForumActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_events) {
+                    Intent intent = new Intent(ReportedIssuesActivity.this, VolunteerActivity.class);
+                    startActivity(intent);
                     return true;
                 }
                 return false;

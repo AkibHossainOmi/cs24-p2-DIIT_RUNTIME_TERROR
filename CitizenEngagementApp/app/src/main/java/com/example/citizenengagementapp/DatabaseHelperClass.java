@@ -172,4 +172,14 @@ public class DatabaseHelperClass extends SQLiteOpenHelper {
         // Return the user object
         return user;
     }
+
+    public boolean isUserExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_EMAIL + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return exists;
+    }
 }

@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -21,6 +22,16 @@ public class CreatePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_post_layout);
+
+        // Initialize the three-dot button
+        ImageButton btnThreeDot = findViewById(R.id.btnThreeDot);
+        btnThreeDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create and show the PopupMenu
+                showPopupMenu(btnThreeDot);
+            }
+        });
 
         // Initialize views
         editTextPostTitle = findViewById(R.id.editTextPostTitle);

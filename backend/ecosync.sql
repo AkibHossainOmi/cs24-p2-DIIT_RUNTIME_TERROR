@@ -61,8 +61,11 @@ CREATE TABLE IF NOT EXISTS STS (
     address VARCHAR(500) NOT NULL,
     Longitude VARCHAR(100) NOT NULL,
     Latitude VARCHAR(100) NOT NULL,
-    fineForCompensation DECIMAL(10, 2) NOT NULL 
+    fineForCompensation DECIMAL(10, 2) NOT NULL,
+    collectionStartTime TIME NOT NULL,
+    collectionEndTime TIME NOT NULL
 );
+
 
 
 -- Table for STS Managers

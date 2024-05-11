@@ -13,6 +13,8 @@ export default function CreateStationForm() {
     Longitude: '',
     Latitude: '',
     fineForCompensation: '', // Added new fine for compensation parameter
+    collectionStartTime: '', // Added new parameter for collection start time
+    collectionEndTime: '' // Added new parameter for collection end time
   });
 
   const [errors, setErrors] = useState({
@@ -22,6 +24,8 @@ export default function CreateStationForm() {
     Longitude: '',
     Latitude: '',
     fineForCompensation: '', // Added corresponding error state
+    collectionStartTime: '', // Added corresponding error state
+    collectionEndTime: '' // Added corresponding error state
   });
 
   const handleInputChange = (e) => {
@@ -39,7 +43,7 @@ export default function CreateStationForm() {
   const validateForm = () => {
     let isValid = true;
 
-    const { WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation } = stationData;
+    const { WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation, collectionStartTime, collectionEndTime } = stationData;
 
     if (!WardNumber.trim()) {
       setErrors((prevErrors) => ({
@@ -49,7 +53,7 @@ export default function CreateStationForm() {
       isValid = false;
     }
 
-    // Add validation for other fields (e.g., CapacityInTonnes, address, Longitude, Latitude, fineForCompensation)
+    // Add validation for other fields (e.g., CapacityInTonnes, address, Longitude, Latitude, fineForCompensation, collectionStartTime, collectionEndTime)
 
     return isValid;
   };
@@ -76,6 +80,8 @@ export default function CreateStationForm() {
         Longitude: '',
         Latitude: '',
         fineForCompensation: '', // Reset the new parameter as well
+        collectionStartTime: '', // Reset the new parameter as well
+        collectionEndTime: '' // Reset the new parameter as well
       });
     } catch (error) {
       console.error('Error inserting STS data:', error);
@@ -149,6 +155,41 @@ export default function CreateStationForm() {
             />
             {errors.fineForCompensation && (
               <p className="text-red-500 text-xs italic">{errors.fineForCompensation}</p>
+            )}
+          </div>
+          {/* New input fields for collection start time and end time */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="collectionStartTime">
+              Collection Start Time
+            </label>
+            <input
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.collectionStartTime ? "border-red-500" : ""}`}
+              id="collectionStartTime"
+              type="time"
+              name="collectionStartTime"
+              value={stationData.collectionStartTime}
+              onChange={handleInputChange}
+              placeholder="Collection Start Time"
+            />
+            {errors.collectionStartTime && (
+              <p className="text-red-500 text-xs italic">{errors.collectionStartTime}</p>
+            )}
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="collectionEndTime">
+              Collection End Time
+            </label>
+            <input
+              className={`appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.collectionEndTime ? "border-red-500" : ""}`}
+              id="collectionEndTime"
+              type="time"
+              name="collectionEndTime"
+              value={stationData.collectionEndTime}
+              onChange={handleInputChange}
+              placeholder="Collection End Time"
+            />
+            {errors.collectionEndTime && (
+              <p className="text-red-500 text-xs italic">{errors.collectionEndTime}</p>
             )}
           </div>
           <div className="mb-6">

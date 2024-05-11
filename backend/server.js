@@ -754,14 +754,14 @@ app.post('/sts-vehicles', (req, res) => {
 
 // API Endpoint to insert STS data
 app.post('/sts', (req, res) => {
-  const { WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation } = req.body;
+  const { WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation, collectionStartTime, collectionEndTime } = req.body;
 
-  if (!WardNumber || !CapacityInTonnes || !address || !Longitude || !Latitude || !fineForCompensation) {
-    return res.status(400).json({ error: 'WardNumber, CapacityInTonnes, address, Longitude, Latitude, and fineForCompensation are required' });
+  if (!WardNumber || !CapacityInTonnes || !address || !Longitude || !Latitude || !fineForCompensation || !collectionStartTime || !collectionEndTime) {
+    return res.status(400).json({ error: 'WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation, collectionStartTime, and collectionEndTime are required' });
   }
 
-  const sql = 'INSERT INTO STS (WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation];
+  const sql = 'INSERT INTO STS (WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation, collectionStartTime, collectionEndTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [WardNumber, CapacityInTonnes, address, Longitude, Latitude, fineForCompensation, collectionStartTime, collectionEndTime];
 
   pool.query(sql, values, (err, result) => {
     if (err) {
@@ -772,6 +772,7 @@ app.post('/sts', (req, res) => {
     res.status(200).json({ message: 'STS data inserted successfully' });
   });
 });
+
 
 
 // Route handler to get all STS ward numbers

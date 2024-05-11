@@ -79,6 +79,9 @@ export default function Navbar() {
                     {isAuthenticated === 5 && <Link to="/collecton_plan" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
                       Collection Plan
                     </Link>}
+                    {isAuthenticated === 5 && <Link to="/schedule_collection" className="whitespace-nowrap px-4 py-2 block hover:bg-gray-200">
+                    Schedule Collection
+                    </Link>}
                     </li>
                     <li>
                       <button

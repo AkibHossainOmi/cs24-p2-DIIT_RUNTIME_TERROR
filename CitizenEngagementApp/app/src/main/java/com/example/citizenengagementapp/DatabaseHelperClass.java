@@ -59,6 +59,62 @@ public class DatabaseHelperClass extends SQLiteOpenHelper {
         return result;
     }
 
+    public User getUserByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        User user = null;
+
+        // Define the columns to be retrieved
+        String[] columns = {
+                COLUMN_USERNAME,
+                COLUMN_EMAIL,
+                COLUMN_ADDRESS,
+                COLUMN_WARD_NO
+        };
+
+        // Define the selection criteria
+        String selection = COLUMN_EMAIL + " = ?";
+
+        // Define the selection arguments
+        String[] selectionArgs = {email};
+
+        // Query the database
+        Cursor cursor = db.query(
+                TABLE_NAME,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        // Check if the cursor contains any data
+        if (cursor != null && cursor.moveToFirst()) {
+            // Extract user information from the cursor
+            int usernameIndex = cursor.getColumnIndex(COLUMN_USERNAME);
+            int emailIndex = cursor.getColumnIndex(COLUMN_EMAIL);
+            int addressIndex = cursor.getColumnIndex(COLUMN_ADDRESS);
+            int wardNoIndex = cursor.getColumnIndex(COLUMN_WARD_NO);
+
+            if (usernameIndex != -1 && emailIndex != -1 && addressIndex != -1 && wardNoIndex != -1) {
+                String username = cursor.getString(usernameIndex);
+                email = cursor.getString(emailIndex);
+                String address = cursor.getString(addressIndex);
+                String wardNo = cursor.getString(wardNoIndex);
+
+                // Create a new User object
+                user = new User(username, email, address, wardNo);
+            }
+        }
+
+        // Close the cursor and database
+        cursor.close();
+        db.close();
+
+        // Return the user object
+        return user;
+    }
+
     public User getUser(String usernameEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         User user = null;

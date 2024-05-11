@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +14,9 @@ public class SignInActivity extends AppCompatActivity {
 
     private EditText editTextUsernameEmail, editTextPassword;
     private Button btnSignIn, btnForgotPassword, btnSignUp;
+
+    // SharedPreferences
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +30,16 @@ public class SignInActivity extends AppCompatActivity {
         btnForgotPassword = findViewById(R.id.btnForgotPassword);
         btnSignUp = findViewById(R.id.btnSignUp);
 
+        // SharedPreferences initialization
+        sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+
         // Set onClickListener for Sign In button
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Retrieve user input from EditText fields
-                final String usernameEmail = editTextUsernameEmail.getText().toString().trim();
-                final String password = editTextPassword.getText().toString().trim();
+                String usernameEmail = editTextUsernameEmail.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
 
                 // Validate input (you can add your validation logic here)
 
@@ -52,29 +57,16 @@ public class SignInActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Authenticate user against the database
-                DatabaseHelperClass dbHelper = new DatabaseHelperClass(SignInActivity.this);
-                User user = dbHelper.getUser(usernameEmail, password);
+                // If all validations pass, you can proceed with sign in process
+                // Here you can add your code to authenticate the user or perform any other desired actions
+                // For simplicity, let's assume the authentication is successful
+                // Save the signed-in email in SharedPreferences
+                saveSignedInEmail(usernameEmail);
 
-                // Check if user exists and credentials are valid
-                if (user != null) {
-                    // Save user's email as a token in local storage
-                    // Here, you can use SharedPreferences or any other local storage mechanism
-                    // For simplicity, let's assume you're using SharedPreferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("userEmail", user.getEmail());
-                    editor.apply();
-
-                    // Proceed to the dashboard
-                    Intent intent = new Intent(SignInActivity.this, DashboardActivity.class);
-                    startActivity(intent);
-                    finish(); // Close the sign-in activity
-                } else {
-                    // User authentication failed
-                    // You can show an error message to the user
-                    Toast.makeText(SignInActivity.this, "Invalid username/email or password", Toast.LENGTH_SHORT).show();
-                }
+                // Navigate to the dashboard
+                Intent intent = new Intent(SignInActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish(); // Close the sign-in activity
             }
         });
 
@@ -99,12 +91,10 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        // Route back to the main activity (MainActivity)
-        super.onBackPressed();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish(); // Close the sign-in activity
+    // Method to save signed-in email in SharedPreferences
+    private void saveSignedInEmail(String email) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("signed_in_email", email);
+        editor.apply();
     }
 }
